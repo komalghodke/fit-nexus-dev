@@ -1,24 +1,25 @@
 package com.fitnexus.security;
 
 import java.util.Date;
+
+import javax.crypto.SecretKey;
+
 import org.springframework.stereotype.Component;
+
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
-import javax.crypto.SecretKey;
 
 @Component
 public class JwtUtil {
 
-	// ✅ Strong Base64 secret (64 bytes)
 	private static final String SECRET = "XyZ9kLmNOpQrStUvWxYz1234567890abcdefghijklmnoPQRSTUVWXYZabcd1234Efgh5678==";
-
 	private static final SecretKey KEY = Keys.hmacShaKeyFor(Decoders.BASE64.decode(SECRET));
 
 	public String generateToken(String username) {
 		return Jwts.builder().setSubject(username).setIssuedAt(new Date())
-				.setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24)) // 24 hour
+				.setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24)) // 24 hours
 				.signWith(KEY, SignatureAlgorithm.HS256).compact();
 	}
 

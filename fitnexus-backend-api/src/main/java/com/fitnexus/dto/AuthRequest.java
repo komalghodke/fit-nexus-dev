@@ -1,7 +1,7 @@
 package com.fitnexus.dto;
 
 public class AuthRequest {
-	private String username; // actually email
+	private String username;
 	private String password;
 
 	public String getUsername() {

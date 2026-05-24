@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.fitnexus.dto.ProfileDto;
 import com.fitnexus.entity.User;
 import com.fitnexus.repository.UserRepository;
 
@@ -33,18 +34,27 @@ public class UserController {
 	}
 
 	@GetMapping("/profile")
-	public ResponseEntity<?> getProfile(Authentication authentication) {
+	public ResponseEntity<ProfileDto> getProfile(Authentication authentication) {
 		String email = authentication.getName();
 		User user = userRepository.findByEmail(email).orElseThrow();
-		return ResponseEntity.ok(user);
+
+		ProfileDto dto = new ProfileDto();
+		dto.setEmail(user.getEmail());
+		dto.setName(user.getName());
+		return ResponseEntity.ok(dto);
 	}
 
 	@PutMapping("/profile")
-	public ResponseEntity<?> updateProfile(Authentication authentication, @RequestBody User updated) {
+	public ResponseEntity<ProfileDto> updateProfile(Authentication authentication, @RequestBody ProfileDto dto) {
 		String email = authentication.getName();
 		User user = userRepository.findByEmail(email).orElseThrow();
-		user.setName(updated.getName());
+
+		user.setName(dto.getName());
 		userRepository.save(user);
-		return ResponseEntity.ok(user);
+
+		ProfileDto updated = new ProfileDto();
+		updated.setEmail(user.getEmail());
+		updated.setName(user.getName());
+		return ResponseEntity.ok(updated);
 	}
 }
