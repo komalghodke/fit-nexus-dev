@@ -1,55 +1,95 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 
 function ProfilePage() {
-  const [profile, setProfile] = useState(null);
-  const [newName, setNewName] = useState("");
+  const [profile, setProfile] = useState({
+    name: "",
+    email: "",
+    age: "",
+    gender: "",
+    height: "",
+    weight: ""
+  });
 
- useEffect(() => {
-  const token = localStorage.getItem("token");
-  if (!token) return;
-  fetch("http://localhost:8080/api/users/profile", {
-    headers: { Authorization: `Bearer ${token}` }
-  })
-    .then(res => {
-      if (!res.ok) throw new Error("Failed to load profile");
-      return res.json();
-    })
-    .then(data => {
-      setProfile(data);
-      setNewName(data.name);
-    })
-    .catch(err => alert(err.message));
-}, []);
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      window.location.href = "/login";
+      return;
+    }
 
-  const handleUpdate = async () => {
+    axios
+      .get("http://localhost:8080/api/users/profile", {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      .then((res) => setProfile(res.data))
+      .catch(() => alert("Failed to load profile"));
+  }, []);
+
+  const handleChange = (e) => {
+    setProfile({ ...profile, [e.target.name]: e.target.value });
+  };
+
+  const handleUpdate = async (e) => {
+    e.preventDefault();
     try {
       const token = localStorage.getItem("token");
-      const res = await fetch("http://localhost:8080/api/users/profile", {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`
-        },
-        body: JSON.stringify({ name: newName })
+      await axios.put("http://localhost:8080/api/users/profile", profile, {
+        headers: { Authorization: `Bearer ${token}` },
       });
-      if (!res.ok) throw new Error("Update failed");
-      const data = await res.json();
-      setProfile(data);
-      alert("Profile updated!");
+      alert("Profile updated successfully!");
     } catch (err) {
-      alert(err.message);
+      alert("Failed to update profile");
     }
   };
 
-  if (!profile) return <div>Loading profile...</div>;
-
   return (
-    <div>
-      <h2>Profile</h2>
-      <p>Email: {profile.email}</p>
-      <input value={newName} onChange={e => setNewName(e.target.value)} />
-      <button onClick={handleUpdate}>Update Name</button>
-    </div>
+    <form onSubmit={handleUpdate} style={{ margin: "20px" }}>
+      <h3>Update Profile</h3>
+      <input
+        type="text"
+        name="name"
+        value={profile.name}
+        onChange={handleChange}
+        placeholder="Full Name"
+      />
+      <input
+        type="email"
+        name="email"
+        value={profile.email}
+        onChange={handleChange}
+        placeholder="Email"
+      />
+      <input
+        type="number"
+        name="age"
+        value={profile.age}
+        onChange={handleChange}
+        placeholder="Age"
+      />
+      <input
+        type="text"
+        name="gender"
+        value={profile.gender}
+        onChange={handleChange}
+        placeholder="Gender"
+      />
+      <input
+        type="number"
+        name="height"
+        value={profile.height}
+        onChange={handleChange}
+        placeholder="Height (cm)"
+      />
+      <input
+        type="number"
+        name="weight"
+        value={profile.weight}
+        onChange={handleChange}
+        placeholder="Weight (kg)"
+      />
+      <button type="submit">Save Changes</button>
+    </form>
   );
 }
 

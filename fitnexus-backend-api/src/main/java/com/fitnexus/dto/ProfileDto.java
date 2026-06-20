@@ -1,15 +1,10 @@
 package com.fitnexus.dto;
 
 public class ProfileDto {
-	private String email;
 	private String name;
+	private String email;
 
-	public String getEmail() {
-		return email;
-	}
-
-	public void setEmail(String email) {
-		this.email = email;
+	public ProfileDto() {
 	}
 
 	public String getName() {
@@ -18,5 +13,13 @@ public class ProfileDto {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
 	}
 }
