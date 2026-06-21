@@ -4,9 +4,7 @@ import axios from "axios";
 function NutritionForm() {
   const [meal, setMeal] = useState("");
   const [calories, setCalories] = useState("");
-  const [protein, setProtein] = useState("");
-  const [carbs, setCarbs] = useState("");
-  const [fat, setFat] = useState("");
+  const [notes, setNotes] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -15,18 +13,14 @@ function NutritionForm() {
       await axios.post("http://localhost:8080/api/nutrition", {
         meal,
         calories,
-        protein,
-        carbs,
-        fat,
+        notes,
       }, {
         headers: { Authorization: `Bearer ${token}` }
       });
       alert("Meal logged!");
       setMeal("");
       setCalories("");
-      setProtein("");
-      setCarbs("");
-      setFat("");
+      setNotes("");
     } catch (err) {
       alert("Failed to log meal");
     }
@@ -34,12 +28,12 @@ function NutritionForm() {
 
   return (
     <form onSubmit={handleSubmit} style={{ margin: "20px" }}>
-      <h3>Log Nutrition</h3>
+      <h3>Log Meal</h3>
       <input
         type="text"
         value={meal}
         onChange={(e) => setMeal(e.target.value)}
-        placeholder="Meal Name"
+        placeholder="Meal (Breakfast, Lunch, Dinner)"
       />
       <input
         type="number"
@@ -48,22 +42,10 @@ function NutritionForm() {
         placeholder="Calories"
       />
       <input
-        type="number"
-        value={protein}
-        onChange={(e) => setProtein(e.target.value)}
-        placeholder="Protein (g)"
-      />
-      <input
-        type="number"
-        value={carbs}
-        onChange={(e) => setCarbs(e.target.value)}
-        placeholder="Carbs (g)"
-      />
-      <input
-        type="number"
-        value={fat}
-        onChange={(e) => setFat(e.target.value)}
-        placeholder="Fat (g)"
+        type="text"
+        value={notes}
+        onChange={(e) => setNotes(e.target.value)}
+        placeholder="Notes (e.g., vegetarian, balanced)"
       />
       <button type="submit">Save Meal</button>
     </form>

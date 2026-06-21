@@ -1,47 +1,51 @@
 package com.fitnexus.controller;
 
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fitnexus.dto.AuthRequest;
-import com.fitnexus.dto.AuthResponse;
+import com.fitnexus.entity.User;
+import com.fitnexus.repository.UserRepository;
 import com.fitnexus.security.JwtUtil;
-import com.fitnexus.service.MyUserDetailsService;
 
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
 
 	@Autowired
-	private AuthenticationManager authenticationManager;
-
-	@Autowired
-	private MyUserDetailsService userDetailsService;
-
+	private AuthenticationManager authManager;
 	@Autowired
 	private JwtUtil jwtUtil;
-
-	@PostMapping("/register")
-	public AuthResponse register(@RequestBody AuthRequest request) {
-		userDetailsService.registerUser(request);
-		UserDetails userDetails = userDetailsService.loadUserByUsername(request.getUsername());
-		String token = jwtUtil.generateToken(userDetails.getUsername());
-		return new AuthResponse(token);
-	}
+	@Autowired
+	private UserRepository userRepo;
 
 	@PostMapping("/login")
-	public AuthResponse login(@RequestBody AuthRequest request) {
-		authenticationManager
-				.authenticate(new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
-		UserDetails userDetails = userDetailsService.loadUserByUsername(request.getUsername());
-		String token = jwtUtil.generateToken(userDetails.getUsername());
-		return new AuthResponse(token);
+	public ResponseEntity<?> login(@RequestBody AuthRequest req) {
+		try {
+			authManager.authenticate(
+				    new UsernamePasswordAuthenticationToken(req.getEmail(), req.getPassword())
+				);
+			String token = jwtUtil.generateToken(req.getEmail()); // ✅ subject = email
+			return ResponseEntity.ok(Map.of("token", token, "email", req.getEmail() // ✅ return email to frontend
+			));
+		} catch (AuthenticationException e) {
+			return ResponseEntity.status(401).body("Invalid credentials");
+		}
+	}
+
+	@PostMapping("/register")
+	public ResponseEntity<?> register(@RequestBody User user) {
+	    userRepo.save(user); // ✅ must include email + password
+	    return ResponseEntity.ok("User registered successfully");
 	}
 
 }

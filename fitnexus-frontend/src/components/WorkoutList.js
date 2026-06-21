@@ -7,7 +7,7 @@ function WorkoutList() {
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (!token) {
-      window.location.href = "/login";
+      window.location.replace("/login");
       return;
     }
 
@@ -28,18 +28,18 @@ function WorkoutList() {
         <table border="1" cellPadding="10">
           <thead>
             <tr>
-              <th>Exercise</th>
+              <th>Type</th>
               <th>Duration (min)</th>
-              <th>Calories</th>
+              <th>Intensity</th>
               <th>Date</th>
             </tr>
           </thead>
           <tbody>
             {workouts.map((w) => (
               <tr key={w.id}>
-                <td>{w.exercise}</td>
+                <td>{w.type}</td>
                 <td>{w.duration}</td>
-                <td>{w.calories}</td>
+                <td>{w.intensity}</td>
                 <td>{new Date(w.createdAt).toLocaleString()}</td>
               </tr>
             ))}

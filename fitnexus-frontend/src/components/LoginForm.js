@@ -2,18 +2,20 @@ import React, { useState } from "react";
 import axios from "axios";
 
 function LoginForm() {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("");       // ✅ declare email state
+  const [password, setPassword] = useState(""); // ✅ declare password state
 
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
       const res = await axios.post("http://localhost:8080/api/auth/login", {
-        username,
+        email,     // ✅ send email, not username
         password,
       });
+
       localStorage.setItem("token", res.data.token);
-      window.location.replace("/dashboard"); // ✅ clean redirect
+      localStorage.setItem("email", res.data.email); // ✅ store email for profile fetch
+      window.location.replace("/dashboard");
     } catch (err) {
       alert("Login failed!");
     }
@@ -24,10 +26,10 @@ function LoginForm() {
       <h3>Login</h3>
       <form onSubmit={handleLogin}>
         <input
-          type="text"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-          placeholder="Username"
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          placeholder="Email"
         />
         <input
           type="password"
@@ -37,7 +39,6 @@ function LoginForm() {
         />
         <button type="submit">Login</button>
       </form>
-
       <p style={{ marginTop: "10px" }}>
         Don’t have an account?{" "}
         <button onClick={() => (window.location.href = "/register")}>

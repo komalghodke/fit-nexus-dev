@@ -15,11 +15,11 @@ function StressForm() {
       }, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      alert("Stress record added!");
+      alert("Stress record logged!");
       setLevel("");
       setNotes("");
     } catch (err) {
-      alert("Failed to add stress record");
+      alert("Failed to log stress record");
     }
   };
 
@@ -27,16 +27,16 @@ function StressForm() {
     <form onSubmit={handleSubmit} style={{ margin: "20px" }}>
       <h3>Log Stress</h3>
       <input
-        type="number"
+        type="text"
         value={level}
         onChange={(e) => setLevel(e.target.value)}
-        placeholder="Stress Level (1-10)"
+        placeholder="Stress Level (Low, Medium, High)"
       />
       <input
         type="text"
         value={notes}
         onChange={(e) => setNotes(e.target.value)}
-        placeholder="Notes"
+        placeholder="Notes (e.g., meditation, workload)"
       />
       <button type="submit">Save Stress</button>
     </form>

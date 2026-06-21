@@ -7,13 +7,15 @@ function Dashboard() {
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-    if (!token) {
+    const email = localStorage.getItem("email");
+
+    if (!token || !email) {
       window.location.replace("/login");
       return;
     }
 
     axios
-      .get("http://localhost:8080/api/users/profile", {
+      .get(`http://localhost:8080/api/users/profile/${email}`, {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((res) => {
@@ -22,59 +24,57 @@ function Dashboard() {
       })
       .catch(() => {
         alert("Session expired, please login again.");
-        localStorage.removeItem("token");
+        localStorage.clear();
         window.location.replace("/login");
       });
-  }, []);
+  }, []); // ✅ wrap API call inside useEffect
 
   const handleLogout = () => {
     localStorage.removeItem("token");
-    window.location.replace("/login"); // ✅ avoids loop
+    localStorage.removeItem("email"); // ✅ clear email too
+    window.location.replace("/login");
   };
 
-  if (loading) {
-    return <p>Loading profile...</p>;
-  }
-
-  if (!profile) {
-    return <p>No profile data available.</p>;
-  }
+  if (loading) return <p>Loading profile...</p>;
+  if (!profile) return <p>No profile data available.</p>;
 
   return (
     <div style={{ padding: "20px" }}>
-      <h2>Welcome, {profile.name}</h2>
+      <h2>Welcome, {profile.username}</h2>
       <p>Email: {profile.email}</p>
 
       <button onClick={handleLogout} style={{ marginBottom: "20px" }}>
         Logout
       </button>
 
+      {/* Cards */}
       <div style={{ display: "flex", gap: "20px", marginTop: "20px" }}>
-        {/* Cards for modules */}
         <div style={{ border: "1px solid #ccc", padding: "20px" }}>
           <h3>Workout</h3>
           <button disabled>Coming Soon</button>
         </div>
-
         <div style={{ border: "1px solid #ccc", padding: "20px" }}>
           <h3>Nutrition</h3>
           <button disabled>Coming Soon</button>
         </div>
-
         <div style={{ border: "1px solid #ccc", padding: "20px" }}>
           <h3>Sleep</h3>
           <button disabled>Coming Soon</button>
         </div>
-
         <div style={{ border: "1px solid #ccc", padding: "20px" }}>
           <h3>Stress</h3>
           <button disabled>Coming Soon</button>
         </div>
-
         <div style={{ border: "1px solid #ccc", padding: "20px" }}>
           <h3>Profile</h3>
           <button onClick={() => (window.location.href = "/profile")}>
             Edit Profile
+          </button>
+        </div>
+        <div style={{ border: "1px solid #ccc", padding: "20px" }}>
+          <h3>Reports</h3>
+          <button onClick={() => (window.location.href = "/reports")}>
+            View Wellness Report
           </button>
         </div>
       </div>

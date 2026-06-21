@@ -7,7 +7,7 @@ function NutritionList() {
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (!token) {
-      window.location.href = "/login";
+      window.location.replace("/login");
       return;
     }
 
@@ -30,9 +30,7 @@ function NutritionList() {
             <tr>
               <th>Meal</th>
               <th>Calories</th>
-              <th>Protein (g)</th>
-              <th>Carbs (g)</th>
-              <th>Fat (g)</th>
+              <th>Notes</th>
               <th>Date</th>
             </tr>
           </thead>
@@ -41,9 +39,7 @@ function NutritionList() {
               <tr key={m.id}>
                 <td>{m.meal}</td>
                 <td>{m.calories}</td>
-                <td>{m.protein}</td>
-                <td>{m.carbs}</td>
-                <td>{m.fat}</td>
+                <td>{m.notes}</td>
                 <td>{new Date(m.createdAt).toLocaleString()}</td>
               </tr>
             ))}

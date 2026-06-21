@@ -3,7 +3,6 @@ package com.fitnexus.entity;
 import java.util.List;
 
 import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -17,25 +16,20 @@ public class User {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-
-	private String name;
-
-	@Column(unique = true)
+	private String username;
 	private String email;
-
 	private String password;
 
-	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-	private List<WorkoutLog> workoutLogs;
+	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<Workout> workouts;
+	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<Nutrition> nutritionLogs;
+	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<Sleep> sleepLogs;
+	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<Stress> stressLogs;
 
 	public User() {
-	}
-
-	public User(Long id, String name, String email, String password) {
-		this.id = id;
-		this.name = name;
-		this.email = email;
-		this.password = password;
 	}
 
 	public Long getId() {
@@ -46,12 +40,12 @@ public class User {
 		this.id = id;
 	}
 
-	public String getName() {
-		return name;
+	public String getUsername() {
+		return username;
 	}
 
-	public void setName(String name) {
-		this.name = name;
+	public void setUsername(String username) {
+		this.username = username;
 	}
 
 	public String getEmail() {
@@ -70,11 +64,35 @@ public class User {
 		this.password = password;
 	}
 
-	public List<WorkoutLog> getWorkoutLogs() {
-		return workoutLogs;
+	public List<Workout> getWorkouts() {
+		return workouts;
 	}
 
-	public void setWorkoutLogs(List<WorkoutLog> workoutLogs) {
-		this.workoutLogs = workoutLogs;
+	public void setWorkouts(List<Workout> workouts) {
+		this.workouts = workouts;
+	}
+
+	public List<Nutrition> getNutritionLogs() {
+		return nutritionLogs;
+	}
+
+	public void setNutritionLogs(List<Nutrition> nutritionLogs) {
+		this.nutritionLogs = nutritionLogs;
+	}
+
+	public List<Sleep> getSleepLogs() {
+		return sleepLogs;
+	}
+
+	public void setSleepLogs(List<Sleep> sleepLogs) {
+		this.sleepLogs = sleepLogs;
+	}
+
+	public List<Stress> getStressLogs() {
+		return stressLogs;
+	}
+
+	public void setStressLogs(List<Stress> stressLogs) {
+		this.stressLogs = stressLogs;
 	}
 }

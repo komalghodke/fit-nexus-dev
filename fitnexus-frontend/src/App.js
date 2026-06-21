@@ -5,6 +5,7 @@ import LoginForm from "./components/LoginForm";
 import RegisterForm from "./components/RegisterForm";
 import Dashboard from "./components/Dashboard";
 import ProfilePage from "./components/ProfilePage";
+import ReportsPage from "./components/ReportsPage";
 
 function App() {
   return (
@@ -22,6 +23,8 @@ function App() {
 
         {/* Profile */}
         <Route path="/profile" element={<ProfilePage />} />
+        <Route path="/reports" element={<ReportsPage />} />
+
       </Routes>
     </Router>
   );

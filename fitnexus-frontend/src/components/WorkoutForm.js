@@ -2,38 +2,38 @@ import React, { useState } from "react";
 import axios from "axios";
 
 function WorkoutForm() {
-  const [exercise, setExercise] = useState("");
+  const [type, setType] = useState("");
   const [duration, setDuration] = useState("");
-  const [calories, setCalories] = useState("");
+  const [intensity, setIntensity] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       const token = localStorage.getItem("token");
       await axios.post("http://localhost:8080/api/workouts", {
-        exercise,
+        type,
         duration,
-        calories,
+        intensity,
       }, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      alert("Workout added!");
-      setExercise("");
+      alert("Workout logged!");
+      setType("");
       setDuration("");
-      setCalories("");
+      setIntensity("");
     } catch (err) {
-      alert("Failed to add workout");
+      alert("Failed to log workout");
     }
   };
 
   return (
     <form onSubmit={handleSubmit} style={{ margin: "20px" }}>
-      <h3>Add Workout</h3>
+      <h3>Log Workout</h3>
       <input
         type="text"
-        value={exercise}
-        onChange={(e) => setExercise(e.target.value)}
-        placeholder="Exercise Type"
+        value={type}
+        onChange={(e) => setType(e.target.value)}
+        placeholder="Workout Type (Yoga, Cardio, Strength)"
       />
       <input
         type="number"
@@ -42,10 +42,10 @@ function WorkoutForm() {
         placeholder="Duration (minutes)"
       />
       <input
-        type="number"
-        value={calories}
-        onChange={(e) => setCalories(e.target.value)}
-        placeholder="Calories Burned"
+        type="text"
+        value={intensity}
+        onChange={(e) => setIntensity(e.target.value)}
+        placeholder="Intensity (Low, Medium, High)"
       />
       <button type="submit">Save Workout</button>
     </form>

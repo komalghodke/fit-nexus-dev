@@ -15,11 +15,11 @@ function SleepForm() {
       }, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      alert("Sleep record added!");
+      alert("Sleep record logged!");
       setHours("");
       setQuality("");
     } catch (err) {
-      alert("Failed to add sleep record");
+      alert("Failed to log sleep record");
     }
   };
 
@@ -30,13 +30,13 @@ function SleepForm() {
         type="number"
         value={hours}
         onChange={(e) => setHours(e.target.value)}
-        placeholder="Hours Slept"
+        placeholder="Hours slept"
       />
       <input
         type="text"
         value={quality}
         onChange={(e) => setQuality(e.target.value)}
-        placeholder="Sleep Quality (e.g., Good, Poor)"
+        placeholder="Quality (Poor, Fair, Good, Excellent)"
       />
       <button type="submit">Save Sleep</button>
     </form>
