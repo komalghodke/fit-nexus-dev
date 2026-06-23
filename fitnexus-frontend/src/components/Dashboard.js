@@ -5,29 +5,29 @@ function Dashboard() {
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    const email = localStorage.getItem("email");
+ useEffect(() => {
+  const token = localStorage.getItem("token");
+  const email = localStorage.getItem("email");
 
-    if (!token || !email) {
-      window.location.replace("/login");
-      return;
-    }
+  if (!token || !email) {
+    window.location.replace("/login");
+    return;
+  }
 
-    axios
-      .get(`http://localhost:8080/api/users/profile/${email}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      })
-      .then((res) => {
-        setProfile(res.data);
-        setLoading(false);
-      })
-      .catch(() => {
-        alert("Session expired, please login again.");
-        localStorage.clear();
-        window.location.replace("/login");
-      });
-  }, []); // ✅ wrap API call inside useEffect
+  axios.get(`http://localhost:8080/api/users/profile/${email}`, {
+    headers: { Authorization: `Bearer ${token}` }
+  })
+  .then(res => {
+    setProfile(res.data);
+    setLoading(false);
+  })
+  .catch(() => {
+    alert("Session expired, please login again.");
+    localStorage.clear();
+    window.location.replace("/login");
+  });
+}, []);
+
 
   const handleLogout = () => {
     localStorage.removeItem("token");

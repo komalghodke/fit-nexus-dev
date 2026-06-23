@@ -7,6 +7,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fitnexus.dto.WellnessReport;
+import com.fitnexus.entity.User;
+import com.fitnexus.repository.UserRepository;
 import com.fitnexus.service.ReportsService;
 
 @RestController
@@ -16,9 +18,14 @@ public class ReportsController {
 	@Autowired
 	private ReportsService reportsService;
 
-	@GetMapping("/{userId}")
-	public WellnessReport getReport(@PathVariable("userId") Long userId) {
-		return reportsService.generateReport(userId);
-	}
+	@Autowired
+	private UserRepository userRepository;
 
+	// ✅ Fetch report by email
+	@GetMapping("/profile/{email}")
+	public WellnessReport getReportByEmail(@PathVariable("email") String email) {
+		User user = userRepository.findByEmail(email)
+				.orElseThrow(() -> new RuntimeException("User not found with email " + email));
+		return reportsService.generateReport(user.getId());
+	}
 }

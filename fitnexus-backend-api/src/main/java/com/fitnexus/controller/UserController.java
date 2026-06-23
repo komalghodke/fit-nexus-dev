@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -33,4 +35,16 @@ public class UserController {
 	public ResponseEntity<User> getUserByEmail(@PathVariable("email") String email) {
 		return userRepository.findByEmail(email).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
 	}
+
+	@PutMapping("/profile/{email}")
+	public ResponseEntity<User> updateUserByEmail(@PathVariable("email") String email, @RequestBody User user) {
+	    User existing = userRepository.findByEmail(email)
+	            .orElseThrow(() -> new RuntimeException("User not found with email " + email));
+
+	    existing.setUsername(user.getUsername());
+	    existing.setPassword(user.getPassword()); 
+	    return ResponseEntity.ok(userRepository.save(existing));
+	}
+
+
 }

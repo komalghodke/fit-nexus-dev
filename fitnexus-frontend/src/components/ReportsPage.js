@@ -6,17 +6,18 @@ function ReportsPage() {
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-    if (!token) {
+    const email = localStorage.getItem("email");
+
+    if (!token || !email) {
       window.location.replace("/login");
       return;
     }
 
-    axios
-      .get("http://localhost:8080/api/reports", {
-        headers: { Authorization: `Bearer ${token}` },
-      })
-      .then((res) => setReport(res.data))
-      .catch(() => alert("Failed to load report"));
+    axios.get(`http://localhost:8080/api/reports/profile/${email}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+    .then((res) => setReport(res.data))
+    .catch(() => alert("Failed to load report"));
   }, []);
 
   if (!report) {
