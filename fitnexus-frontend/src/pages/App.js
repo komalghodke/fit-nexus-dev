@@ -12,8 +12,6 @@ import WorkoutForm from "./pages/WorkoutForm";
 import NutritionForm from "./pages/NutritionForm";
 import SleepForm from "./pages/SleepForm";
 import StressForm from "./pages/StressForm";
-import "./App.css";
-
 
 function App() {
   return (
