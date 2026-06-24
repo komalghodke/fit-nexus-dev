@@ -1,0 +1,169 @@
+/* 🌿 Narrative Tip Card */
+.narrative-tip-card {
+  background: linear-gradient(135deg, #fdfcfb, #e2ba858a); /* Matches navbar */
+  border-left: 6px solid #4b4f6b; /* Matches accent plum */
+  padding: 20px;
+  margin-bottom: 20px;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  transition: transform 0.3s ease;
+}
+
+.narrative-tip-card:hover {
+  transform: scale(1.02);
+}
+
+.tip-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.tip-icon {
+  font-size: 28px;
+  margin-right: 10px;
+  color: #6a1b9a;
+}
+
+.tip-title {
+  font-size: 20px;
+  color: #4b0082;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+.tip-narrative {
+  font-size: 17px;
+  line-height: 1.6;
+  margin-bottom: 8px;
+  color: #333;
+}
+
+.tip-explanation {
+  font-size: 15px;
+  color: #555;
+  font-style: italic;
+}
+
+/* 📝 Journal Reflection Block */
+.journal-reflection-block {
+  background: linear-gradient(135deg, #fdfcfb, #e1c1968a); /* Matches navbar */
+  border: 2px dashed #4b4f6b; /* Soft lavender accent */
+  padding: 24px;
+  margin: 24px 0;
+  border-radius: 16px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  font-family: 'Georgia', serif;
+  color: #4b0082;
+  transition: box-shadow 0.3s ease;
+}
+
+.journal-reflection-block:hover {
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+.journal-reflection-block h4 {
+  font-size: 22px;
+  margin-bottom: 12px;
+  color: #6a1b9a;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+.journal-reflection-block p {
+  font-size: 17px;
+  line-height: 1.8;
+  white-space: pre-wrap;
+  margin-bottom: 8px;
+  color: #3a3a3a;
+}
+
+.journal-reflection-block {
+  background: linear-gradient(135deg, #fdfcfb, #f0e6f3bd);
+  border: 2px dashed #8b52088a;
+  padding: 24px;
+  margin: 24px 0;
+  border-radius: 16px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  font-family: 'Georgia', serif;
+  color: #4b0082;
+}
+
+.affirmation-block {
+  background: linear-gradient(135deg, #fdfcfb, #e2d1f9);
+  padding: 20px;
+  margin: 24px 0;
+  border-radius: 16px;
+  text-align: center;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.mirror-summary-card {
+  background-color: #fdf8fb;
+  padding: 24px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  font-family: 'Segoe UI', sans-serif;
+  margin-bottom: 32px;
+  border-left: 6px solid #02355c;
+  transition: all 0.3s ease;
+}
+
+.mirror-summary-card:hover {
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+}
+
+.mirror-heading {
+  font-size: 28px;
+  color: #4b0082;
+  margin-bottom: 16px;
+  text-align: center;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+.mirror-intro {
+  text-align: center;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+.mirror-intro p {
+  font-size: 16px;
+  margin-bottom: 8px;
+}
+
+.mirror-body {
+  margin-top: 16px;
+  padding-left: 12px;
+}
+
+.mirror-line {
+  font-size: 15px;
+  margin-bottom: 10px;
+  color: #444;
+  line-height: 1.6;
+  position: relative;
+  padding-left: 20px;
+}
+
+.mirror-footer {
+  margin-top: 24px;
+  font-style: italic;
+  text-align: center;
+  color: #388e3c;
+}
+
+.next-step {
+  font-weight: bold;
+  font-size: 16px;
+  margin-top: 8px;
+}
+
+.wellness-chart-container {
+  margin-top: 24px;
+  padding: 16px;
+  background-color: #f9f9f9;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}

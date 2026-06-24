@@ -1,0 +1,188 @@
+{
+  "language": "Language",
+  "select": "Select",
+  "Emotional Wellness": "Emotional Wellness",
+  "Physical Health": "Physical Health",
+  "Body Awareness": "Body Awareness",
+  "Movement & Experience": "Movement & Experience",
+  "Medical Advisory": "Medical Advisory",
+  "mood": "Mood",
+  "energy": "Energy Level",
+  "sleep": "Sleep Quality",
+  "age": "Age",
+  "height": "Height (cm)",
+  "weight": "Weight (kg)",
+  "sleepHours": "Sleep (hours)",
+  "stressLevel": "Stress Level",
+  "waterIntake": "Water Intake (L/day)",
+  "heartRate": "Resting Heart Rate (BPM)",
+  "digestiveIssues": "Digestive Issues",
+  "sleepQuality": "Sleep Quality (1–10)",
+  "painArea": "Body Pain Area",
+  "journal": "Manual Entry",
+  "journalPlaceholder": "Describe your current challenge or feeling...",
+  "experienceLevel": "Yoga Experience Level",
+  "activityType": "Physical Activity Type",
+  "activityDays": "Days per Week",
+  "activityDuration": "Minutes per Session",
+  "hasDisease": "Do you have any medical condition?",
+  "Yes": "Yes",
+  "No": "No",
+  "submit": "Reveal My Wellness Tips",
+
+  "moodOptions": {
+    "Calm": "Calm",
+    "Stressed": "Stressed",
+    "Anxious": "Anxious",
+    "Joyful": "Joyful",
+    "Sad": "Sad",
+    "Irritable": "Irritable",
+    "Grateful": "Grateful",
+    "Lonely": "Lonely",
+    "Angry": "Angry",
+    "Hopeful": "Hopeful"
+  },
+
+  "energyOptions": {
+    "Low": "Low",
+    "Balanced": "Balanced",
+    "High": "High",
+    "MentallyFatigued": "Mentally Fatigued",
+    "PhysicallyTired": "Physically Tired",
+    "Hyperactive": "Hyperactive",
+    "Sluggish": "Sluggish"
+  },
+
+  "sleepOptions": {
+    "Restful": "Restful",
+    "Interrupted": "Interrupted",
+    "Insomnia": "Insomnia",
+    "LightSleep": "Light Sleep",
+    "Oversleeping": "Oversleeping",
+    "DreamDisturbed": "Dream Disturbed",
+    "EarlyWaking": "Early Waking"
+  },
+
+  "stressLevelOptions": {
+    "None": "None",
+    "Mild": "Mild",
+    "Moderate": "Moderate",
+    "Severe": "Severe"
+  },
+
+  "digestiveIssuesOptions": {
+    "None": "None",
+    "Bloating": "Bloating",
+    "Constipation": "Constipation",
+    "Acidity": "Acidity"
+  },
+
+  "painAreaOptions": {
+    "None": "None",
+    "Back": "Back",
+    "Neck": "Neck",
+    "LowerBack": "Lower Back",
+    "Shoulders": "Shoulders",
+    "Knees": "Knees",
+    "Ankles": "Ankles",
+    "Wrist": "Wrist",
+    "Headache": "Headache",
+    "ChestTightness": "Chest Tightness",
+    "Jaw": "Jaw",
+    "Eyes": "Eyes",
+    "Fatigue": "Fatigue",
+    "Abdomen": "Abdomen",
+    "Pelvis": "Pelvis",
+    "Sciatica": "Sciatica",
+    "Elbows": "Elbows",
+    "Feet": "Feet"
+  },
+
+  "experienceOptions": {
+    "Beginner": "Beginner",
+    "Active": "Active",
+    "Yoga Practitioner": "Yoga Practitioner"
+  },
+
+  "activityOptions": {
+    "None": "None",
+    "Walking": "Walking",
+    "Running": "Running",
+    "Gym": "Gym",
+    "Yoga": "Yoga",
+    "Dance": "Dance",
+    "Sports": "Sports",
+    "Other": "Other"
+  },
+  "HomeTitle": "🌿 Welcome to Fit-Nexus",
+  "HomeSubtitle": "The Wellness Hub",
+  "HomeDescription1": "Fit-Nexus is your personal wellness companion, rooted in India’s timeless Yogic tradition and inspired by the holistic values promoted by the Ministry of AYUSH, Government of India. It offers a gentle space for holistic wellness—supporting daily reflection, emotional awareness, and mindful living guided by the rhythms of breath, movement, and intention.",
+  "HomeDescription2": "Whether you're feeling calm, restless, or somewhere in between, Fit-Nexus meets you with quiet understanding. Through personalized yoga suggestions, lifestyle prompts, and reflective journaling, it nurtures your journey toward balance, vitality, and self-awareness—without pressure or judgment. Just presence. Just you.",
+  "WhyYogDharaHeading": "Why Fit-Nexus?",
+  "WhyYogDharaPara1": "“Fit-Nexus a continuous, flowing journey of healing. It’s a name that invites introspection, not consumption.",
+  "WhyYogDharaPara2": "Fit-Nexus is intentionally simple, deeply evocative, and culturally rooted. It reflects a commitment to nurturing a daily rhythm of wellness— guided by breath, movement, and mindful reflection. More than a name, it’s a philosophy: to support individuals in reconnecting with themselves through authentic yogic practice.",
+  "MirrorHeading": "'Fit-Nexus' The Wellness Hub",
+  "MirrorIntro": "Fit-Nexus gently reflects your inner state, helping you observe and align with all six dimensions of holistic wellness:",
+  "MirrorPoints": {
+    "Emotional": "Emotional – through mood journaling and self-awareness prompts",
+    "Physical": "Physical – via yoga suggestions and movement-based practices",
+    "Spiritual": "Spiritual – through breathwork, intention-setting, and quiet reflection",
+    "Intellectual": "Intellectual – by encouraging curiosity, learning, and mindful insights",
+    "Social": "Social – by fostering empathy, connection, and shared wellness language",
+    "Occupational": "Occupational – by supporting balance, clarity, and purpose in daily life"
+  },
+  "StreamHeading": "So how does a stream become a mirror?",
+  "StreamDescription": "Because in stillness, even a flowing stream reflects. Fit-Nexus flows with your daily rhythm—and in that flow, it offers reflection.",
+  "StreamLines": {
+    "Line1": "It doesn’t push—it listens.",
+    "Line2": "It doesn’t prescribe—it invites.",
+    "Line3": "It’s not just a tracker—it’s a mirror.",
+    "Line4": "A gentle companion for your wellness journey, one breath at a time."
+  },
+  "FeaturesHeading": "✨ What We Offer",
+  "FeaturesList": {
+    "Multilingual": "🌿 Multilingual support — English, Hindi, Marathi",
+    "WellnessScore": "📊 Wellness score and reflective journaling",
+    "DailyGuidance": "📅 Daily guidance tailored to your inputs"
+  },
+
+
+  "PolicyTitle": "Fit-Nexus – Legal & Wellness Policies",
+  "PolicySubtitle": "Your trust, your journey, your privacy",
+  "PrivacyPolicy": {
+    "Title": "Privacy Policy",
+    "Intro": "Fit-Nexus is a personal wellness companion. We respect your privacy and do not share your data with third parties. Information you provide—such as mood, sleep, and wellness reflections—is used only to generate personalized guidance and track your progress.",
+    "Points": [
+      "Your data is stored securely and never used for advertising.",
+      "You may request to view, edit, or delete your data anytime.",
+      "This platform is not a diagnostic or therapeutic tool."
+    ]
+  },
+  "Terms": {
+    "Title": "Terms & Conditions",
+    "Intro": "By using Fit-Nexus, you agree to engage respectfully and lawfully. All content—including yoga suggestions, affirmations, and emotional prompts—is original and protected.",
+    "Points": [
+      "Use the site for personal wellness only.",
+      "Do not copy or redistribute content without permission.",
+      "We may update these terms periodically."
+    ]
+  },
+  "Refund": {
+    "Title": "Refund / Cancellation Policy",
+    "Intro": "Fit-Nexus does not offer paid services at this time. If future features involve subscriptions or workshops, refund policies will be clearly stated. For now:",
+    "Points": [
+      "There are no charges or fees associated with using the tracker.",
+      "Users may discontinue use at any time without penalty."
+    ]
+  },
+  "Liability": {
+    "Title": "Liability Waiver Agreement",
+    "Intro": "By using Fit-Nexus, you acknowledge that wellness practices—including yoga and breathwork—should be approached mindfully. We are not responsible for any discomfort or injury that may arise from self-guided practice.",
+    "Points": [
+      "Consult a physician before beginning any new wellness routine.",
+      "Listen to your body and modify practices as needed.",
+      "Fit-Nexus is a reflective tool, not a substitute for professional care."
+    ]
+  },
+  "LastUpdated": "Effective: Sept 2025 | Version 1.0 | Last updated: September 2025"
+}

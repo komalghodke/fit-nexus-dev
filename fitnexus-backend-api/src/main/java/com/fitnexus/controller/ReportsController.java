@@ -21,7 +21,6 @@ public class ReportsController {
 	@Autowired
 	private UserRepository userRepository;
 
-	// ✅ Fetch report by email
 	@GetMapping("/profile/{email}")
 	public WellnessReport getReportByEmail(@PathVariable("email") String email) {
 		User user = userRepository.findByEmail(email)

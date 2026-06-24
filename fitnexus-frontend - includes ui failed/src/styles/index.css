@@ -1,0 +1,19 @@
+body {
+  margin: 0;
+  font-family: 'Lato', 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  background: linear-gradient(to bottom, #F5F5F0, #efe7eb); /* Soft indigo mist to cool gray */
+  color: #2e5d4f; /* Tulsi green for base text */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: 'Courier New', Consolas, 'Fira Code', monospace;
+  background-color: #f9f9ff;
+  padding: 2px 6px;
+  border-radius: 4px;
+  color: #4b0082;
+}
+

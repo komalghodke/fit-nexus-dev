@@ -1,0 +1,15 @@
+.footer {
+  background: linear-gradient(to right, #4b4f6b, #d8a35d);
+  padding: 24px 40px;
+  text-align: center;
+  font-family: 'Lato', sans-serif;
+  color: #ffffff;
+  margin-top: 60px;
+  border-top: 1px solid #cbb89c;
+  font-size: 0.95rem;
+  letter-spacing: 0.3px;
+}
+
+.footer-text {
+  color: #ffffff;
+}
