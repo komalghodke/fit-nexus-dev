@@ -1,41 +1,178 @@
 import React, { useState } from "react";
 import axios from "axios";
+import {
+  Box,
+  Button,
+  Card,
+  CardContent,
+  TextField,
+  Typography,
+  Container,
+  Alert,
+  InputAdornment,
+  Link
+} from "@mui/material";
+import { Email, Lock } from "@mui/icons-material";
 
 function LoginForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleLogin = async (e) => {
     e.preventDefault();
+    setError("");
+    setLoading(true);
     try {
       const res = await axios.post("http://localhost:8080/api/auth/login", { email, password });
-      // ✅ backend may send "id" instead of "userId"
+      
       localStorage.setItem("token", res.data.token);
       localStorage.setItem("userId", res.data.userId || res.data.id);
       localStorage.setItem("email", res.data.email);
       
       window.location.replace("/dashboard");
     } catch (err) {
-      alert("Login failed! Check credentials.");
+      setError(err.response?.data || "Login failed! Please check your credentials.");
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div style={{ margin: "20px" }}>
-      <h3>Login</h3>
-      <form onSubmit={handleLogin}>
-        <input type="email" value={email} onChange={(e)=>setEmail(e.target.value)} placeholder="Email" />
-        <input type="password" value={password} onChange={(e)=>setPassword(e.target.value)} placeholder="Password" />
-        <button type="submit">Login</button>
-      </form>
+    <Box
+      sx={{
+        minHeight: "92vh",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        background: "linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%)",
+        py: 4
+      }}
+    >
+      <Container maxWidth="xs">
+        <Card
+          sx={{
+            borderRadius: 4,
+            boxShadow: "0 8px 32px rgba(76, 175, 80, 0.15)",
+            backdropFilter: "blur(8px)",
+            border: "1px solid rgba(255, 255, 255, 0.5)",
+            overflow: "visible"
+          }}
+        >
+          <CardContent sx={{ px: 4, py: 5 }}>
+            <Box sx={{ textAlign: "center", mb: 4 }}>
+              <Typography
+                variant="h4"
+                component="h1"
+                sx={{
+                  fontWeight: 800,
+                  color: "#2e7d32",
+                  letterSpacing: -0.5,
+                  mb: 1
+                }}
+              >
+                🌿 FitNexus
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                Welcome back! Enter your credentials to log in.
+              </Typography>
+            </Box>
 
-      <p style={{ marginTop: "10px" }}>
-        Don’t have an account?{" "}
-        <button onClick={() => (window.location.href = "/register")}>
-          Register Here
-        </button>
-      </p>
-    </div>
+            {error && (
+              <Alert severity="error" sx={{ mb: 3, borderRadius: 2 }}>
+                {error}
+              </Alert>
+            )}
+
+            <form onSubmit={handleLogin}>
+              <Box sx={{ display: "flex", flexDirection: "column", gap: 3 }}>
+                <TextField
+                  label="Email Address"
+                  type="email"
+                  fullWidth
+                  required
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <Email sx={{ color: "#4caf50" }} />
+                      </InputAdornment>
+                    ),
+                  }}
+                  variant="outlined"
+                  sx={{
+                    "& .MuiOutlinedInput-root": {
+                      borderRadius: 3,
+                    }
+                  }}
+                />
+
+                <TextField
+                  label="Password"
+                  type="password"
+                  fullWidth
+                  required
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <Lock sx={{ color: "#4caf50" }} />
+                      </InputAdornment>
+                    ),
+                  }}
+                  variant="outlined"
+                  sx={{
+                    "& .MuiOutlinedInput-root": {
+                      borderRadius: 3,
+                    }
+                  }}
+                />
+
+                <Button
+                  type="submit"
+                  variant="contained"
+                  fullWidth
+                  size="large"
+                  disabled={loading}
+                  sx={{
+                    py: 1.5,
+                    borderRadius: 3,
+                    backgroundColor: "#2e7d32",
+                    fontWeight: "bold",
+                    fontSize: "1rem",
+                    textTransform: "none",
+                    boxShadow: "0 4px 14px rgba(46, 125, 50, 0.4)",
+                    "&:hover": {
+                      backgroundColor: "#1b5e20",
+                      boxShadow: "0 6px 20px rgba(46, 125, 50, 0.6)",
+                    }
+                  }}
+                >
+                  {loading ? "Logging in..." : "Log In"}
+                </Button>
+              </Box>
+            </form>
+
+            <Box sx={{ mt: 4, textAlign: "center" }}>
+              <Typography variant="body2" color="text.secondary">
+                Don't have an account?{" "}
+                <Link
+                  href="/register"
+                  underline="hover"
+                  sx={{ color: "#2e7d32", fontWeight: "bold", cursor: "pointer" }}
+                >
+                  Register Here
+                </Link>
+              </Typography>
+            </Box>
+          </CardContent>
+        </Card>
+      </Container>
+    </Box>
   );
 }
+
 export default LoginForm;

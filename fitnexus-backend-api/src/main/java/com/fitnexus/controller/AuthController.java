@@ -34,8 +34,13 @@ public class AuthController {
 			authManager.authenticate(
 				    new UsernamePasswordAuthenticationToken(req.getEmail(), req.getPassword())
 				);
+			User user = userRepo.findByEmail(req.getEmail())
+					.orElseThrow(() -> new RuntimeException("User not found with email: " + req.getEmail()));
 			String token = jwtUtil.generateToken(req.getEmail()); // ✅ subject = email
-			return ResponseEntity.ok(Map.of("token", token, "email", req.getEmail() // ✅ return email to frontend
+			return ResponseEntity.ok(Map.of(
+				"token", token,
+				"email", req.getEmail(),
+				"userId", user.getId().toString()
 			));
 		} catch (AuthenticationException e) {
 			return ResponseEntity.status(401).body("Invalid credentials");
