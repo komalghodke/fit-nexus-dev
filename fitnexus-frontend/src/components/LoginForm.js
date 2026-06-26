@@ -13,6 +13,7 @@ function LoginForm() {
       localStorage.setItem("token", res.data.token);
       localStorage.setItem("userId", res.data.userId || res.data.id);
       localStorage.setItem("email", res.data.email);
+      
       window.location.replace("/dashboard");
     } catch (err) {
       alert("Login failed! Check credentials.");

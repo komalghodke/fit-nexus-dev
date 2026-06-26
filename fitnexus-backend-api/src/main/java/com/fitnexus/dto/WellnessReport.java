@@ -8,6 +8,7 @@ public class WellnessReport {
 	private String sleepSummary;
 	private String stressSummary;
 	private List<String> recommendations;
+
 	private int age;
 	private int height;
 	private int weight;
@@ -74,7 +75,6 @@ public class WellnessReport {
 		this.recommendations = recommendations;
 	}
 
-	// ✅ New fields
 	public int getAge() {
 		return age;
 	}

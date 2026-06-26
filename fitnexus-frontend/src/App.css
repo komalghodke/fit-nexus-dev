@@ -31,3 +31,73 @@ form button {
   border: none;
   cursor: pointer;
 }
+
+/* Card style for each section */
+.form-section-card {
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  padding: 20px;
+  margin-bottom: 24px;
+}
+
+/* Section titles */
+.form-section {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #2c3e50;
+  margin-bottom: 16px;
+}
+
+/* Input rows */
+.input-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+/* Input groups */
+.input-group {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.input-group label {
+  font-weight: 500;
+  margin-bottom: 6px;
+  color: #34495e;
+}
+
+.input-group input,
+.input-group select {
+  padding: 10px;
+  border: 1px solid #dcdcdc;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  transition: border-color 0.2s;
+}
+
+.input-group input:focus,
+.input-group select:focus {
+  border-color: #3498db;
+  outline: none;
+}
+
+/* Submit button */
+.submit-btn {
+  background: #3498db;
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 600;
+  padding: 12px 24px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.submit-btn:hover {
+  background: #2980b9;
+}

@@ -12,6 +12,7 @@ function Dashboard() {
         <Link to="/nutrition" style={cardStyle}>Nutrition Log</Link>
         <Link to="/sleep" style={cardStyle}>Sleep Log</Link>
         <Link to="/stress" style={cardStyle}>Stress Log</Link>
+        <Link to="/wellness" className="card">🌿 Wellness Assessment</Link>
       </div>
     </div>
   );
