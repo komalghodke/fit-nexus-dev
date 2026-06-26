@@ -56,7 +56,8 @@ public class WellnessController {
 	private ReportsService reportsService;
 
 	@PostMapping("/wellness/{userId}")
-	public ResponseEntity<String> saveWellness(@PathVariable Long userId, @RequestBody WellnessRequest request) {
+	public ResponseEntity<String> saveWellness(@PathVariable("userId") Long userId,
+			@RequestBody WellnessRequest request) {
 		User user = userRepository.findById(userId)
 				.orElseThrow(() -> new RuntimeException("User not found with ID: " + userId));
 
@@ -112,10 +113,12 @@ public class WellnessController {
 		wellnessInputRepository.save(input);
 
 		// Optionally auto-create Workout log if duration is logged
-		if (request.getWorkoutDuration() > 0 || (request.getWorkoutType() != null && !request.getWorkoutType().isEmpty())) {
+		if (request.getWorkoutDuration() > 0
+				|| (request.getWorkoutType() != null && !request.getWorkoutType().isEmpty())) {
 			Workout w = new Workout();
 			w.setUser(user);
-			w.setType(request.getWorkoutType() != null && !request.getWorkoutType().isEmpty() ? request.getWorkoutType() : "General");
+			w.setType(request.getWorkoutType() != null && !request.getWorkoutType().isEmpty() ? request.getWorkoutType()
+					: "General");
 			w.setDuration(request.getWorkoutDuration());
 			w.setIntensity("Medium");
 			w.setCreatedAt(LocalDateTime.now());
@@ -157,7 +160,7 @@ public class WellnessController {
 	}
 
 	@GetMapping("/reports/{userId}")
-	public ResponseEntity<WellnessReport> getReport(@PathVariable Long userId) {
+	public ResponseEntity<WellnessReport> getReport(@PathVariable("userId") Long userId) {
 		WellnessReport report = reportsService.generateReport(userId);
 		return ResponseEntity.ok(report);
 	}

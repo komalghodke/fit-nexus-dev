@@ -24,7 +24,7 @@ public class WellnessInputController {
 	}
 
 	@GetMapping("/{userId}")
-	public WellnessInput getInput(@PathVariable Long userId) {
+	public WellnessInput getInput(@PathVariable("userId") Long userId) {
 		return repo.findByUserId(userId).orElseThrow(() -> new RuntimeException("No input found for user " + userId));
 	}
 }
