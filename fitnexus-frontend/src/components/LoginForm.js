@@ -67,7 +67,7 @@ function LoginForm() {
                 component="h1"
                 sx={{
                   fontWeight: 800,
-                  color: "#2e7d32",
+                  color: "#6f4381",
                   letterSpacing: -0.5,
                   mb: 1
                 }}
@@ -97,7 +97,7 @@ function LoginForm() {
                   InputProps={{
                     startAdornment: (
                       <InputAdornment position="start">
-                        <Email sx={{ color: "#4caf50" }} />
+                        <Email sx={{ color: "#904caf" }} />
                       </InputAdornment>
                     ),
                   }}
@@ -119,7 +119,7 @@ function LoginForm() {
                   InputProps={{
                     startAdornment: (
                       <InputAdornment position="start">
-                        <Lock sx={{ color: "#4caf50" }} />
+                        <Lock sx={{ color: "#7c4caf" }} />
                       </InputAdornment>
                     ),
                   }}
@@ -140,14 +140,14 @@ function LoginForm() {
                   sx={{
                     py: 1.5,
                     borderRadius: 3,
-                    backgroundColor: "#2e7d32",
+                    backgroundColor: "#602e7d",
                     fontWeight: "bold",
                     fontSize: "1rem",
                     textTransform: "none",
-                    boxShadow: "0 4px 14px rgba(46, 125, 50, 0.4)",
+                    boxShadow: "0 4px 14px rgba(89, 46, 125, 0.4)",
                     "&:hover": {
-                      backgroundColor: "#1b5e20",
-                      boxShadow: "0 6px 20px rgba(46, 125, 50, 0.6)",
+                      backgroundColor: "#531b5e",
+                      boxShadow: "0 6px 20px rgba(87, 46, 125, 0.6)",
                     }
                   }}
                 >
@@ -162,7 +162,7 @@ function LoginForm() {
                 <Link
                   href="/register"
                   underline="hover"
-                  sx={{ color: "#2e7d32", fontWeight: "bold", cursor: "pointer" }}
+                  sx={{ color: "#762e7d", fontWeight: "bold", cursor: "pointer" }}
                 >
                   Register Here
                 </Link>

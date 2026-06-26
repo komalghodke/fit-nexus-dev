@@ -104,7 +104,7 @@ function Dashboard() {
           mb: 6,
           p: 4,
           borderRadius: 4,
-          background: "linear-gradient(135deg, #2e7d32 0%, #1b5e20 100%)",
+          background: "linear-gradient(135deg, #752e7d 0%, #5e1b4b 100%)",
           color: "white",
           boxShadow: "0 6px 20px rgba(46,125,50,0.25)"
         }}
@@ -128,7 +128,7 @@ function Dashboard() {
           to="/profile"
           sx={{
             backgroundColor: "white",
-            color: "#2e7d32",
+            color: "#752e7d",
             fontWeight: "bold",
             borderRadius: 2.5,
             px: 3,
@@ -148,7 +148,7 @@ function Dashboard() {
         sx={{
           borderRadius: 4,
           boxShadow: "0 4px 15px rgba(0,0,0,0.06)",
-          borderLeft: "8px solid #2e7d32",
+          borderLeft: "8px solid #7d2e7d",
           mb: 6,
           background: "#fafafa"
         }}
@@ -157,8 +157,8 @@ function Dashboard() {
           <Grid container spacing={3} alignItems="center">
             <Grid item xs={12} md={8}>
               <Box sx={{ display: "flex", alignItems: "center", gap: 1.5, mb: 1 }}>
-                <Assignment sx={{ color: "#2e7d32" }} />
-                <Typography variant="h5" sx={{ fontWeight: 800, color: "#1b5e20" }}>
+                <Assignment sx={{ color: "#7d2e59" }} />
+                <Typography variant="h5" sx={{ fontWeight: 800, color: "#521b5e" }}>
                   🌿 Complete Wellness Assessment
                 </Typography>
               </Box>
@@ -174,15 +174,15 @@ function Dashboard() {
                 to="/wellness"
                 size="large"
                 sx={{
-                  backgroundColor: "#2e7d32",
+                  backgroundColor: "#5d2e7d",
                   fontWeight: "bold",
                   borderRadius: 3,
                   px: 4,
                   py: 1.5,
                   textTransform: "none",
-                  boxShadow: "0 4px 14px rgba(46, 125, 50, 0.4)",
+                  boxShadow: "0 4px 14px rgba(118, 46, 125, 0.4)",
                   "&:hover": {
-                    backgroundColor: "#1b5e20"
+                    backgroundColor: "#5e1b4b"
                   }
                 }}
               >
@@ -249,11 +249,11 @@ function Dashboard() {
                     borderRadius: 2.5,
                     textTransform: "none",
                     fontWeight: "bold",
-                    color: "#2e7d32",
-                    borderColor: "#2e7d32",
+                    color: "#692e7d",
+                    borderColor: "#7d2e71",
                     "&:hover": {
                       backgroundColor: "rgba(46, 125, 50, 0.04)",
-                      borderColor: "#1b5e20"
+                      borderColor: "#5e1b50"
                     }
                   }}
                 >
@@ -274,7 +274,7 @@ function Dashboard() {
           startIcon={<TrendingUp />}
           sx={{
             fontWeight: "bold",
-            color: "#2e7d32",
+            color: "#905ccf",
             fontSize: "1.1rem",
             textTransform: "none",
             "&:hover": {

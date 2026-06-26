@@ -26,7 +26,7 @@ form input, form button {
   padding: 8px;
 }
 form button {
-  background: #4caf50;
+  background: rgb(114, 76, 175);
   color: white;
   border: none;
   cursor: pointer;
