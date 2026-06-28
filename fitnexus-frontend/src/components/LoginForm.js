@@ -46,7 +46,7 @@ function LoginForm() {
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        background: "linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%)",
+        background: "#f5f5f5", // simple neutral background
         py: 4
       }}
     >
@@ -54,10 +54,8 @@ function LoginForm() {
         <Card
           sx={{
             borderRadius: 4,
-            boxShadow: "0 8px 32px rgba(76, 175, 80, 0.15)",
-            backdropFilter: "blur(8px)",
-            border: "1px solid rgba(255, 255, 255, 0.5)",
-            overflow: "visible"
+            boxShadow: "0 6px 20px rgba(0,0,0,0.15)", // soft shadow
+            backgroundColor: "#fff" // clean white card
           }}
         >
           <CardContent sx={{ px: 4, py: 5 }}>
@@ -67,14 +65,14 @@ function LoginForm() {
                 component="h1"
                 sx={{
                   fontWeight: 800,
-                  color: "#6f4381",
+                  color: "#333",
                   letterSpacing: -0.5,
                   mb: 1
                 }}
               >
                 🌿 FitNexus
               </Typography>
-              <Typography variant="body2" color="text.secondary">
+              <Typography variant="body2" sx={{ color: "#666" }}>
                 Welcome back! Enter your credentials to log in.
               </Typography>
             </Box>
@@ -97,14 +95,14 @@ function LoginForm() {
                   InputProps={{
                     startAdornment: (
                       <InputAdornment position="start">
-                        <Email sx={{ color: "#904caf" }} />
+                        <Email sx={{ color: "#602e7d" }} />
                       </InputAdornment>
                     ),
                   }}
                   variant="outlined"
                   sx={{
                     "& .MuiOutlinedInput-root": {
-                      borderRadius: 3,
+                      borderRadius: 3
                     }
                   }}
                 />
@@ -119,14 +117,14 @@ function LoginForm() {
                   InputProps={{
                     startAdornment: (
                       <InputAdornment position="start">
-                        <Lock sx={{ color: "#7c4caf" }} />
+                        <Lock sx={{ color: "#602e7d" }} />
                       </InputAdornment>
                     ),
                   }}
                   variant="outlined"
                   sx={{
                     "& .MuiOutlinedInput-root": {
-                      borderRadius: 3,
+                      borderRadius: 3
                     }
                   }}
                 />
@@ -144,10 +142,10 @@ function LoginForm() {
                     fontWeight: "bold",
                     fontSize: "1rem",
                     textTransform: "none",
-                    boxShadow: "0 4px 14px rgba(89, 46, 125, 0.4)",
+                    boxShadow: "0 4px 14px rgba(89, 46, 125, 0.3)",
                     "&:hover": {
                       backgroundColor: "#531b5e",
-                      boxShadow: "0 6px 20px rgba(87, 46, 125, 0.6)",
+                      boxShadow: "0 6px 20px rgba(87, 46, 125, 0.5)"
                     }
                   }}
                 >
@@ -157,12 +155,12 @@ function LoginForm() {
             </form>
 
             <Box sx={{ mt: 4, textAlign: "center" }}>
-              <Typography variant="body2" color="text.secondary">
+              <Typography variant="body2" sx={{ color: "#555" }}>
                 Don't have an account?{" "}
                 <Link
                   href="/register"
                   underline="hover"
-                  sx={{ color: "#762e7d", fontWeight: "bold", cursor: "pointer" }}
+                  sx={{ color: "#602e7d", fontWeight: "bold", cursor: "pointer" }}
                 >
                   Register Here
                 </Link>

@@ -34,7 +34,7 @@ function App() {
           <Route path="/stress" element={<StressForm />} />
           <Route path="/wellness" element={<WellnessForm />} />
         </Routes>
-        <Footer />   {/* ✅ render footer after routes */}
+        <Footer />
       </Router>
     </WellnessProvider>
   );

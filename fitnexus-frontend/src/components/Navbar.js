@@ -1,7 +1,7 @@
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
 import { AppBar, Toolbar, Typography, Button, Box, Container } from "@mui/material";
-import { Forest } from "@mui/icons-material";
+import SpaIcon from "@mui/icons-material/Spa";
 
 function Navbar() {
   const token = localStorage.getItem("token");
@@ -29,36 +29,45 @@ function Navbar() {
     }
   });
 
-  return (
+  return ( 
     <AppBar
       position="sticky"
       sx={{
-        backgroundColor: "rgba(255, 255, 255, 0.9)",
+        background: "linear-gradient(90deg, #255f9a 30%, #e0c3fc 70%)", // gradient background
         backdropFilter: "blur(12px)",
-        boxShadow: "0 2px 10px rgba(0,0,0,0.05)",
-        borderBottom: "1px solid rgba(0,0,0,0.05)"
+        boxShadow: "0 2px 12px rgba(217, 213, 223, 0.25)", // subtle purple shadow
+        borderBottom: "2px solid rgba(243, 241, 246, 0.3)" // clean border accent
       }}
     >
       <Container maxWidth="lg">
-        <Toolbar disableGutters sx={{ minHeight: "64px" }}>
-          <Box sx={{ display: "flex", alignItems: "center", textDecoration: "none", color: "rgb(114, 76, 175)", flexGrow: 1 }}>
-            <Forest sx={{ mr: 1, fontSize: "1.8rem", color: "rgb(114, 76, 175)" }} />
+        <Toolbar disableGutters sx={{ minHeight: "100px", px: 6, py: 2 }}>
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              textDecoration: "none",
+              flexGrow: 1
+            }}
+          >
+            <SpaIcon sx={{ mr: 1, fontSize: "1.8rem", color: "#fff" }} />
             <Typography
               variant="h6"
               noWrap
               component={Link}
               to={token ? "/dashboard" : "/login"}
               sx={{
-                fontWeight: 800,
+                fontWeight: 900,
                 letterSpacing: "-0.5px",
                 textDecoration: "none",
-                color: "rgb(114, 76, 175)"
+                color: "#fff",
+                fontSize: "1.4rem"
               }}
             >
               FitNexus
             </Typography>
           </Box>
 
+          {/* Nav Items */}
           <Box sx={{ display: "flex", alignItems: "center" }}>
             {token ? (
               <>
@@ -79,11 +88,11 @@ function Navbar() {
                     ml: 2,
                     borderRadius: 2,
                     textTransform: "none",
-                    borderColor: "rgb(114, 76, 175)",
-                    color: "rgb(114, 76, 175)",
+                    borderColor: "#fff",
+                    color: "#fff",
                     "&:hover": {
-                      backgroundColor: "rgba(114, 76, 175, 0.05)",
-                      borderColor: "#5a3a9d"
+                      backgroundColor: "rgba(255,255,255,0.1)",
+                      borderColor: "#ddd"
                     }
                   }}
                 >
@@ -92,9 +101,27 @@ function Navbar() {
               </>
             ) : (
               <>
-                <Button component={Link} to="/login" sx={navItemStyles("/login")}>
+                {/* Login styled differently */}
+                <Button
+                  component={Link}
+                  to="/login"
+                  sx={{
+                    mx: 0.5,
+                    px: 2,
+                    borderRadius: 2,
+                    textTransform: "none",
+                    fontWeight: "bold",
+                    color: "#fff",
+                    border: "1px solid #fff",
+                    "&:hover": {
+                      backgroundColor: "rgba(255,255,255,0.15)"
+                    }
+                  }}
+                >
                   Login
                 </Button>
+
+                {/* Register with gradient */}
                 <Button
                   component={Link}
                   to="/register"
@@ -103,7 +130,7 @@ function Navbar() {
                     ml: 1.5,
                     borderRadius: 2,
                     textTransform: "none",
-                    background: "linear-gradient(90deg, #3498db, rgb(114, 76, 175))",
+                    background: "linear-gradient(90deg, #14364d, rgb(114, 76, 175))",
                     fontWeight: "bold",
                     "&:hover": {
                       background: "linear-gradient(90deg, #2980b9, #5a3a9d)"
