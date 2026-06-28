@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-d
 import { WellnessProvider } from "./context/WellnessContext";
 
 import Navbar from "./components/Navbar";
+import Footer from "./components/Footer";
 import LoginForm from "./components/LoginForm";
 import RegisterForm from "./components/RegisterForm";
 import Dashboard from "./pages/Dashboard";
@@ -14,7 +15,6 @@ import SleepForm from "./pages/SleepForm";
 import StressForm from "./pages/StressForm";
 import WellnessForm from "./pages/WellnessForm";
 import "./App.css";
-
 
 function App() {
   return (
@@ -34,6 +34,7 @@ function App() {
           <Route path="/stress" element={<StressForm />} />
           <Route path="/wellness" element={<WellnessForm />} />
         </Routes>
+        <Footer />   {/* ✅ render footer after routes */}
       </Router>
     </WellnessProvider>
   );

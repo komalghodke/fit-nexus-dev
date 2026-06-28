@@ -94,21 +94,22 @@ function Dashboard() {
   return (
     <Container maxWidth="lg" sx={{ py: 6 }}>
       {/* Welcome Header */}
-      <Box
-        sx={{
-          display: "flex",
-          alignItems: "center",
-          flexWrap: "wrap",
-          justifyContent: "space-between",
-          gap: 3,
-          mb: 6,
-          p: 4,
-          borderRadius: 4,
-          background: "linear-gradient(135deg, #752e7d 0%, #5e1b4b 100%)",
-          color: "white",
-          boxShadow: "0 6px 20px rgba(46,125,50,0.25)"
-        }}
-      >
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            flexWrap: "wrap",
+            justifyContent: "space-between",
+            gap: 3,
+            mb: 6,
+            p: 4,
+            borderRadius: 4,
+            background: "linear-gradient(135deg, #eb7fc5 0%, #68a4f2 100%)", // updated gradient
+            color: "white",
+            boxShadow: "0 6px 20px rgba(114,76,175,0.25)"
+          }}
+        >
+
         <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
           <Avatar sx={{ width: 64, height: 64, bgcolor: "rgba(255,255,255,0.2)", color: "white" }}>
             <AccountCircle sx={{ fontSize: "2.8rem" }} />
@@ -128,7 +129,7 @@ function Dashboard() {
           to="/profile"
           sx={{
             backgroundColor: "white",
-            color: "#752e7d",
+            color: "rgb(114, 76, 175)",
             fontWeight: "bold",
             borderRadius: 2.5,
             px: 3,
@@ -148,7 +149,7 @@ function Dashboard() {
         sx={{
           borderRadius: 4,
           boxShadow: "0 4px 15px rgba(0,0,0,0.06)",
-          borderLeft: "8px solid #7d2e7d",
+          borderLeft: "8px solid rgb(114, 76, 175)",
           mb: 6,
           background: "#fafafa"
         }}
@@ -157,8 +158,8 @@ function Dashboard() {
           <Grid container spacing={3} alignItems="center">
             <Grid item xs={12} md={8}>
               <Box sx={{ display: "flex", alignItems: "center", gap: 1.5, mb: 1 }}>
-                <Assignment sx={{ color: "#7d2e59" }} />
-                <Typography variant="h5" sx={{ fontWeight: 800, color: "#521b5e" }}>
+                <Assignment sx={{ color: "rgb(114, 76, 175)" }} />
+                <Typography variant="h5" sx={{ fontWeight: 800, color: "rgb(114, 76, 175)" }}>
                   🌿 Complete Wellness Assessment
                 </Typography>
               </Box>
@@ -174,15 +175,15 @@ function Dashboard() {
                 to="/wellness"
                 size="large"
                 sx={{
-                  backgroundColor: "#5d2e7d",
                   fontWeight: "bold",
                   borderRadius: 3,
                   px: 4,
                   py: 1.5,
                   textTransform: "none",
-                  boxShadow: "0 4px 14px rgba(118, 46, 125, 0.4)",
+                  background: "linear-gradient(90deg, #3498db, rgb(114, 76, 175))",
+                  boxShadow: "0 4px 14px rgba(114, 76, 175, 0.4)",
                   "&:hover": {
-                    backgroundColor: "#5e1b4b"
+                    background: "linear-gradient(90deg, #2980b9, #5a3a9d)"
                   }
                 }}
               >
@@ -249,11 +250,11 @@ function Dashboard() {
                     borderRadius: 2.5,
                     textTransform: "none",
                     fontWeight: "bold",
-                    color: "#692e7d",
-                    borderColor: "#7d2e71",
+                    color: "rgb(114, 76, 175)",
+                    borderColor: "rgb(114, 76, 175)",
                     "&:hover": {
-                      backgroundColor: "rgba(46, 125, 50, 0.04)",
-                      borderColor: "#5e1b50"
+                      backgroundColor: "rgba(114, 76, 175, 0.04)",
+                      borderColor: "#5a3a9d"
                     }
                   }}
                 >
@@ -274,11 +275,11 @@ function Dashboard() {
           startIcon={<TrendingUp />}
           sx={{
             fontWeight: "bold",
-            color: "#905ccf",
+            color: "rgb(114, 76, 175)",
             fontSize: "1.1rem",
             textTransform: "none",
             "&:hover": {
-              backgroundColor: "rgba(46, 125, 50, 0.05)"
+              backgroundColor: "rgba(114, 76, 175, 0.05)"
             }
           }}
         >

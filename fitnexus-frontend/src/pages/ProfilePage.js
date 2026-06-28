@@ -109,16 +109,16 @@ function ProfilePage() {
 
   return (
     <Container maxWidth="md" sx={{ py: 6 }}>
-      <Typography variant="h4" component="h1" sx={{ fontWeight: 800, color: "#1b5e20", mb: 5 }}>
+      <Typography variant="h4" component="h1" sx={{ fontWeight: 800, color: "rgb(114, 76, 175)", mb: 5 }}>
         👤 Profile Settings
       </Typography>
 
       <Grid container spacing={4}>
         {/* Left Side: Account Info & Wellness Summary */}
         <Grid item xs={12} md={5}>
-          <Card sx={{ borderRadius: 4, boxShadow: "0 4px 15px rgba(0,0,0,0.05)", mb: 4, textAlign: "center", py: 4 }}>
+          <Card sx={{ borderRadius: 4, boxShadow: "0 4px 15px rgba(0,0,0,0.05)", mb: 4, textAlign: "center", py: 4, background: "linear-gradient(135deg, #ffffff, #f5f7fa)" }}>
             <CardContent>
-              <Avatar sx={{ width: 80, height: 80, bgcolor: "#2e7d32", mx: "auto", mb: 2 }}>
+              <Avatar sx={{ width: 80, height: 80, bgcolor: "rgb(114, 76, 175)", mx: "auto", mb: 2 }}>
                 <AccountCircle sx={{ fontSize: "3.5rem" }} />
               </Avatar>
               <Typography variant="h5" sx={{ fontWeight: 800 }}>
@@ -140,9 +140,9 @@ function ProfilePage() {
           </Card>
 
           {wellness && (
-            <Card sx={{ borderRadius: 4, boxShadow: "0 4px 15px rgba(0,0,0,0.05)" }}>
+            <Card sx={{ borderRadius: 4, boxShadow: "0 4px 15px rgba(0,0,0,0.05)", background: "linear-gradient(135deg, #ffffff, #f5f7fa)" }}>
               <CardContent sx={{ p: 3 }}>
-                <Typography variant="subtitle1" sx={{ fontWeight: 800, color: "#2e7d32", mb: 2 }}>
+                <Typography variant="subtitle1" sx={{ fontWeight: 800, color: "rgb(114, 76, 175)", mb: 2 }}>
                   📏 Physical Stats (Form Inputs)
                 </Typography>
                 <Divider sx={{ mb: 2 }} />
@@ -179,10 +179,10 @@ function ProfilePage() {
 
         {/* Right Side: Account credentials update */}
         <Grid item xs={12} md={7}>
-          <Card sx={{ borderRadius: 4, boxShadow: "0 4px 15px rgba(0,0,0,0.05)", height: "100%" }}>
+          <Card sx={{ borderRadius: 4, boxShadow: "0 4px 15px rgba(0,0,0,0.05)", height: "100%", background: "linear-gradient(135deg, #ffffff, #f5f7fa)" }}>
             <CardContent sx={{ p: 4 }}>
               <Box sx={{ display: "flex", alignItems: "center", gap: 1.5, mb: 3 }}>
-                <Settings sx={{ color: "#2e7d32" }} />
+                <Settings sx={{ color: "rgb(114, 76, 175)" }} />
                 <Typography variant="h6" sx={{ fontWeight: 800 }}>
                   Account Information
                 </Typography>
@@ -229,12 +229,12 @@ function ProfilePage() {
                     sx={{
                       py: 1.5,
                       borderRadius: 3,
-                      bgcolor: "#2e7d32",
                       fontWeight: "bold",
                       textTransform: "none",
-                      boxShadow: "0 4px 14px rgba(46, 125, 50, 0.3)",
+                      background: "linear-gradient(90deg, #3498db, rgb(114, 76, 175))",
+                      boxShadow: "0 4px 14px rgba(114, 76, 175, 0.3)",
                       "&:hover": {
-                        bgcolor: "#1b5e20"
+                        background: "linear-gradient(90deg, #2980b9, #5a3a9d)"
                       }
                     }}
                   >

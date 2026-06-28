@@ -544,7 +544,7 @@ const WellnessForm = () => {
     <Container maxWidth="md" sx={{ py: 6 }}>
       {/* Language Selector */}
       <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 4 }}>
-        <Typography variant="h5" component="h2" sx={{ fontWeight: 800, color: "#1b5e20" }}>
+        <Typography variant="h5" component="h2" sx={{ fontWeight: 800, color: "rgb(114, 76, 175)" }}>
           🧘 {t("assessmentTitle")}
         </Typography>
         <ButtonGroup size="small" color="success">
@@ -564,7 +564,7 @@ const WellnessForm = () => {
         {t("assessmentSubtitle")}
       </Typography>
 
-      <Card sx={{ borderRadius: 4, boxShadow: "0 6px 20px rgba(0,0,0,0.06)", overflow: "visible", mb: 4 }}>
+      <Card sx={{ borderRadius: 4, boxShadow: "0 6px 20px rgba(0,0,0,0.06)", overflow: "visible", mb: 4, background: "linear-gradient(135deg, #ffffff, #f5f7fa)" }}>
         <CardContent sx={{ p: 4 }}>
           {/* Stepper Header */}
           <Stepper activeStep={activeStep} alternativeLabel sx={{ mb: 5 }}>
@@ -604,13 +604,13 @@ const WellnessForm = () => {
                 onClick={handleSubmit}
                 disabled={loading}
                 sx={{
-                  backgroundColor: "#2e7d32",
-                  fontWeight: "bold",
                   px: 4,
                   textTransform: "none",
                   borderRadius: 2.5,
+                  fontWeight: "bold",
+                  background: "linear-gradient(90deg, #3498db, rgb(114, 76, 175))",
                   "&:hover": {
-                    backgroundColor: "#1b5e20"
+                    background: "linear-gradient(90deg, #2980b9, #5a3a9d)"
                   }
                 }}
               >
@@ -621,13 +621,13 @@ const WellnessForm = () => {
                 variant="contained"
                 onClick={handleNext}
                 sx={{
-                  backgroundColor: "#2e7d32",
-                  fontWeight: "bold",
                   px: 4,
                   textTransform: "none",
                   borderRadius: 2.5,
+                  fontWeight: "bold",
+                  background: "linear-gradient(90deg, #3498db, rgb(114, 76, 175))",
                   "&:hover": {
-                    backgroundColor: "#1b5e20"
+                    background: "linear-gradient(90deg, #2980b9, #5a3a9d)"
                   }
                 }}
               >
