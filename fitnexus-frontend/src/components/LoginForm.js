@@ -70,7 +70,7 @@ function LoginForm() {
                   mb: 1
                 }}
               >
-                🌿 FitNexus
+                🪷 FitNexus
               </Typography>
               <Typography variant="body2" sx={{ color: "#666" }}>
                 Welcome back! Enter your credentials to log in.
@@ -138,14 +138,14 @@ function LoginForm() {
                   sx={{
                     py: 1.5,
                     borderRadius: 3,
-                    backgroundColor: "#602e7d",
+                    background: "linear-gradient(90deg, #054474, rgb(114, 76, 175))",
                     fontWeight: "bold",
                     fontSize: "1rem",
                     textTransform: "none",
-                    boxShadow: "0 4px 14px rgba(89, 46, 125, 0.3)",
+                    boxShadow: "0 4px 14px rgba(20, 54, 77, 0.4)",
                     "&:hover": {
-                      backgroundColor: "#531b5e",
-                      boxShadow: "0 6px 20px rgba(87, 46, 125, 0.5)"
+                      background: "linear-gradient(90deg, #0f2535, rgb(90, 60, 140))", // darker hover gradient
+                      boxShadow: "0 6px 20px rgba(20, 54, 77, 0.6)",
                     }
                   }}
                 >

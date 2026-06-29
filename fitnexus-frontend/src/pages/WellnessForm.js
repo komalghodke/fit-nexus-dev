@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useTranslation } from "react-i18next";
+import FormHelperText from "@mui/material/FormHelperText";
 import {
   Box,
   Button,
@@ -196,16 +197,31 @@ const WellnessForm = () => {
                 onChange={handleChange}
               />
             </Grid>
+
             <Grid item xs={12} sm={4}>
-              <FormControl fullWidth required>
-                <InputLabel>{t("Gender")}</InputLabel>
-                <Select name="gender" value={inputs.gender} label={t("Gender")} onChange={handleChange}>
-                  <MenuItem value="Male">{t("Male")}</MenuItem>
-                  <MenuItem value="Female">{t("Female")}</MenuItem>
-                  <MenuItem value="Other">{t("Other")}</MenuItem>
+              <FormControl
+                fullWidth
+                required
+                sx={{ minWidth: 180 }}
+              >
+                <InputLabel id="gender-label">Gender</InputLabel>
+
+                <Select
+                  labelId="gender-label"
+                  id="gender"
+                  name="gender"
+                  value={inputs.gender}
+                  label="Gender"
+                  onChange={handleChange}
+                >
+                  <MenuItem value="Male">Male</MenuItem>
+                  <MenuItem value="Female">Female</MenuItem>
+                  <MenuItem value="Other">Other</MenuItem>
                 </Select>
               </FormControl>
             </Grid>
+
+
             <Grid item xs={12} sm={4}>
               <TextField
                 required
@@ -268,33 +284,44 @@ const WellnessForm = () => {
                 onChange={handleChange}
               />
             </Grid>
+
             <Grid item xs={12} sm={6}>
               <TextField
                 fullWidth
-                label="Digestive Issues (e.g. None, Bloating, Acidity)"
+                label="Digestive Issues"
+                placeholder="e.g. None, Bloating, Acidity"
+                helperText="Example: None, Bloating, Acidity"
                 name="digestiveIssues"
                 value={inputs.digestiveIssues}
                 onChange={handleChange}
+                variant="outlined"
               />
             </Grid>
+
             <Grid item xs={12} sm={6}>
               <TextField
                 fullWidth
-                label="Chronic Pain Areas (e.g. None, Back, Knees)"
+                label="Chronic Pain Areas"
+                placeholder="e.g. None, Back, Knees"
+                helperText="Example: None, Back, Knees"
                 name="painArea"
                 value={inputs.painArea}
                 onChange={handleChange}
               />
             </Grid>
+
             <Grid item xs={12} sm={6}>
               <TextField
                 fullWidth
-                label="Workout Type (e.g. Yoga, Gym, Walking)"
+                label="Workout Type"
+                placeholder="e.g. Yoga, Gym, Walking"
+                helperText="Example: Yoga, Gym, Walking"
                 name="workoutType"
                 value={inputs.workoutType}
                 onChange={handleChange}
               />
             </Grid>
+            
             <Grid item xs={12} sm={3}>
               <TextField
                 fullWidth
@@ -315,16 +342,7 @@ const WellnessForm = () => {
                 onChange={handleChange}
               />
             </Grid>
-            <Grid item xs={12} sm={4}>
-              <TextField
-                fullWidth
-                label="Daily Calories (kcal)"
-                name="dailyCalories"
-                type="number"
-                value={inputs.dailyCalories}
-                onChange={handleChange}
-              />
-            </Grid>
+
             <Grid item xs={12} sm={4}>
               <TextField
                 fullWidth
@@ -335,20 +353,38 @@ const WellnessForm = () => {
                 onChange={handleChange}
               />
             </Grid>
-            <Grid item xs={12} sm={4}>
+
+
+            <Grid item xs={12} sm={6}>
               <FormControl fullWidth>
-                <InputLabel>{t("hasDisease")}</InputLabel>
+                <InputLabel>Disease</InputLabel>
                 <Select
                   name="hasDisease"
                   value={inputs.hasDisease}
-                  label={t("hasDisease")}
-                  onChange={handleChange}
-                >
+                  label="Disease"
+                  onChange={handleChange}>
                   <MenuItem value={true}>{t("Yes")}</MenuItem>
                   <MenuItem value={false}>{t("No")}</MenuItem>
                 </Select>
+                <FormHelperText>
+                  {t("hasDisease")}
+                </FormHelperText>
               </FormControl>
             </Grid>
+
+            <Grid item xs={12} sm={4}>
+              <TextField
+                fullWidth
+                label="Estimated Calories Burned (kcal)"
+                placeholder="e.g. 300"
+                helperText="Approximate value based on your physical activity today"
+                name="dailyCalories"
+                type="number"
+                value={inputs.dailyCalories}
+                onChange={handleChange}
+                InputLabelProps={{ shrink: true }}
+              />
+            </Grid>            
           </Grid>
         );
 

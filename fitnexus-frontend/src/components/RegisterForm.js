@@ -40,14 +40,14 @@ function RegisterForm() {
     }
   };
 
-  return (
+ return (
     <Box
       sx={{
         minHeight: "92vh",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        background: "linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%)",
+        background: "#f5f5f5", // neutral background
         py: 4
       }}
     >
@@ -55,9 +55,8 @@ function RegisterForm() {
         <Card
           sx={{
             borderRadius: 4,
-            boxShadow: "0 8px 32px rgba(76, 175, 80, 0.15)",
-            backdropFilter: "blur(8px)",
-            border: "1px solid rgba(255, 255, 255, 0.5)"
+            boxShadow: "0 6px 20px rgba(0,0,0,0.15)", // soft shadow
+            backgroundColor: "#fff" // clean white card
           }}
         >
           <CardContent sx={{ px: 4, py: 5 }}>
@@ -67,14 +66,14 @@ function RegisterForm() {
                 component="h1"
                 sx={{
                   fontWeight: 800,
-                  color: "#2e7d32",
+                  color: "#333", // dark gray title
                   letterSpacing: -0.5,
                   mb: 1
                 }}
               >
-                📝 Register
+                🪷 Register
               </Typography>
-              <Typography variant="body2" color="text.secondary">
+              <Typography variant="body2" sx={{ color: "#666" }}>
                 Create a FitNexus account to begin your wellness journey.
               </Typography>
             </Box>
@@ -104,7 +103,7 @@ function RegisterForm() {
                   InputProps={{
                     startAdornment: (
                       <InputAdornment position="start">
-                        <Person sx={{ color: "#4caf50" }} />
+                        <Person sx={{ color: "#602e7d" }} /> {/* purple accent */}
                       </InputAdornment>
                     ),
                   }}
@@ -127,7 +126,7 @@ function RegisterForm() {
                   InputProps={{
                     startAdornment: (
                       <InputAdornment position="start">
-                        <Email sx={{ color: "#4caf50" }} />
+                        <Email sx={{ color: "#602e7d" }} />
                       </InputAdornment>
                     ),
                   }}
@@ -150,7 +149,7 @@ function RegisterForm() {
                   InputProps={{
                     startAdornment: (
                       <InputAdornment position="start">
-                        <Lock sx={{ color: "#4caf50" }} />
+                        <Lock sx={{ color: "#602e7d" }} />
                       </InputAdornment>
                     ),
                   }}
@@ -171,14 +170,14 @@ function RegisterForm() {
                   sx={{
                     py: 1.5,
                     borderRadius: 3,
-                    backgroundColor: "#2e7d32",
+                    background: "linear-gradient(90deg, #054474, rgb(114, 76, 175))",
                     fontWeight: "bold",
                     fontSize: "1rem",
                     textTransform: "none",
-                    boxShadow: "0 4px 14px rgba(46, 125, 50, 0.4)",
+                    boxShadow: "0 4px 14px rgba(20, 54, 77, 0.4)",
                     "&:hover": {
-                      backgroundColor: "#1b5e20",
-                      boxShadow: "0 6px 20px rgba(46, 125, 50, 0.6)",
+                      background: "linear-gradient(90deg, #0f2535, rgb(90, 60, 140))", // darker hover gradient
+                      boxShadow: "0 6px 20px rgba(20, 54, 77, 0.6)",
                     }
                   }}
                 >
@@ -188,12 +187,12 @@ function RegisterForm() {
             </form>
 
             <Box sx={{ mt: 4, textAlign: "center" }}>
-              <Typography variant="body2" color="text.secondary">
+              <Typography variant="body2" sx={{ color: "#555" }}>
                 Already have an account?{" "}
                 <Link
                   href="/login"
                   underline="hover"
-                  sx={{ color: "#2e7d32", fontWeight: "bold", cursor: "pointer" }}
+                  sx={{ color: "#602e7d", fontWeight: "bold", cursor: "pointer" }}
                 >
                   Login Here
                 </Link>
