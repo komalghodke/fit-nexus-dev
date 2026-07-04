@@ -4,6 +4,8 @@ import { WellnessProvider } from "./context/WellnessContext";
 
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
+import { PrivateRoute, StaffRoute } from "./components/PrivateRoute";
+
 import LoginForm from "./components/LoginForm";
 import RegisterForm from "./components/RegisterForm";
 import Dashboard from "./pages/Dashboard";
@@ -14,6 +16,8 @@ import NutritionForm from "./pages/NutritionForm";
 import SleepForm from "./pages/SleepForm";
 import StressForm from "./pages/StressForm";
 import WellnessForm from "./pages/WellnessForm";
+import StaffDashboard from "./pages/StaffDashboard";
+import NotFoundPage from "./pages/NotFoundPage";
 import "./App.css";
 
 function App() {
@@ -22,17 +26,26 @@ function App() {
       <Router>
         <Navbar />
         <Routes>
+          {/* Public routes */}
           <Route path="/" element={<Navigate to="/login" />} />
           <Route path="/login" element={<LoginForm />} />
           <Route path="/register" element={<RegisterForm />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/profile" element={<ProfilePage />} />
-          <Route path="/reports" element={<ReportsPage />} />
-          <Route path="/workout" element={<WorkoutForm />} />
-          <Route path="/nutrition" element={<NutritionForm />} />
-          <Route path="/sleep" element={<SleepForm />} />
-          <Route path="/stress" element={<StressForm />} />
-          <Route path="/wellness" element={<WellnessForm />} />
+
+          {/* Protected – any authenticated user */}
+          <Route path="/dashboard" element={<PrivateRoute><Dashboard /></PrivateRoute>} />
+          <Route path="/profile"   element={<PrivateRoute><ProfilePage /></PrivateRoute>} />
+          <Route path="/reports"   element={<PrivateRoute><ReportsPage /></PrivateRoute>} />
+          <Route path="/workout"   element={<PrivateRoute><WorkoutForm /></PrivateRoute>} />
+          <Route path="/nutrition" element={<PrivateRoute><NutritionForm /></PrivateRoute>} />
+          <Route path="/sleep"     element={<PrivateRoute><SleepForm /></PrivateRoute>} />
+          <Route path="/stress"    element={<PrivateRoute><StressForm /></PrivateRoute>} />
+          <Route path="/wellness"  element={<PrivateRoute><WellnessForm /></PrivateRoute>} />
+
+          {/* Staff-only route */}
+          <Route path="/staff" element={<StaffRoute><StaffDashboard /></StaffRoute>} />
+
+          {/* 404 fallback */}
+          <Route path="*" element={<NotFoundPage />} />
         </Routes>
         <Footer />
       </Router>

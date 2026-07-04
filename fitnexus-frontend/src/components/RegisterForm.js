@@ -10,12 +10,16 @@ import {
   Container,
   Alert,
   InputAdornment,
-  Link
+  Link,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem
 } from "@mui/material";
 import { Email, Lock, Person } from "@mui/icons-material";
 
 function RegisterForm() {
-  const [form, setForm] = useState({ username: "", email: "", password: "" });
+  const [form, setForm] = useState({ username: "", email: "", password: "", role: "USER" });
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [loading, setLoading] = useState(false);
@@ -160,6 +164,21 @@ function RegisterForm() {
                     }
                   }}
                 />
+
+                <FormControl fullWidth sx={{ "& .MuiOutlinedInput-root": { borderRadius: 3 } }}>
+                  <InputLabel id="role-label">Register As</InputLabel>
+                  <Select
+                    labelId="role-label"
+                    name="role"
+                    value={form.role}
+                    label="Register As"
+                    onChange={handleChange}
+                  >
+                    <MenuItem value="USER">🧘 Member</MenuItem>
+                    <MenuItem value="YOGA_INSTRUCTOR">🪷 Yoga Instructor</MenuItem>
+                    <MenuItem value="GYM_TRAINER">🏋️ Gym Trainer</MenuItem>
+                  </Select>
+                </FormControl>
 
                 <Button
                   type="submit"

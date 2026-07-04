@@ -45,7 +45,10 @@ const resources = {
       "mindEmotion": "Mind & Emotion",
       "lifestyleEnvironment": "Lifestyle & Environment",
       "successAlert": "Wellness assessment submitted successfully!",
-      "failureAlert": "Failed to submit wellness data. Please try again."
+      "failureAlert": "Failed to submit wellness data. Please try again.",
+      "Sleep Hours": "Sleep Hours",
+      "Resting Heart Rate": "Resting Heart Rate (bpm)",
+      "Energy Level": "Energy Level"
     }
   },
   hi: {
@@ -91,7 +94,10 @@ const resources = {
       "mindEmotion": "मन और भावनाएं",
       "lifestyleEnvironment": "जीवनशैली और पर्यावरण",
       "successAlert": "स्वास्थ्य मूल्यांकन सफलतापूर्वक जमा किया गया!",
-      "failureAlert": "स्वास्थ्य डेटा जमा करने में विफल। कृपया पुन: प्रयास करें।"
+      "failureAlert": "स्वास्थ्य डेटा जमा करने में विफल। कृपया पुन: प्रयास करें।",
+      "Sleep Hours": "नींद के घंटे",
+      "Resting Heart Rate": "हृदय गति (bpm)",
+      "Energy Level": "ऊर्जा का स्तर"
     }
   },
   mr: {
@@ -137,7 +143,10 @@ const resources = {
       "mindEmotion": "मन आणि भावना",
       "lifestyleEnvironment": "जीवनशैली आणि पर्यावरण",
       "successAlert": "आरोग्य मूल्यांकन यशस्वीरित्या सबमिट केले गेले!",
-      "failureAlert": "आरोग्य डेटा सबमिट करण्यात अपयशी. कृपया पुन्हा प्रयत्न करा."
+      "failureAlert": "आरोग्य डेटा सबमिट करण्यात अपयशी. कृपया पुन्हा प्रयत्न करा.",
+      "Sleep Hours": "झोपेचे तास",
+      "Resting Heart Rate": "हृदय गती (bpm)",
+      "Energy Level": "ऊर्जा पातळी"
     }
   }
 };

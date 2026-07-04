@@ -109,6 +109,7 @@ public class WellnessController {
 		input.setDaysPerWeek(request.getDaysPerWeek());
 		input.setMinutesPerSession(request.getMinutesPerSession());
 		input.setJournalEntry(request.getJournalEntry());
+		input.setRestingHeartRate(request.getRestingHeartRate());
 
 		wellnessInputRepository.save(input);
 

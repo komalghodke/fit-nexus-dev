@@ -1,11 +1,25 @@
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
-import { AppBar, Toolbar, Typography, Button, Box, Container } from "@mui/material";
+import { useTranslation } from "react-i18next";
+import {
+  AppBar, Toolbar, Typography, Button, Box, Container, Chip, IconButton, Tooltip
+} from "@mui/material";
 import SpaIcon from "@mui/icons-material/Spa";
+import SelfImprovementIcon from "@mui/icons-material/SelfImprovement";
+import FitnessCenterIcon from "@mui/icons-material/FitnessCenter";
+import TranslateIcon from "@mui/icons-material/Translate";
+
+const LANGS = [
+  { code: "en",  label: "EN" },
+  { code: "hi",  label: "हिं" },
+  { code: "mr",  label: "मरा" }
+];
 
 function Navbar() {
-  const token = localStorage.getItem("token");
+  const token    = localStorage.getItem("token");
+  const role     = localStorage.getItem("role") || "USER";
   const location = useLocation();
+  const { i18n } = useTranslation();
 
   const handleLogout = () => {
     localStorage.clear();
@@ -14,85 +28,140 @@ function Navbar() {
 
   const isActive = (path) => location.pathname === path;
 
-  const navItemStyles = (path) => ({
-    color: isActive(path) ? "rgb(114, 76, 175)" : "#555",
-    fontWeight: isActive(path) ? "bold" : "medium",
-    backgroundColor: isActive(path) ? "rgba(114, 76, 175, 0.08)" : "transparent",
+  const navBtn = (path) => ({
+    color: isActive(path) ? "#fff" : "rgba(255,255,255,0.8)",
+    fontWeight: isActive(path) ? 800 : 500,
+    backgroundColor: isActive(path) ? "rgba(255,255,255,0.18)" : "transparent",
     borderRadius: 2,
-    mx: 0.5,
-    px: 2,
+    mx: 0.3,
+    px: 1.8,
     textTransform: "none",
-    fontSize: "0.95rem",
+    fontSize: "0.92rem",
     "&:hover": {
-      backgroundColor: "rgba(114, 76, 175, 0.12)",
-      color: "rgb(114, 76, 175)"
+      backgroundColor: "rgba(255,255,255,0.14)",
+      color: "#fff"
     }
   });
 
-  return ( 
+  const isStaff = role === "YOGA_INSTRUCTOR" || role === "GYM_TRAINER" || role === "ADMIN";
+
+  const roleChip = () => {
+    if (role === "YOGA_INSTRUCTOR")
+      return { label: "🪷 Yoga Instructor", color: "#b39ddb" };
+    if (role === "GYM_TRAINER")
+      return { label: "🏋️ Gym Trainer", color: "#80cbc4" };
+    if (role === "ADMIN")
+      return { label: "⚙️ Admin", color: "#ef9a9a" };
+    return null;
+  };
+  const chip = roleChip();
+
+  return (
     <AppBar
       position="sticky"
       sx={{
-        background: "linear-gradient(90deg, #255f9a 30%, #e0c3fc 70%)", // gradient background
+        background: "linear-gradient(90deg, #0d2c4e 0%, #255f9a 45%, #602e7d 100%)",
         backdropFilter: "blur(12px)",
-        boxShadow: "0 2px 12px rgba(217, 213, 223, 0.25)", // subtle purple shadow
-        borderBottom: "2px solid rgba(243, 241, 246, 0.3)" // clean border accent
+        boxShadow: "0 2px 16px rgba(96,46,125,0.35)",
+        borderBottom: "1px solid rgba(255,255,255,0.08)"
       }}
     >
       <Container maxWidth="lg">
-        <Toolbar disableGutters sx={{ minHeight: "100px", px: 6, py: 2 }}>
-          <Box
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              textDecoration: "none",
-              flexGrow: 1
-            }}
-          >
-            <SpaIcon sx={{ mr: 1, fontSize: "1.8rem", color: "#fff" }} />
+        <Toolbar disableGutters sx={{ minHeight: "68px", px: 0, gap: 1 }}>
+
+          {/* Brand */}
+          <Box sx={{ display: "flex", alignItems: "center", flexGrow: 1 }}>
+            <SpaIcon sx={{ mr: 0.8, fontSize: "1.7rem", color: "#b39ddb" }} />
             <Typography
               variant="h6"
               noWrap
               component={Link}
-              to={token ? "/dashboard" : "/login"}
+              to={token ? (isStaff ? "/staff" : "/dashboard") : "/login"}
               sx={{
                 fontWeight: 900,
                 letterSpacing: "-0.5px",
                 textDecoration: "none",
                 color: "#fff",
-                fontSize: "1.4rem"
+                fontSize: "1.35rem"
               }}
             >
               FitNexus
             </Typography>
+            {chip && (
+              <Chip
+                label={chip.label}
+                size="small"
+                sx={{
+                  ml: 1.5,
+                  bgcolor: "rgba(255,255,255,0.12)",
+                  color: chip.color,
+                  fontWeight: 700,
+                  fontSize: "0.7rem",
+                  height: 22,
+                  border: `1px solid ${chip.color}55`
+                }}
+              />
+            )}
           </Box>
 
-          {/* Nav Items */}
-          <Box sx={{ display: "flex", alignItems: "center" }}>
+          {/* Nav Links */}
+          <Box sx={{ display: "flex", alignItems: "center", gap: 0.2 }}>
             {token ? (
               <>
-                <Button component={Link} to="/dashboard" sx={navItemStyles("/dashboard")}>
-                  Dashboard
-                </Button>
-                <Button component={Link} to="/profile" sx={navItemStyles("/profile")}>
-                  Profile
-                </Button>
-                <Button component={Link} to="/reports" sx={navItemStyles("/reports")}>
-                  Reports
-                </Button>
+                {isStaff ? (
+                  /* Staff navigation */
+                  <Button component={Link} to="/staff" sx={navBtn("/staff")}>
+                    {role === "YOGA_INSTRUCTOR" ? <SelfImprovementIcon sx={{ mr: 0.5, fontSize: 18 }} /> : <FitnessCenterIcon sx={{ mr: 0.5, fontSize: 18 }} />}
+                    Console
+                  </Button>
+                ) : (
+                  /* Member navigation */
+                  <>
+                    <Button component={Link} to="/dashboard" sx={navBtn("/dashboard")}>Dashboard</Button>
+                    <Button component={Link} to="/wellness"  sx={navBtn("/wellness")}>Assessment</Button>
+                    <Button component={Link} to="/reports"   sx={navBtn("/reports")}>Reports</Button>
+                    <Button component={Link} to="/profile"   sx={navBtn("/profile")}>Profile</Button>
+                  </>
+                )}
+
+                {/* Language Switcher */}
+                <Box sx={{ display: "flex", ml: 1, gap: 0.4 }}>
+                  {LANGS.map(({ code, label }) => (
+                    <Tooltip key={code} title={`Switch to ${code.toUpperCase()}`} arrow>
+                      <IconButton
+                        size="small"
+                        onClick={() => i18n.changeLanguage(code)}
+                        sx={{
+                          color: i18n.language === code ? "#fff" : "rgba(255,255,255,0.5)",
+                          bgcolor: i18n.language === code ? "rgba(255,255,255,0.18)" : "transparent",
+                          borderRadius: 1.5,
+                          fontSize: "0.7rem",
+                          fontWeight: 700,
+                          width: 30,
+                          height: 26,
+                          "&:hover": { bgcolor: "rgba(255,255,255,0.12)" }
+                        }}
+                      >
+                        {label}
+                      </IconButton>
+                    </Tooltip>
+                  ))}
+                </Box>
+
                 <Button
                   onClick={handleLogout}
-                  variant="outlined"
                   size="small"
                   sx={{
-                    ml: 2,
+                    ml: 1.5,
                     borderRadius: 2,
                     textTransform: "none",
-                    borderColor: "#fff",
-                    color: "#fff",
+                    border: "1px solid rgba(255,255,255,0.35)",
+                    color: "rgba(255,255,255,0.9)",
+                    px: 2,
+                    fontWeight: 600,
                     "&:hover": {
                       backgroundColor: "rgba(255,255,255,0.1)",
-                      borderColor: "#ddd"
+                      borderColor: "#fff"
                     }
                   }}
                 >
@@ -101,40 +170,28 @@ function Navbar() {
               </>
             ) : (
               <>
-                {/* Login styled differently */}
                 <Button
                   component={Link}
                   to="/login"
                   sx={{
-                    mx: 0.5,
-                    px: 2,
-                    borderRadius: 2,
-                    textTransform: "none",
-                    fontWeight: "bold",
-                    color: "#fff",
-                    border: "1px solid #fff",
-                    "&:hover": {
-                      backgroundColor: "rgba(255,255,255,0.15)"
-                    }
+                    mx: 0.5, px: 2, borderRadius: 2, textTransform: "none",
+                    fontWeight: "bold", color: "#fff",
+                    border: "1px solid rgba(255,255,255,0.4)",
+                    "&:hover": { backgroundColor: "rgba(255,255,255,0.1)" }
                   }}
                 >
                   Login
                 </Button>
-
-                {/* Register with gradient */}
                 <Button
                   component={Link}
                   to="/register"
                   variant="contained"
                   sx={{
-                    ml: 1.5,
-                    borderRadius: 2,
-                    textTransform: "none",
-                    background: "linear-gradient(90deg, #14364d, rgb(114, 76, 175))",
+                    ml: 1, borderRadius: 2, textTransform: "none",
+                    background: "linear-gradient(90deg, #602e7d, #054474)",
                     fontWeight: "bold",
-                    "&:hover": {
-                      background: "linear-gradient(90deg, #2980b9, #5a3a9d)"
-                    }
+                    boxShadow: "0 3px 10px rgba(96,46,125,0.4)",
+                    "&:hover": { opacity: 0.9 }
                   }}
                 >
                   Register

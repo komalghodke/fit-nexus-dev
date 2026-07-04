@@ -40,7 +40,8 @@ public class AuthController {
 			return ResponseEntity.ok(Map.of(
 				"token", token,
 				"email", req.getEmail(),
-				"userId", user.getId().toString()
+				"userId", user.getId().toString(),
+				"role", user.getRole() != null ? user.getRole() : "USER"
 			));
 		} catch (AuthenticationException e) {
 			return ResponseEntity.status(401).body("Invalid credentials");
@@ -49,6 +50,9 @@ public class AuthController {
 
 	@PostMapping("/register")
 	public ResponseEntity<?> register(@RequestBody User user) {
+		if (user.getRole() == null || user.getRole().trim().isEmpty()) {
+			user.setRole("USER");
+		}
 	    userRepo.save(user); // ✅ must include email + password
 	    return ResponseEntity.ok("User registered successfully");
 	}

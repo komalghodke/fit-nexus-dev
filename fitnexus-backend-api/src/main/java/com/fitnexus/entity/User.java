@@ -19,6 +19,7 @@ public class User {
 	private String username;
 	private String email;
 	private String password;
+	private String role = "USER";
 
 	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<Workout> workouts;
@@ -94,5 +95,13 @@ public class User {
 
 	public void setStressLogs(List<Stress> stressLogs) {
 		this.stressLogs = stressLogs;
+	}
+
+	public String getRole() {
+		return role;
+	}
+
+	public void setRole(String role) {
+		this.role = role;
 	}
 }

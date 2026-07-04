@@ -20,20 +20,14 @@ import {
   Alert,
   Stepper,
   Step,
-  StepLabel,
-  ButtonGroup
+  StepLabel
 } from "@mui/material";
-import {
-  Person,
-  FitnessCenter,
-  Psychology,
-  Spa,
-  CheckCircleOutline
-} from "@mui/icons-material";
+import { CheckCircle } from "@mui/icons-material";
 
 const moodOptions = ["Calm", "Stressed", "Anxious", "Joyful", "Sad", "Irritable", "Grateful", "Lonely", "Angry", "Hopeful"];
 const sleepOptions = ["Restful", "Interrupted", "Insomnia", "LightSleep", "Oversleeping", "DreamDisturbed"];
 const experienceOptions = ["Beginner", "Active", "Yoga Practitioner"];
+const energyOptions = ["Balanced", "High", "Low", "Fatigued", "Hyperactive"];
 
 const WellnessForm = () => {
   const { t, i18n } = useTranslation();
@@ -55,6 +49,9 @@ const WellnessForm = () => {
     mood: "",
     stressLevel: 5,
     sleep: "",
+    sleepQuality: "Restful",
+    sleepHours: 8,
+    restingHeartRate: 72,
     innerPeace: "sometimes",
     socialSupport: "sometimes",
     workSatisfaction: 5,
@@ -102,10 +99,24 @@ const WellnessForm = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setInputs((prev) => ({
-      ...prev,
-      [name]: value === "true" ? true : value === "false" ? false : value
-    }));
+    setInputs((prev) => {
+      const updated = {
+        ...prev,
+        [name]: value === "true" ? true : value === "false" ? false : value
+      };
+      if (name === "sleepQuality") {
+        updated.sleep = value;
+      }
+      
+      // Calculate BMI dynamically
+      const w = parseFloat(name === "weight" ? value : prev.weight);
+      const h = parseFloat(name === "height" ? value : prev.height);
+      if (w > 0 && h > 0) {
+        updated.bmi = parseFloat((w / ((h / 100) * (h / 100))).toFixed(1));
+      }
+      
+      return updated;
+    });
   };
 
   const handleSliderChange = (name) => (e, value) => {
@@ -273,7 +284,7 @@ const WellnessForm = () => {
                 onChange={handleChange}
               />
             </Grid>
-            <Grid item xs={12} sm={3}>
+            <Grid item xs={12} sm={4}>
               <TextField
                 fullWidth
                 label={t("Water Intake (liters)")}
@@ -282,6 +293,28 @@ const WellnessForm = () => {
                 inputProps={{ step: "0.1" }}
                 value={inputs.waterIntake}
                 onChange={handleChange}
+              />
+            </Grid>
+            <Grid item xs={12} sm={4}>
+              <TextField
+                fullWidth
+                label={t("Resting Heart Rate")}
+                name="restingHeartRate"
+                type="number"
+                value={inputs.restingHeartRate}
+                onChange={handleChange}
+              />
+            </Grid>
+            <Grid item xs={12} sm={4}>
+              <TextField
+                fullWidth
+                disabled
+                label="Calculated BMI"
+                value={inputs.bmi ? inputs.bmi.toFixed(1) : "—"}
+                helperText="Auto-calculated from Ht/Wt"
+                InputProps={{
+                  readOnly: true,
+                }}
               />
             </Grid>
 
@@ -396,7 +429,7 @@ const WellnessForm = () => {
                 🧠 {t("Emotional Wellness")}
               </Typography>
             </Grid>
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={12} sm={3}>
               <FormControl fullWidth>
                 <InputLabel>{t("Mood")}</InputLabel>
                 <Select name="mood" value={inputs.mood} label={t("Mood")} onChange={handleChange}>
@@ -408,10 +441,10 @@ const WellnessForm = () => {
                 </Select>
               </FormControl>
             </Grid>
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={12} sm={3}>
               <FormControl fullWidth>
                 <InputLabel>{t("Sleep Quality")}</InputLabel>
-                <Select name="sleep" value={inputs.sleep} label={t("Sleep Quality")} onChange={handleChange}>
+                <Select name="sleepQuality" value={inputs.sleepQuality} label={t("Sleep Quality")} onChange={handleChange}>
                   {sleepOptions.map((s) => (
                     <MenuItem key={s} value={s}>
                       {s}
@@ -420,7 +453,19 @@ const WellnessForm = () => {
                 </Select>
               </FormControl>
             </Grid>
-            <Grid item xs={12} sm={4}>
+            <Grid item xs={12} sm={3}>
+              <FormControl fullWidth>
+                <InputLabel>{t("Energy Level")}</InputLabel>
+                <Select name="energyLevel" value={inputs.energyLevel} label={t("Energy Level")} onChange={handleChange}>
+                  {energyOptions.map((e) => (
+                    <MenuItem key={e} value={e}>
+                      {e}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </Grid>
+            <Grid item xs={12} sm={3}>
               <FormControl fullWidth>
                 <InputLabel>{t("Inner Peace")}</InputLabel>
                 <Select name="innerPeace" value={inputs.innerPeace} label={t("Inner Peace")} onChange={handleChange}>
@@ -445,6 +490,16 @@ const WellnessForm = () => {
                 label="Wake time (e.g. 6:00 AM)"
                 name="wakeTime"
                 value={inputs.wakeTime}
+                onChange={handleChange}
+              />
+            </Grid>
+            <Grid item xs={12} sm={4}>
+              <TextField
+                fullWidth
+                label={t("Sleep Hours")}
+                name="sleepHours"
+                type="number"
+                value={inputs.sleepHours}
                 onChange={handleChange}
               />
             </Grid>
@@ -577,30 +632,49 @@ const WellnessForm = () => {
   };
 
   return (
-    <Container maxWidth="md" sx={{ py: 6 }}>
-      {/* Language Selector */}
-      <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 4 }}>
-        <Typography variant="h5" component="h2" sx={{ fontWeight: 800, color: "rgb(114, 76, 175)" }}>
-          🧘 {t("assessmentTitle")}
-        </Typography>
-        <ButtonGroup size="small" color="success">
-          <Button variant={i18n.language === "en" ? "contained" : "outlined"} onClick={() => i18n.changeLanguage("en")}>
-            EN
-          </Button>
-          <Button variant={i18n.language === "hi" ? "contained" : "outlined"} onClick={() => i18n.changeLanguage("hi")}>
-            हिन्दी
-          </Button>
-          <Button variant={i18n.language === "mr" ? "contained" : "outlined"} onClick={() => i18n.changeLanguage("mr")}>
-            मराठी
-          </Button>
-        </ButtonGroup>
+    <Box sx={{ background: "linear-gradient(160deg, #f8f6ff 0%, #f0f7f4 100%)", minHeight: "92vh", py: 5 }}>
+    <Container maxWidth="md">
+      {/* ── Hero Header ── */}
+      <Box
+        sx={{
+          borderRadius: 4, mb: 4, p: 4,
+          background: "linear-gradient(135deg, #0d2c4e 0%, #255f9a 50%, #602e7d 100%)",
+          color: "#fff", boxShadow: "0 8px 28px rgba(96,46,125,0.3)"
+        }}
+      >
+        <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 2 }}>
+          <Box>
+            <Typography variant="h4" component="h1" sx={{ fontWeight: 900, lineHeight: 1.1 }}>
+              🧘 {t("assessmentTitle")}
+            </Typography>
+            <Typography variant="body1" sx={{ opacity: 0.82, mt: 1 }}>
+              {t("assessmentSubtitle")}
+            </Typography>
+          </Box>
+          {/* Language Switcher */}
+          <Box sx={{ display: "flex", gap: 0.6, alignItems: "center" }}>
+            {[{ code: "en", label: "EN" }, { code: "hi", label: "हिं" }, { code: "mr", label: "मरा" }].map(({ code, label }) => (
+              <Button
+                key={code}
+                size="small"
+                onClick={() => i18n.changeLanguage(code)}
+                sx={{
+                  minWidth: 38, px: 1, py: 0.5, borderRadius: 2, fontWeight: 700, fontSize: "0.75rem",
+                  textTransform: "none",
+                  bgcolor: i18n.language === code ? "rgba(255,255,255,0.28)" : "rgba(255,255,255,0.1)",
+                  color: i18n.language === code ? "#fff" : "rgba(255,255,255,0.65)",
+                  border: `1px solid ${i18n.language === code ? "rgba(255,255,255,0.5)" : "rgba(255,255,255,0.2)"}`,
+                  "&:hover": { bgcolor: "rgba(255,255,255,0.2)" }
+                }}
+              >
+                {label}
+              </Button>
+            ))}
+          </Box>
+        </Box>
       </Box>
 
-      <Typography variant="body1" color="text.secondary" sx={{ mb: 4 }}>
-        {t("assessmentSubtitle")}
-      </Typography>
-
-      <Card sx={{ borderRadius: 4, boxShadow: "0 6px 20px rgba(0,0,0,0.06)", overflow: "visible", mb: 4, background: "linear-gradient(135deg, #ffffff, #f5f7fa)" }}>
+      <Card sx={{ borderRadius: 4, boxShadow: "0 6px 20px rgba(0,0,0,0.06)", overflow: "visible", mb: 4, background: "#ffffff" }}>
         <CardContent sx={{ p: 4 }}>
           {/* Stepper Header */}
           <Stepper activeStep={activeStep} alternativeLabel sx={{ mb: 5 }}>
@@ -618,7 +692,8 @@ const WellnessForm = () => {
             </Alert>
           )}
           {success && (
-            <Alert severity="success" sx={{ mb: 4, borderRadius: 2 }}>
+            <Alert severity="success" icon={<CheckCircle />} sx={{ mb: 4, borderRadius: 2 }}>
+              {success}
             </Alert>
           )}
 
@@ -674,6 +749,7 @@ const WellnessForm = () => {
         </CardContent>
       </Card>
     </Container>
+    </Box>
   );
 };
 

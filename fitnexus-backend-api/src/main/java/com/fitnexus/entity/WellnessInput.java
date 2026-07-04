@@ -75,6 +75,7 @@ public class WellnessInput {
 	private String chronicConditions;
 	private String medications;
 	private double bmi;
+	private int restingHeartRate;
 
 	// Yoga specific
 	private String yogaExperience;
@@ -462,5 +463,13 @@ public class WellnessInput {
 
 	public void setJournalEntry(String journalEntry) {
 		this.journalEntry = journalEntry;
+	}
+
+	public int getRestingHeartRate() {
+		return restingHeartRate;
+	}
+
+	public void setRestingHeartRate(int restingHeartRate) {
+		this.restingHeartRate = restingHeartRate;
 	}
 }

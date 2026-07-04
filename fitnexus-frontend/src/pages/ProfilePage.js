@@ -15,7 +15,7 @@ import {
   Alert,
   CircularProgress
 } from "@mui/material";
-import { AccountCircle, Settings, LocalActivity, FitnessCenter } from "@mui/icons-material";
+import { AccountCircle, Settings } from "@mui/icons-material";
 
 function ProfilePage() {
   const [profile, setProfile] = useState({ username: "", email: "", password: "" });
