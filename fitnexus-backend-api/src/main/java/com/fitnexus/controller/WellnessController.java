@@ -1,19 +1,16 @@
 package com.fitnexus.controller;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.fitnexus.dto.WellnessReport;
 import com.fitnexus.dto.WellnessRequest;
 import com.fitnexus.entity.Nutrition;
 import com.fitnexus.entity.Sleep;
@@ -51,9 +48,6 @@ public class WellnessController {
 
 	@Autowired
 	private StressRepository stressRepository;
-
-	@Autowired
-	private ReportsService reportsService;
 
 	@PostMapping("/wellness/{userId}")
 	public ResponseEntity<String> saveWellness(@PathVariable("userId") Long userId,
@@ -160,9 +154,9 @@ public class WellnessController {
 		return ResponseEntity.ok("Wellness data saved");
 	}
 
-	@GetMapping("/reports/{userId}")
-	public ResponseEntity<WellnessReport> getReport(@PathVariable("userId") Long userId) {
-		WellnessReport report = reportsService.generateReport(userId);
-		return ResponseEntity.ok(report);
-	}
+//	@GetMapping("/reports/{userId}")
+//	public ResponseEntity<WellnessReport> getReport(@PathVariable("userId") Long userId) {
+//		WellnessReport report = reportsService.generateReport(userId);
+//		return ResponseEntity.ok(report);
+//	}
 }

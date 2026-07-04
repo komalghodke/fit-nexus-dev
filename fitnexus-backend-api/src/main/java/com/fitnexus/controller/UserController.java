@@ -14,12 +14,21 @@ import org.springframework.web.bind.annotation.RestController;
 import com.fitnexus.entity.User;
 import com.fitnexus.repository.UserRepository;
 
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import com.fitnexus.repository.WellnessInputRepository;
+import java.util.Map;
+import java.util.HashMap;
+
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
 
 	@Autowired
 	private UserRepository userRepository;
+
+	@Autowired
+	private WellnessInputRepository wellnessInputRepository;
 
 	@GetMapping
 	public List<User> getAllUsers() {
@@ -46,5 +55,40 @@ public class UserController {
 	    return ResponseEntity.ok(userRepository.save(existing));
 	}
 
+	@PutMapping("/{id}/role")
+	public ResponseEntity<User> updateUserRole(@PathVariable("id") Long id, @RequestParam("role") String role) {
+		User existing = userRepository.findById(id)
+				.orElseThrow(() -> new RuntimeException("User not found with ID " + id));
+		existing.setRole(role);
+		return ResponseEntity.ok(userRepository.save(existing));
+	}
 
+	@DeleteMapping("/{id}")
+	public ResponseEntity<String> deleteUser(@PathVariable("id") Long id) {
+		User existing = userRepository.findById(id)
+				.orElseThrow(() -> new RuntimeException("User not found with ID " + id));
+		userRepository.delete(existing);
+		return ResponseEntity.ok("User deleted successfully");
+	}
+
+	@GetMapping("/stats")
+	public ResponseEntity<Map<String, Object>> getSystemStats() {
+		long totalUsers = userRepository.count();
+		long totalAssessments = wellnessInputRepository.count();
+		
+		long userCount = userRepository.findAll().stream().filter(u -> "USER".equalsIgnoreCase(u.getRole()) || u.getRole() == null).count();
+		long yogaCount = userRepository.findAll().stream().filter(u -> "YOGA_INSTRUCTOR".equalsIgnoreCase(u.getRole())).count();
+		long gymCount = userRepository.findAll().stream().filter(u -> "GYM_TRAINER".equalsIgnoreCase(u.getRole())).count();
+		long adminCount = userRepository.findAll().stream().filter(u -> "ADMIN".equalsIgnoreCase(u.getRole())).count();
+
+		Map<String, Object> stats = new HashMap<>();
+		stats.put("totalUsers", totalUsers);
+		stats.put("totalAssessments", totalAssessments);
+		stats.put("userCount", userCount);
+		stats.put("yogaCount", yogaCount);
+		stats.put("gymCount", gymCount);
+		stats.put("adminCount", adminCount);
+
+		return ResponseEntity.ok(stats);
+	}
 }

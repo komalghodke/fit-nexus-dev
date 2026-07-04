@@ -4,7 +4,7 @@ import { WellnessProvider } from "./context/WellnessContext";
 
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
-import { PrivateRoute, StaffRoute } from "./components/PrivateRoute";
+import { PrivateRoute, StaffRoute, AdminRoute } from "./components/PrivateRoute";
 
 import LoginForm from "./components/LoginForm";
 import RegisterForm from "./components/RegisterForm";
@@ -17,6 +17,7 @@ import SleepForm from "./pages/SleepForm";
 import StressForm from "./pages/StressForm";
 import WellnessForm from "./pages/WellnessForm";
 import StaffDashboard from "./pages/StaffDashboard";
+import AdminDashboard from "./pages/AdminDashboard";
 import NotFoundPage from "./pages/NotFoundPage";
 import "./App.css";
 
@@ -43,6 +44,9 @@ function App() {
 
           {/* Staff-only route */}
           <Route path="/staff" element={<StaffRoute><StaffDashboard /></StaffRoute>} />
+
+          {/* Admin-only route */}
+          <Route path="/admin" element={<AdminRoute><AdminDashboard /></AdminRoute>} />
 
           {/* 404 fallback */}
           <Route path="*" element={<NotFoundPage />} />

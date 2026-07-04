@@ -73,6 +73,7 @@ public class WellnessReport {
 	private List<String> wellnessTips;
 	private List<String> sleepTips;
 	private List<String> hydrationTips;
+	private String staffNotes;
 
 	public WellnessReport() {}
 
@@ -244,4 +245,7 @@ public class WellnessReport {
 
 	public double getBmi() { return bmi; }
 	public void setBmi(double v) { this.bmi = v; }
+
+	public String getStaffNotes() { return staffNotes; }
+	public void setStaffNotes(String v) { this.staffNotes = v; }
 }

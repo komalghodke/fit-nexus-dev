@@ -12,11 +12,13 @@ import com.fitnexus.entity.Sleep;
 import com.fitnexus.entity.Stress;
 import com.fitnexus.entity.WellnessInput;
 import com.fitnexus.entity.Workout;
+import com.fitnexus.entity.User;
 import com.fitnexus.repository.NutritionRepository;
 import com.fitnexus.repository.SleepRepository;
 import com.fitnexus.repository.StressRepository;
 import com.fitnexus.repository.WellnessInputRepository;
 import com.fitnexus.repository.WorkoutRepository;
+import com.fitnexus.repository.UserRepository;
 
 @Service
 public class ReportsService {
@@ -26,6 +28,7 @@ public class ReportsService {
 	@Autowired private SleepRepository sleepRepo;
 	@Autowired private StressRepository stressRepo;
 	@Autowired private WellnessInputRepository wellnessInputRepo;
+	@Autowired private UserRepository userRepo;
 
 	public WellnessReport generateReport(Long userId) {
 		List<Workout>   workouts  = workoutRepo.findByUserId(userId);
@@ -344,6 +347,11 @@ public class ReportsService {
 		report.setWellnessTips(tips);
 		report.setSleepTips(sleepTips);
 		report.setHydrationTips(hydrationTips);
+
+		User user = userRepo.findById(userId).orElse(null);
+		if (user != null) {
+			report.setStaffNotes(user.getStaffNotes());
+		}
 
 		return report;
 	}

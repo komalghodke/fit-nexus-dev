@@ -2,6 +2,8 @@ package com.fitnexus.entity;
 
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
@@ -18,6 +20,7 @@ public class Nutrition {
 	private LocalDateTime createdAt;
 
 	@ManyToOne
+	@JsonIgnore
 	private User user;
 
 	public Long getId() {

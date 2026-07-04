@@ -27,4 +27,9 @@ public class ReportsController {
 				.orElseThrow(() -> new RuntimeException("User not found with email " + email));
 		return reportsService.generateReport(user.getId());
 	}
+
+	@GetMapping("/{userId}")
+	public WellnessReport getReportByUserId(@PathVariable("userId") Long userId) {
+		return reportsService.generateReport(userId);
+	}
 }

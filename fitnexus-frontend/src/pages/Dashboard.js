@@ -88,7 +88,14 @@ function Dashboard() {
           mealCount:  (nut.data || []).length
         });
       })
-      .catch(() => { localStorage.clear(); navigate("/login"); })
+      .catch((err) => {
+        if (err.response && (err.response.status === 401 || err.response.status === 403)) {
+          localStorage.clear();
+          navigate("/login");
+        } else {
+          console.error("Failed to load dashboard data:", err);
+        }
+      })
       .finally(() => setLoading(false));
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
