@@ -98,11 +98,17 @@ function LoginForm() {
       // Debug logging
       console.log('Login response:', res.data);
 
+      const role = res.data.role || "USER";
+
+      if (role !== selectedPortal.key) {
+        setError(`Access denied. Your account is registered as a ${role.replace("_", " ")}, not as a ${selectedPortal.label}.`);
+        setLoading(false);
+        return;
+      }
+
       localStorage.setItem("token", res.data.token);
       localStorage.setItem("userId", res.data.userId || res.data.id);
       localStorage.setItem("email", res.data.email);
-      // Ensure role is stored; fallback to selected portal if missing
-      const role = res.data.role || selectedPortal.key || "USER";
       localStorage.setItem("role", role);
 
       if (role === "ADMIN") {

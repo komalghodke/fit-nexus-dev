@@ -42,6 +42,7 @@ function App() {
           <Route path="/sleep"     element={<PrivateRoute><SleepForm /></PrivateRoute>} />
           <Route path="/stress"    element={<PrivateRoute><StressForm /></PrivateRoute>} />
           <Route path="/wellness"  element={<PrivateRoute><WellnessForm /></PrivateRoute>} />
+          <Route path="/wellness-form" element={<PrivateRoute><WellnessForm /></PrivateRoute>} />
           <Route path="/map"       element={<PrivateRoute><MapPage /></PrivateRoute>} />
 
           {/* Staff-only route */}

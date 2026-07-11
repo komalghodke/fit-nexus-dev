@@ -7,7 +7,7 @@ import {
 import SpaIcon from "@mui/icons-material/Spa";
 import SelfImprovementIcon from "@mui/icons-material/SelfImprovement";
 import FitnessCenterIcon from "@mui/icons-material/FitnessCenter";
-import TranslateIcon from "@mui/icons-material/Translate";
+// TranslateIcon removed (unused)
 
 const LANGS = [
   { code: "en",  label: "EN" },

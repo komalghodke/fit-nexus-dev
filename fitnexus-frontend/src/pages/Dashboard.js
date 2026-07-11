@@ -3,12 +3,13 @@ import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import {
   Box, Container, Grid, Card, CardContent, Typography,
-  Button, Avatar, Divider, CircularProgress, Chip
+  Button, Avatar, Divider, CircularProgress, Chip,
+  TextField, MenuItem
 } from "@mui/material";
 import {
   FitnessCenter, Restaurant, Bedtime, Psychology,
   Assignment, AccountCircle, TrendingUp, SelfImprovement,
-  Bolt, WaterDrop, MonitorHeart, CheckCircle
+  CheckCircle
 } from "@mui/icons-material";
 import { API_URL } from "../api/apiConfig";
 
@@ -55,16 +56,43 @@ function StatCard({ icon, label, value, unit, color, bg }) {
 function Dashboard() {
   const [profile, setProfile] = useState(null);
   const [stats, setStats]     = useState({ workouts: 0, sleepAvg: "—", stressLast: "—", mealCount: 0 });
+  const [todayLogs, setTodayLogs] = useState({ workout: false, sleep: false, stress: false, nutrition: false });
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
+
+  // Quick Log State
+  const [quickWorkout, setQuickWorkout] = useState({ type: "Yoga", duration: 30, intensity: "Medium" });
+  const [quickMeal, setQuickMeal]       = useState({ meal: "Snack", calories: 150 });
+  const [quickSleep, setQuickSleep]     = useState({ hours: 8, quality: "Restful" });
+  const [quickStress, setQuickStress]   = useState({ level: 5, notes: "" });
+
+  // Notifications
+  const [workoutMsg, setWorkoutMsg] = useState("");
+  const [mealMsg, setMealMsg]       = useState("");
+  const [sleepMsg, setSleepMsg]     = useState("");
+  const [stressMsg, setStressMsg]   = useState("");
 
   const token  = localStorage.getItem("token");
   const email  = localStorage.getItem("email");
   const userId = localStorage.getItem("userId");
+  const role   = localStorage.getItem("role");
 
   useEffect(() => {
     if (!token || !email) { navigate("/login"); return; }
+    if (role === "YOGA_INSTRUCTOR" || role === "GYM_TRAINER") {
+      navigate("/staff");
+      return;
+    }
+    if (role === "ADMIN") {
+      navigate("/admin");
+      return;
+    }
+    loadStats(true);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
+  const loadStats = (showSpinner = false) => {
+    if (showSpinner) setLoading(true);
     const headers = { Authorization: `Bearer ${token}` };
 
     Promise.all([
@@ -88,6 +116,15 @@ function Dashboard() {
           stressLast: lastStress,
           mealCount:  (nut.data || []).length
         });
+
+        // Calculate today's logged checklist
+        const todayStr = new Date().toDateString();
+        setTodayLogs({
+          workout: (wkt.data || []).some(x => x.createdAt && new Date(x.createdAt).toDateString() === todayStr),
+          sleep: (slp.data || []).some(x => x.createdAt && new Date(x.createdAt).toDateString() === todayStr),
+          stress: (str.data || []).some(x => x.createdAt && new Date(x.createdAt).toDateString() === todayStr),
+          nutrition: (nut.data || []).some(x => x.createdAt && new Date(x.createdAt).toDateString() === todayStr)
+        });
       })
       .catch((err) => {
         if (err.response && (err.response.status === 401 || err.response.status === 403)) {
@@ -98,8 +135,77 @@ function Dashboard() {
         }
       })
       .finally(() => setLoading(false));
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  };
+
+  const handleQuickWorkout = async (e) => {
+    e.preventDefault();
+    setWorkoutMsg("");
+    try {
+      const headers = { Authorization: `Bearer ${token}` };
+      await axios.post(`${API_URL}/workout/${userId}`, {
+        type: quickWorkout.type,
+        duration: parseInt(quickWorkout.duration),
+        intensity: quickWorkout.intensity
+      }, { headers });
+      setWorkoutMsg("Logged!");
+      loadStats(false);
+      setTimeout(() => setWorkoutMsg(""), 2000);
+    } catch {
+      setWorkoutMsg("Failed");
+    }
+  };
+
+  const handleQuickMeal = async (e) => {
+    e.preventDefault();
+    setMealMsg("");
+    try {
+      const headers = { Authorization: `Bearer ${token}` };
+      await axios.post(`${API_URL}/nutrition/${userId}`, {
+        meal: quickMeal.meal,
+        calories: parseInt(quickMeal.calories),
+        notes: "Quick Logged from Dashboard"
+      }, { headers });
+      setMealMsg("Logged!");
+      loadStats(false);
+      setTimeout(() => setMealMsg(""), 2000);
+    } catch {
+      setMealMsg("Failed");
+    }
+  };
+
+  const handleQuickSleep = async (e) => {
+    e.preventDefault();
+    setSleepMsg("");
+    try {
+      const headers = { Authorization: `Bearer ${token}` };
+      await axios.post(`${API_URL}/sleep/${userId}`, {
+        hours: parseInt(quickSleep.hours),
+        quality: quickSleep.quality
+      }, { headers });
+      setSleepMsg("Logged!");
+      loadStats(false);
+      setTimeout(() => setSleepMsg(""), 2000);
+    } catch {
+      setSleepMsg("Failed");
+    }
+  };
+
+  const handleQuickStress = async (e) => {
+    e.preventDefault();
+    setStressMsg("");
+    try {
+      const headers = { Authorization: `Bearer ${token}` };
+      await axios.post(`${API_URL}/stress/${userId}`, {
+        level: quickStress.level,
+        notes: quickStress.notes || "Dashboard Quick Log"
+      }, { headers });
+      setStressMsg("Logged!");
+      loadStats(false);
+      setTimeout(() => setStressMsg(""), 2000);
+    } catch {
+      setStressMsg("Failed");
+    }
+  };
 
   if (loading) {
     return (
@@ -179,6 +285,286 @@ function Dashboard() {
               <StatCard {...s} />
             </Grid>
           ))}
+        </Grid>
+        {/* ── Interactive Workspace Row (Guidelines & Completeness Tracker) ── */}
+        {(profile?.staffNotes || true) && (
+          <Grid container spacing={3} sx={{ mb: 5 }}>
+            {/* Guidelines Card */}
+            {profile?.staffNotes && (
+              <Grid item xs={12} md={8}>
+                <Card
+                  sx={{
+                    borderRadius: 4,
+                    height: "100%",
+                    background: "linear-gradient(135deg, #ffffff 0%, #fbf8ff 100%)",
+                    border: "1px solid rgba(96, 46, 125, 0.15)",
+                    boxShadow: "0 4px 20px rgba(96, 46, 125, 0.05)",
+                    position: "relative",
+                    overflow: "hidden"
+                  }}
+                >
+                  {/* Decorative corner glow */}
+                  <Box
+                    sx={{
+                      position: "absolute",
+                      top: -40,
+                      right: -40,
+                      width: 120,
+                      height: 120,
+                      borderRadius: "50%",
+                      background: "radial-gradient(circle, rgba(96, 46, 125, 0.15) 0%, transparent 70%)",
+                      filter: "blur(10px)"
+                    }}
+                  />
+                  <CardContent sx={{ p: 3.5 }}>
+                    <Box sx={{ display: "flex", alignItems: "center", gap: 1.5, mb: 2 }}>
+                      <Avatar sx={{ bgcolor: "#602e7d", width: 44, height: 44 }}>
+                        <SelfImprovement sx={{ color: "#fff" }} />
+                      </Avatar>
+                      <Box>
+                        <Typography variant="subtitle1" sx={{ fontWeight: 800, color: "#602e7d" }}>
+                          📢 Professional Trainer & Instructor Guidelines
+                        </Typography>
+                        <Typography variant="caption" color="text.secondary">
+                          Personalised prescription logged by your instructor
+                        </Typography>
+                      </Box>
+                    </Box>
+                    <Divider sx={{ mb: 2 }} />
+                    <Box
+                      sx={{
+                        p: 2.5,
+                        bgcolor: "#faf6ff",
+                        borderRadius: 3,
+                        borderLeft: "4px solid #602e7d",
+                        minHeight: 80
+                      }}
+                    >
+                      <Typography variant="body2" sx={{ whiteSpace: "pre-line", color: "#3f2652", fontWeight: 500, lineHeight: 1.6 }}>
+                        {profile.staffNotes}
+                      </Typography>
+                    </Box>
+                  </CardContent>
+                </Card>
+              </Grid>
+            )}
+
+            {/* Daily Tracker Checklist */}
+            <Grid item xs={12} md={profile?.staffNotes ? 4 : 12}>
+              <Card
+                sx={{
+                  borderRadius: 4,
+                  height: "100%",
+                  bgcolor: "#ffffff",
+                  boxShadow: "0 4px 20px rgba(0,0,0,0.04)",
+                  border: "1px solid #eee"
+                }}
+              >
+                <CardContent sx={{ p: 3.5, display: "flex", flexDirection: "column", height: "100%" }}>
+                  <Typography variant="subtitle1" sx={{ fontWeight: 800, color: "#2c2c2c", mb: 0.5 }}>
+                    🎯 Today's Wellness Tracker
+                  </Typography>
+                  <Typography variant="caption" color="text.secondary" sx={{ display: "block", mb: 2 }}>
+                    Log all 4 dimensions daily to maintain balance
+                  </Typography>
+                  <Divider sx={{ mb: 2 }} />
+
+                  {/* Checklist items */}
+                  <Box sx={{ display: "flex", flexDirection: "column", gap: 1.5 }}>
+                    {[
+                      { key: "workout", label: "Logged Workout/Yoga", color: "#2e7d32" },
+                      { key: "nutrition", label: "Logged Meals/Calories", color: "#e65100" },
+                      { key: "sleep", label: "Logged Sleep Quality", color: "#1565c0" },
+                      { key: "stress", label: "Logged Stress Level", color: "#c2185b" }
+                    ].map((item) => {
+                      const completed = todayLogs[item.key];
+                      return (
+                        <Box
+                          key={item.key}
+                          sx={{
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "space-between",
+                            p: 1.2,
+                            px: 2,
+                            borderRadius: 2.5,
+                            bgcolor: completed ? `${item.color}08` : "#f9f9f9",
+                            border: completed ? `1px solid ${item.color}25` : "1px solid #f0f0f0"
+                          }}
+                        >
+                          <Typography variant="body2" sx={{ fontWeight: 600, color: completed ? item.color : "#555" }}>
+                            {item.label}
+                          </Typography>
+                          <Chip
+                            label={completed ? "Logged ✓" : "Pending"}
+                            size="small"
+                            color={completed ? "success" : "default"}
+                            sx={{
+                              fontWeight: 700,
+                              fontSize: "0.65rem",
+                              height: 20,
+                              bgcolor: completed ? `${item.color}20` : undefined,
+                              color: completed ? item.color : undefined
+                            }}
+                          />
+                        </Box>
+                      );
+                    })}
+                  </Box>
+                </CardContent>
+              </Card>
+            </Grid>
+          </Grid>
+        )}
+
+        {/* ──⚡ FitNexus Quick-Log Desk ───────────────────────────── */}
+        <Typography variant="h6" sx={{ fontWeight: 800, color: "#333", mb: 2 }}>
+          ⚡ FitNexus Quick-Log Desk
+        </Typography>
+        <Grid container spacing={3} sx={{ mb: 5 }}>
+          {/* Quick Workout Log */}
+          <Grid item xs={12} sm={6} md={3}>
+            <Card sx={{ borderRadius: 4, height: "100%", borderLeft: "5px solid #2e7d32", boxShadow: "0 2px 10px rgba(0,0,0,0.05)" }}>
+              <CardContent sx={{ p: 2.5 }}>
+                <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 1 }}>
+                  <Typography variant="subtitle2" sx={{ fontWeight: 800 }}>💪 Quick Workout</Typography>
+                  {workoutMsg && <Chip label={workoutMsg} size="small" color={workoutMsg === "Logged!" ? "success" : "error"} />}
+                </Box>
+                <Divider sx={{ mb: 2 }} />
+                <Box sx={{ display: "flex", flexDirection: "column", gap: 1.5 }}>
+                  <TextField
+                    select
+                    label="Workout Type"
+                    size="small"
+                    value={quickWorkout.type}
+                    onChange={e => setQuickWorkout({ ...quickWorkout, type: e.target.value })}
+                  >
+                    <MenuItem value="Yoga">Yoga</MenuItem>
+                    <MenuItem value="Gym Weights">Gym Weights</MenuItem>
+                    <MenuItem value="Walking">Walking</MenuItem>
+                    <MenuItem value="Running">Running</MenuItem>
+                    <MenuItem value="Meditation">Meditation</MenuItem>
+                  </TextField>
+                  <TextField
+                    label="Duration (mins)"
+                    type="number"
+                    size="small"
+                    value={quickWorkout.duration}
+                    onChange={e => setQuickWorkout({ ...quickWorkout, duration: e.target.value })}
+                  />
+                  <Button variant="contained" color="success" onClick={handleQuickWorkout} sx={{ borderRadius: 2, textTransform: "none", fontWeight: "bold" }}>
+                    Log Workout
+                  </Button>
+                </Box>
+              </CardContent>
+            </Card>
+          </Grid>
+
+          {/* Quick Calorie Log */}
+          <Grid item xs={12} sm={6} md={3}>
+            <Card sx={{ borderRadius: 4, height: "100%", borderLeft: "5px solid #e65100", boxShadow: "0 2px 10px rgba(0,0,0,0.05)" }}>
+              <CardContent sx={{ p: 2.5 }}>
+                <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 1 }}>
+                  <Typography variant="subtitle2" sx={{ fontWeight: 800 }}>🥗 Quick Meal</Typography>
+                  {mealMsg && <Chip label={mealMsg} size="small" color={mealMsg === "Logged!" ? "success" : "error"} />}
+                </Box>
+                <Divider sx={{ mb: 2 }} />
+                <Box sx={{ display: "flex", flexDirection: "column", gap: 1.5 }}>
+                  <TextField
+                    select
+                    label="Meal Category"
+                    size="small"
+                    value={quickMeal.meal}
+                    onChange={e => setQuickMeal({ ...quickMeal, meal: e.target.value })}
+                  >
+                    <MenuItem value="Breakfast">Breakfast</MenuItem>
+                    <MenuItem value="Lunch">Lunch</MenuItem>
+                    <MenuItem value="Dinner">Dinner</MenuItem>
+                    <MenuItem value="Snack">Snack</MenuItem>
+                  </TextField>
+                  <TextField
+                    label="Calories (kcal)"
+                    type="number"
+                    size="small"
+                    value={quickMeal.calories}
+                    onChange={e => setQuickMeal({ ...quickMeal, calories: e.target.value })}
+                  />
+                  <Button variant="contained" color="warning" onClick={handleQuickMeal} sx={{ borderRadius: 2, textTransform: "none", fontWeight: "bold" }}>
+                    Log Calorie
+                  </Button>
+                </Box>
+              </CardContent>
+            </Card>
+          </Grid>
+
+          {/* Quick Sleep Log */}
+          <Grid item xs={12} sm={6} md={3}>
+            <Card sx={{ borderRadius: 4, height: "100%", borderLeft: "5px solid #1565c0", boxShadow: "0 2px 10px rgba(0,0,0,0.05)" }}>
+              <CardContent sx={{ p: 2.5 }}>
+                <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 1 }}>
+                  <Typography variant="subtitle2" sx={{ fontWeight: 800 }}>🛌 Quick Sleep</Typography>
+                  {sleepMsg && <Chip label={sleepMsg} size="small" color={sleepMsg === "Logged!" ? "success" : "error"} />}
+                </Box>
+                <Divider sx={{ mb: 2 }} />
+                <Box sx={{ display: "flex", flexDirection: "column", gap: 1.5 }}>
+                  <TextField
+                    label="Hours Slept"
+                    type="number"
+                    size="small"
+                    value={quickSleep.hours}
+                    onChange={e => setQuickSleep({ ...quickSleep, hours: e.target.value })}
+                  />
+                  <TextField
+                    select
+                    label="Sleep Quality"
+                    size="small"
+                    value={quickSleep.quality}
+                    onChange={e => setQuickSleep({ ...quickSleep, quality: e.target.value })}
+                  >
+                    <MenuItem value="Restful">Restful</MenuItem>
+                    <MenuItem value="LightSleep">Light Sleep</MenuItem>
+                    <MenuItem value="Interrupted">Interrupted</MenuItem>
+                    <MenuItem value="Insomnia">Insomnia</MenuItem>
+                  </TextField>
+                  <Button variant="contained" color="primary" onClick={handleQuickSleep} sx={{ borderRadius: 2, textTransform: "none", fontWeight: "bold" }}>
+                    Log Sleep
+                  </Button>
+                </Box>
+              </CardContent>
+            </Card>
+          </Grid>
+
+          {/* Quick Stress Log */}
+          <Grid item xs={12} sm={6} md={3}>
+            <Card sx={{ borderRadius: 4, height: "100%", borderLeft: "5px solid #c2185b", boxShadow: "0 2px 10px rgba(0,0,0,0.05)" }}>
+              <CardContent sx={{ p: 2.5 }}>
+                <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 1 }}>
+                  <Typography variant="subtitle2" sx={{ fontWeight: 800 }}>🧠 Quick Stress</Typography>
+                  {stressMsg && <Chip label={stressMsg} size="small" color={stressMsg === "Logged!" ? "success" : "error"} />}
+                </Box>
+                <Divider sx={{ mb: 2 }} />
+                <Box sx={{ display: "flex", flexDirection: "column", gap: 1.5 }}>
+                  <TextField
+                    label="Stress Level (1-10)"
+                    type="number"
+                    size="small"
+                    value={quickStress.level}
+                    onChange={e => setQuickStress({ ...quickStress, level: parseInt(e.target.value) || 5 })}
+                  />
+                  <TextField
+                    label="Triggers / Notes"
+                    size="small"
+                    placeholder="e.g. Work load, study..."
+                    value={quickStress.notes}
+                    onChange={e => setQuickStress({ ...quickStress, notes: e.target.value })}
+                  />
+                  <Button variant="contained" color="secondary" onClick={handleQuickStress} sx={{ borderRadius: 2, textTransform: "none", fontWeight: "bold" }}>
+                    Log Stress
+                  </Button>
+                </Box>
+              </CardContent>
+            </Card>
+          </Grid>
         </Grid>
 
         {/* ── Assessment CTA ──────────────────────────────────────── */}

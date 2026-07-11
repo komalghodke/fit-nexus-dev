@@ -22,9 +22,10 @@ import {
   Avatar,
   IconButton,
   Tooltip,
-  CircularProgress
+  CircularProgress,
+  Button
 } from "@mui/material";
-import { Search, Map, Place, SelfImprovement, FitnessCenter, LocalHospital, GpsFixed } from "@mui/icons-material";
+import { Search, Map, SelfImprovement, FitnessCenter, LocalHospital, GpsFixed } from "@mui/icons-material";
 
 // Fix Leaflet CSS missing import issue (leaflet CSS needs to be loaded)
 import "leaflet/dist/leaflet.css";
@@ -70,7 +71,7 @@ function MapPage() {
       );
     }
     // Initial fetch
-    fetchLocations("fitness", PUNE_CENTER[0], PUNE_CENTER[1]);
+    fetchLocations("all", PUNE_CENTER[0], PUNE_CENTER[1]);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -288,7 +289,7 @@ function MapPage() {
               </CardContent>
 
               {/* Facility List */}
-              <Box sx={{ flexGrow: 1, overflowY: "auto", px: 2 }}>
+              <Box sx={{ flexGrow: 1, overflowY: "auto", px: 2, maxHeight: activeCenter ? "220px" : "500px" }}>
                 {loading ? (
                   <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100%" }}>
                     <CircularProgress size={30} />
@@ -335,7 +336,7 @@ function MapPage() {
                                   <Box sx={{ display: "flex", alignItems: "center", gap: 1, mt: 0.5 }}>
                                     <Rating value={center.rating} precision={0.1} size="small" readOnly />
                                     <Typography variant="caption" sx={{ fontWeight: 600, color: "#666" }}>
-                                      {center.rating} ({center.reviews})
+                                      {center.rating}
                                     </Typography>
                                   </Box>
                                 </Box>
@@ -356,6 +357,77 @@ function MapPage() {
                   </List>
                 )}
               </Box>
+
+              {/* Selected Facility Details Card */}
+              {activeCenter && (
+                <Box
+                  sx={{
+                    p: 2,
+                    borderTop: "1px solid #eee",
+                    bgcolor: "#fafafa",
+                    display: "flex",
+                    flexDirection: "column",
+                    height: "300px",
+                    overflowY: "auto"
+                  }}
+                >
+                  <Box sx={{ display: "flex", gap: 2, mb: 1 }}>
+                    <img
+                      src={
+                        activeCenter.thumbnail || (
+                          activeCenter.type === "YOGA"
+                            ? "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?auto=format&fit=crop&w=150&q=80"
+                            : activeCenter.type === "GYM"
+                            ? "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=150&q=80"
+                            : "https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=150&q=80"
+                        )
+                      }
+                      alt={activeCenter.name}
+                      style={{ width: "80px", height: "80px", borderRadius: "8px", objectFit: "cover" }}
+                    />
+                    <Box>
+                      <Typography variant="subtitle2" sx={{ fontWeight: 800, color: "#333", lineHeight: 1.2 }}>
+                        {activeCenter.name}
+                      </Typography>
+                      <Chip
+                        label={activeCenter.type === "YOGA" ? "Yoga Studio" : activeCenter.type === "GYM" ? "Gym / Fitness" : "AYUSH Clinic"}
+                        size="small"
+                        color={activeCenter.type === "YOGA" ? "secondary" : activeCenter.type === "GYM" ? "primary" : "success"}
+                        sx={{ mt: 0.5, mb: 0.5, height: 18, fontSize: "0.65rem", fontWeight: 700 }}
+                      />
+                      <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
+                        <Rating value={activeCenter.rating} precision={0.1} size="small" readOnly />
+                        <Typography variant="caption" sx={{ fontWeight: 600 }}>
+                          {activeCenter.rating} ({activeCenter.reviews || 25})
+                        </Typography>
+                      </Box>
+                    </Box>
+                  </Box>
+                  <Typography variant="caption" sx={{ color: "#666", display: "block", mb: 1, fontStyle: "italic" }}>
+                    "{activeCenter.desc || "A premium space supporting your wellness journey."}"
+                  </Typography>
+                  <Typography variant="caption" display="block" sx={{ mb: 0.5, color: "#444" }}>
+                    📍 {activeCenter.address}
+                  </Typography>
+                  {activeCenter.phone && activeCenter.phone !== "N/A" && (
+                    <Typography variant="caption" display="block" sx={{ mb: 1, color: "#444", fontWeight: 600 }}>
+                      📞 Call: {activeCenter.phone}
+                    </Typography>
+                  )}
+                  {activeCenter.website && (
+                    <Button
+                      href={activeCenter.website}
+                      target="_blank"
+                      size="small"
+                      variant="contained"
+                      color="secondary"
+                      sx={{ mt: "auto", textTransform: "none", py: 0.5, borderRadius: 2, fontWeight: 700 }}
+                    >
+                      Visit Website
+                    </Button>
+                  )}
+                </Box>
+              )}
             </Card>
           </Grid>
 

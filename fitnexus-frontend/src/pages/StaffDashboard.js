@@ -25,7 +25,8 @@ import {
   List,
   ListItem,
   ListItemIcon,
-  ListItemText
+  ListItemText,
+  TextField
 } from "@mui/material";
 import {
   Groups,
@@ -44,6 +45,7 @@ function StaffDashboard() {
   const [error, setError] = useState("");
   const [expandedUserId, setExpandedUserId] = useState(null);
   const [reports, setReports] = useState({});
+  const [logs, setLogs] = useState({}); // stores { userId: { workouts: [], sleep: [], stress: [], nutrition: [] } }
 
   const role = localStorage.getItem("role") || "USER";
   const token = localStorage.getItem("token");
@@ -76,12 +78,39 @@ function StaffDashboard() {
   const fetchReport = async (userId) => {
     if (reports[userId]) return; // already cached
     try {
-      const res = await axios.get(`${API_URL}/reports/${userId}`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      const headers = { Authorization: `Bearer ${token}` };
+      const [res, workoutRes, sleepRes, stressRes, nutritionRes] = await Promise.all([
+        axios.get(`${API_URL}/reports/${userId}`, { headers }),
+        axios.get(`${API_URL}/workout/${userId}`, { headers }).catch(() => ({ data: [] })),
+        axios.get(`${API_URL}/sleep/${userId}`, { headers }).catch(() => ({ data: [] })),
+        axios.get(`${API_URL}/stress/${userId}`, { headers }).catch(() => ({ data: [] })),
+        axios.get(`${API_URL}/nutrition/${userId}`, { headers }).catch(() => ({ data: [] }))
+      ]);
       setReports(prev => ({ ...prev, [userId]: res.data }));
+      setLogs(prev => ({
+        ...prev,
+        [userId]: {
+          workouts: workoutRes.data || [],
+          sleep: sleepRes.data || [],
+          stress: stressRes.data || [],
+          nutrition: nutritionRes.data || []
+        }
+      }));
     } catch {
       setReports(prev => ({ ...prev, [userId]: { error: true } }));
+    }
+  };
+
+  const handleSaveNotes = async (userId, notesText) => {
+    try {
+      const headers = { Authorization: `Bearer ${token}` };
+      await axios.put(`${API_URL}/users/${userId}/notes`, { notes: notesText }, { headers });
+      // Update local state
+      setUsers(prev => prev.map(u => u.id === userId ? { ...u, staffNotes: notesText } : u));
+      return true;
+    } catch (err) {
+      console.error("Failed to save notes:", err);
+      return false;
     }
   };
 
@@ -218,7 +247,13 @@ function StaffDashboard() {
                                   No wellness assessment submitted yet by this member.
                                 </Alert>
                               ) : (
-                                <ReportCard report={reports[user.id]} />
+                                <ReportCard
+                                  report={reports[user.id]}
+                                  user={user}
+                                  logs={logs[user.id]}
+                                  role={role}
+                                  onSaveNotes={handleSaveNotes}
+                                />
                               )}
                             </Box>
                           </Collapse>
@@ -246,113 +281,362 @@ function StaffDashboard() {
 }
 
 /** Inline Report Card Component */
-function ReportCard({ report }) {
+function ReportCard({ report, user, logs, role, onSaveNotes }) {
+  const [notesText, setNotesText] = React.useState(user.staffNotes || "");
+  const [saveSuccess, setSaveSuccess] = React.useState(false);
+  const [saving, setSaving] = React.useState(false);
+  const [activeTab, setActiveTab] = React.useState("report"); // report, logs, advice
+
   const scoreColor = report.score >= 8 ? "#2e7d32" : report.score >= 5 ? "#ed6c02" : "#d32f2f";
 
+  const yogaPresets = [
+    "🧘 Daily Practice: 10 rounds of Anulom-Vilom & 15 mins Yoga Nidra for stress reduction.",
+    "☀️ Daily Practice: 6 rounds of Surya Namaskar (Sun Salutations) followed by Shavasana.",
+    "🌾 Dietary Guidelines: Focus on Sattvic food (fresh fruits, organic grains). Limit processed foods.",
+    "📿 Chakra Alignment: Meditate on the seed mantra 'So Hum' (10 mins) daily for heart chakra opening."
+  ];
+
+  const gymPresets = [
+    "🏋️ Routine: 3 sets of Bodyweight Squats (15 reps), Pushups (10 reps), and Plank (45 secs).",
+    "🏃 Cardio Activity: 25 minutes of brisk walking or cycling at a moderate pace (HR ~120-130 BPM).",
+    "🥗 Nutrition Guidelines: Increase lean protein intake to 1.2g per kg of bodyweight. Add a daily post-workout shake.",
+    "💧 Hydration Target: Aim for a minimum of 3.0 Liters of water daily to support metabolic recovery."
+  ];
+
+  const presets = role === "YOGA_INSTRUCTOR" ? yogaPresets : gymPresets;
+
+  const handleInsertPreset = (preset) => {
+    setNotesText(prev => prev ? prev + "\n" + preset : preset);
+  };
+
+  const handleSave = async () => {
+    setSaving(true);
+    setSaveSuccess(false);
+    const success = await onSaveNotes(user.id, notesText);
+    setSaving(false);
+    if (success) {
+      setSaveSuccess(true);
+      setTimeout(() => setSaveSuccess(false), 2000);
+    }
+  };
+
+  const memberLogs = logs || { workouts: [], sleep: [], stress: [], nutrition: [] };
+
   return (
-    <Grid container spacing={3}>
-      {/* Score Card */}
-      <Grid item xs={12} md={4}>
-        <Card sx={{ borderRadius: 3, textAlign: "center", boxShadow: "0 2px 8px rgba(0,0,0,0.08)" }}>
-          <CardContent sx={{ py: 3 }}>
-            <Typography variant="overline" sx={{ color: "#666" }}>Wellness Score</Typography>
-            <Typography variant="h2" sx={{ fontWeight: 900, color: scoreColor }}>
-              {report.score}/10
-            </Typography>
-            <Chip
-              label={report.status}
-              sx={{
-                mt: 1,
-                fontWeight: 700,
-                bgcolor: scoreColor,
-                color: "#fff"
-              }}
-            />
-            <Typography variant="body2" sx={{ mt: 2, color: "#555" }}>
-              Age: {report.age} | Height: {report.height} cm | Weight: {report.weight} kg | BMI: {report.bmi ? report.bmi.toFixed(1) : "—"}
-            </Typography>
-            <Typography variant="body2" sx={{ mt: 0.5, color: "#555" }}>
-              Heart Rate: {report.restingHeartRate || 72} bpm | Sleep: {report.sleepHours || 8} hrs | Mood: {report.mood || "Balanced"}
-            </Typography>
-          </CardContent>
-        </Card>
-      </Grid>
+    <Box sx={{ width: "100%" }}>
+      {/* Sub navigation Tabs */}
+      <Box sx={{ display: "flex", gap: 1, mb: 3, borderBottom: "1px solid #ddd", pb: 1 }}>
+        <Button
+          size="small"
+          variant={activeTab === "report" ? "contained" : "text"}
+          color="secondary"
+          onClick={() => setActiveTab("report")}
+          sx={{ textTransform: "none", fontWeight: 700, borderRadius: 2 }}
+        >
+          📋 Wellness Insights
+        </Button>
+        <Button
+          size="small"
+          variant={activeTab === "logs" ? "contained" : "text"}
+          color="secondary"
+          onClick={() => setActiveTab("logs")}
+          sx={{ textTransform: "none", fontWeight: 700, borderRadius: 2 }}
+        >
+          📊 Daily Logs History
+        </Button>
+        <Button
+          size="small"
+          variant={activeTab === "advice" ? "contained" : "text"}
+          color="secondary"
+          onClick={() => setActiveTab("advice")}
+          sx={{ textTransform: "none", fontWeight: 700, borderRadius: 2 }}
+        >
+          ✍️ Staff Guidance Portal
+        </Button>
+      </Box>
 
-      {/* Summaries */}
-      <Grid item xs={12} md={4}>
-        <Card sx={{ borderRadius: 3, height: "100%", boxShadow: "0 2px 8px rgba(0,0,0,0.08)" }}>
-          <CardContent>
-            <Typography variant="subtitle1" sx={{ fontWeight: 700, color: "#054474", mb: 1 }}>
-              📊 Log Summaries
-            </Typography>
-            <Divider sx={{ mb: 1.5 }} />
-            <Typography variant="body2" sx={{ mb: 0.5 }}>💪 {report.workoutSummary}</Typography>
-            <Typography variant="body2" sx={{ mb: 0.5 }}>🥗 {report.nutritionSummary}</Typography>
-            <Typography variant="body2" sx={{ mb: 0.5 }}>🌙 {report.sleepSummary}</Typography>
-            <Typography variant="body2">🧘 {report.stressSummary}</Typography>
-          </CardContent>
-        </Card>
-      </Grid>
+      {activeTab === "report" && (
+        <Grid container spacing={3}>
+          {/* Score Card */}
+          <Grid item xs={12} md={4}>
+            <Card sx={{ borderRadius: 3, textAlign: "center", boxShadow: "0 2px 8px rgba(0,0,0,0.08)" }}>
+              <CardContent sx={{ py: 3 }}>
+                <Typography variant="overline" sx={{ color: "#666" }}>Wellness Score</Typography>
+                <Typography variant="h2" sx={{ fontWeight: 900, color: scoreColor }}>
+                  {report.score}/10
+                </Typography>
+                <Chip
+                  label={report.status}
+                  sx={{
+                    mt: 1,
+                    fontWeight: 700,
+                    bgcolor: scoreColor,
+                    color: "#fff"
+                  }}
+                />
+                <Typography variant="body2" sx={{ mt: 2, color: "#555" }}>
+                  Age: {report.age} | Height: {report.height} cm | Weight: {report.weight} kg | BMI: {report.bmi ? report.bmi.toFixed(1) : "—"}
+                </Typography>
+                <Typography variant="body2" sx={{ mt: 0.5, color: "#555" }}>
+                  Heart Rate: {report.restingHeartRate || 72} bpm | Sleep: {report.sleepHours || 8} hrs | Mood: {report.mood || "Balanced"}
+                </Typography>
+              </CardContent>
+            </Card>
+          </Grid>
 
-      {/* Yoga Recommendation */}
-      <Grid item xs={12} md={4}>
-        <Card sx={{ borderRadius: 3, height: "100%", boxShadow: "0 2px 8px rgba(0,0,0,0.08)" }}>
-          <CardContent>
-            <Typography variant="subtitle1" sx={{ fontWeight: 700, color: "#602e7d", mb: 1 }}>
-              🧘 Yoga Prescription
-            </Typography>
-            <Divider sx={{ mb: 1.5 }} />
-            <Typography variant="body2" sx={{ mb: 1 }}>
-              <strong>Routine:</strong> {report.yogaRecommendation || "—"}
-            </Typography>
-            <Typography variant="body2" sx={{ mb: 1 }}>
-              <strong>Mantra:</strong> {report.mantra || "—"}
-            </Typography>
-            <Typography variant="body2" sx={{ fontStyle: "italic", color: "#555" }}>
-              &ldquo;{report.affirmation || '—'}&rdquo;
-            </Typography>
-          </CardContent>
-        </Card>
-      </Grid>
+          {/* Summaries */}
+          <Grid item xs={12} md={4}>
+            <Card sx={{ borderRadius: 3, height: "100%", boxShadow: "0 2px 8px rgba(0,0,0,0.08)" }}>
+              <CardContent>
+                <Typography variant="subtitle1" sx={{ fontWeight: 700, color: "#054474", mb: 1 }}>
+                  📊 Log Summaries
+                </Typography>
+                <Divider sx={{ mb: 1.5 }} />
+                <Typography variant="body2" sx={{ mb: 0.5 }}>💪 {report.workoutSummary}</Typography>
+                <Typography variant="body2" sx={{ mb: 0.5 }}>🥗 {report.nutritionSummary}</Typography>
+                <Typography variant="body2" sx={{ mb: 0.5 }}>🌙 {report.sleepSummary}</Typography>
+                <Typography variant="body2">🧘 {report.stressSummary}</Typography>
+              </CardContent>
+            </Card>
+          </Grid>
 
-      {/* Wellness Tips */}
-      {report.wellnessTips && report.wellnessTips.length > 0 && (
-        <Grid item xs={12}>
-          <Card sx={{ borderRadius: 3, boxShadow: "0 2px 8px rgba(0,0,0,0.08)" }}>
-            <CardContent>
-              <Typography variant="subtitle1" sx={{ fontWeight: 700, color: "#054474", mb: 1 }}>
-                <TipsAndUpdates sx={{ fontSize: 18, mr: 0.5, verticalAlign: "text-bottom" }} />
-                Personalized Wellness Tips
+          {/* Yoga Recommendation */}
+          <Grid item xs={12} md={4}>
+            <Card sx={{ borderRadius: 3, height: "100%", boxShadow: "0 2px 8px rgba(0,0,0,0.08)" }}>
+              <CardContent>
+                <Typography variant="subtitle1" sx={{ fontWeight: 700, color: "#602e7d", mb: 1 }}>
+                  🧘 Yoga Prescription
+                </Typography>
+                <Divider sx={{ mb: 1.5 }} />
+                <Typography variant="body2" sx={{ mb: 1 }}>
+                  <strong>Routine:</strong> {report.yogaRecommendation || "—"}
+                </Typography>
+                <Typography variant="body2" sx={{ mb: 1 }}>
+                  <strong>Mantra:</strong> {report.mantra || "—"}
+                </Typography>
+                <Typography variant="body2" sx={{ fontStyle: "italic", color: "#555" }}>
+                  &ldquo;{report.affirmation || '—'}&rdquo;
+                </Typography>
+              </CardContent>
+            </Card>
+          </Grid>
+
+          {/* Wellness Tips */}
+          {report.wellnessTips && report.wellnessTips.length > 0 && (
+            <Grid item xs={12}>
+              <Card sx={{ borderRadius: 3, boxShadow: "0 2px 8px rgba(0,0,0,0.08)" }}>
+                <CardContent>
+                  <Typography variant="subtitle1" sx={{ fontWeight: 700, color: "#054474", mb: 1 }}>
+                    <TipsAndUpdates sx={{ fontSize: 18, mr: 0.5, verticalAlign: "text-bottom" }} />
+                    Personalized Wellness Tips
+                  </Typography>
+                  <Divider sx={{ mb: 1 }} />
+                  <List dense>
+                    {report.wellnessTips.map((tip, i) => (
+                      <ListItem key={i}>
+                        <ListItemIcon sx={{ minWidth: 32 }}>
+                          <Spa sx={{ color: "#602e7d", fontSize: 18 }} />
+                        </ListItemIcon>
+                        <ListItemText primary={tip} />
+                      </ListItem>
+                    ))}
+                  </List>
+                </CardContent>
+              </Card>
+            </Grid>
+          )}
+
+          {/* Medical Advisory */}
+          {report.medicalAdvisory && (
+            <Grid item xs={12}>
+              <Alert
+                severity="warning"
+                icon={<LocalHospital />}
+                sx={{ borderRadius: 2, fontWeight: 500 }}
+              >
+                {report.medicalAdvisory}
+              </Alert>
+            </Grid>
+          )}
+        </Grid>
+      )}
+
+      {activeTab === "logs" && (
+        <Grid container spacing={3}>
+          {/* Workouts logged list */}
+          <Grid item xs={12} sm={6}>
+            <Card sx={{ borderRadius: 3, p: 2, height: "100%", boxShadow: "0 2px 8px rgba(0,0,0,0.05)" }}>
+              <Typography variant="subtitle2" sx={{ fontWeight: 700, color: "#2e7d32", mb: 1 }}>
+                💪 Physical Workout Entries ({memberLogs.workouts.length})
               </Typography>
-              <Divider sx={{ mb: 1 }} />
-              <List dense>
-                {report.wellnessTips.map((tip, i) => (
-                  <ListItem key={i}>
-                    <ListItemIcon sx={{ minWidth: 32 }}>
-                      <Spa sx={{ color: "#602e7d", fontSize: 18 }} />
-                    </ListItemIcon>
-                    <ListItemText primary={tip} />
-                  </ListItem>
-                ))}
-              </List>
-            </CardContent>
-          </Card>
+              <Divider sx={{ mb: 1.5 }} />
+              {memberLogs.workouts.length === 0 ? (
+                <Typography variant="caption" color="text.secondary">No workout entries logged by member.</Typography>
+              ) : (
+                <Box sx={{ maxHeight: 180, overflowY: "auto" }}>
+                  {memberLogs.workouts.map((w, i) => (
+                    <Box key={i} sx={{ mb: 1, p: 1, bgcolor: "#f9f9f9", borderRadius: 2 }}>
+                      <Typography variant="body2" sx={{ fontWeight: 600 }}>{w.type} — {w.duration} mins</Typography>
+                      <Typography variant="caption" color="text.secondary">Intensity: {w.intensity || "Medium"} | Logged: {w.createdAt ? new Date(w.createdAt).toLocaleDateString() : "Today"}</Typography>
+                    </Box>
+                  ))}
+                </Box>
+              )}
+            </Card>
+          </Grid>
+
+          {/* Nutrition logged list */}
+          <Grid item xs={12} sm={6}>
+            <Card sx={{ borderRadius: 3, p: 2, height: "100%", boxShadow: "0 2px 8px rgba(0,0,0,0.05)" }}>
+              <Typography variant="subtitle2" sx={{ fontWeight: 700, color: "#e65100", mb: 1 }}>
+                🥗 Meal & Calorie Entries ({memberLogs.nutrition.length})
+              </Typography>
+              <Divider sx={{ mb: 1.5 }} />
+              {memberLogs.nutrition.length === 0 ? (
+                <Typography variant="caption" color="text.secondary">No meal entries logged by member.</Typography>
+              ) : (
+                <Box sx={{ maxHeight: 180, overflowY: "auto" }}>
+                  {memberLogs.nutrition.map((n, i) => (
+                    <Box key={i} sx={{ mb: 1, p: 1, bgcolor: "#f9f9f9", borderRadius: 2 }}>
+                      <Typography variant="body2" sx={{ fontWeight: 600 }}>{n.meal} — {n.calories} kcal</Typography>
+                      <Typography variant="caption" color="text.secondary">{n.notes} | Logged: {n.createdAt ? new Date(n.createdAt).toLocaleDateString() : "Today"}</Typography>
+                    </Box>
+                  ))}
+                </Box>
+              )}
+            </Card>
+          </Grid>
+
+          {/* Sleep logged list */}
+          <Grid item xs={12} sm={6}>
+            <Card sx={{ borderRadius: 3, p: 2, height: "100%", boxShadow: "0 2px 8px rgba(0,0,0,0.05)" }}>
+              <Typography variant="subtitle2" sx={{ fontWeight: 700, color: "#1565c0", mb: 1 }}>
+                🛌 Sleep & Recovery Entries ({memberLogs.sleep.length})
+              </Typography>
+              <Divider sx={{ mb: 1.5 }} />
+              {memberLogs.sleep.length === 0 ? (
+                <Typography variant="caption" color="text.secondary">No sleep entries logged by member.</Typography>
+              ) : (
+                <Box sx={{ maxHeight: 180, overflowY: "auto" }}>
+                  {memberLogs.sleep.map((s, i) => (
+                    <Box key={i} sx={{ mb: 1, p: 1, bgcolor: "#f9f9f9", borderRadius: 2 }}>
+                      <Typography variant="body2" sx={{ fontWeight: 600 }}>{s.hours} hours slept</Typography>
+                      <Typography variant="caption" color="text.secondary">Quality: {s.quality} | Logged: {s.createdAt ? new Date(s.createdAt).toLocaleDateString() : "Today"}</Typography>
+                    </Box>
+                  ))}
+                </Box>
+              )}
+            </Card>
+          </Grid>
+
+          {/* Stress logged list */}
+          <Grid item xs={12} sm={6}>
+            <Card sx={{ borderRadius: 3, p: 2, height: "100%", boxShadow: "0 2px 8px rgba(0,0,0,0.05)" }}>
+              <Typography variant="subtitle2" sx={{ fontWeight: 700, color: "#c2185b", mb: 1 }}>
+                🧠 Stress & Coping Entries ({memberLogs.stress.length})
+              </Typography>
+              <Divider sx={{ mb: 1.5 }} />
+              {memberLogs.stress.length === 0 ? (
+                <Typography variant="caption" color="text.secondary">No stress logs recorded by member.</Typography>
+              ) : (
+                <Box sx={{ maxHeight: 180, overflowY: "auto" }}>
+                  {memberLogs.stress.map((str, i) => (
+                    <Box key={i} sx={{ mb: 1, p: 1, bgcolor: "#f9f9f9", borderRadius: 2 }}>
+                      <Typography variant="body2" sx={{ fontWeight: 600 }}>Stress Level: {str.level}/10</Typography>
+                      <Typography variant="caption" color="text.secondary">Notes: {str.notes || "None"} | Logged: {str.createdAt ? new Date(str.createdAt).toLocaleDateString() : "Today"}</Typography>
+                    </Box>
+                  ))}
+                </Box>
+              )}
+            </Card>
+          </Grid>
         </Grid>
       )}
 
-      {/* Medical Advisory */}
-      {report.medicalAdvisory && (
-        <Grid item xs={12}>
-          <Alert
-            severity="warning"
-            icon={<LocalHospital />}
-            sx={{ borderRadius: 2, fontWeight: 500 }}
-          >
-            {report.medicalAdvisory}
-          </Alert>
-        </Grid>
+      {activeTab === "advice" && (
+        <Card sx={{ borderRadius: 3, p: 3, boxShadow: "0 4px 12px rgba(0,0,0,0.08)" }}>
+          <Typography variant="subtitle1" sx={{ fontWeight: 800, mb: 1, color: "#602e7d" }}>
+            ✍️ Prescribe Wellness Guidelines
+          </Typography>
+          <Typography variant="caption" color="text.secondary" sx={{ display: "block", mb: 2 }}>
+            Your notes will be saved and visible to the member on their Profile page and wellness reports.
+          </Typography>
+
+          <Grid container spacing={3}>
+            {/* Presets Column */}
+            <Grid item xs={12} md={5}>
+              <Typography variant="subtitle2" sx={{ fontWeight: 700, mb: 1 }}>
+                Click to Insert Presets
+              </Typography>
+              <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
+                {presets.map((preset, i) => (
+                  <Button
+                    key={i}
+                    size="small"
+                    variant="outlined"
+                    color="secondary"
+                    onClick={() => handleInsertPreset(preset)}
+                    sx={{
+                      textTransform: "none",
+                      textAlign: "left",
+                      justifyContent: "flex-start",
+                      fontSize: "0.75rem",
+                      py: 1,
+                      px: 1.5,
+                      borderColor: "rgba(96, 46, 125, 0.2)",
+                      "&:hover": { borderColor: "#602e7d", bgcolor: "rgba(96, 46, 125, 0.02)" }
+                    }}
+                  >
+                    {preset.substring(0, 48)}...
+                  </Button>
+                ))}
+              </Box>
+            </Grid>
+
+            {/* Note Editor Column */}
+            <Grid item xs={12} md={7}>
+              <TextField
+                fullWidth
+                multiline
+                rows={5}
+                placeholder="Type your recommendations, fitness split, diet guidelines, or spiritual practices..."
+                value={notesText}
+                onChange={(e) => setNotesText(e.target.value)}
+                sx={{
+                  mb: 2,
+                  "& .MuiOutlinedInput-root": { borderRadius: 3 }
+                }}
+              />
+
+              <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+                <Button
+                  variant="contained"
+                  color="secondary"
+                  disabled={saving}
+                  onClick={handleSave}
+                  sx={{
+                    px: 3,
+                    borderRadius: 2.5,
+                    fontWeight: "bold",
+                    textTransform: "none"
+                  }}
+                >
+                  {saving ? "Saving Guidance..." : "Save Guidance"}
+                </Button>
+                {saveSuccess && (
+                  <Chip
+                    label="Guidance saved successfully!"
+                    color="success"
+                    size="small"
+                    sx={{ fontWeight: "bold" }}
+                  />
+                )}
+              </Box>
+            </Grid>
+          </Grid>
+        </Card>
       )}
-    </Grid>
+    </Box>
   );
 }
 

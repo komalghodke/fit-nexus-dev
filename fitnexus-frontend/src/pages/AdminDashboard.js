@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { API_URL } from "../api/apiConfig";
 import {
   Box,
@@ -47,7 +47,6 @@ import {
 const API = API_URL;
 
 function AdminDashboard() {
-  const navigate = useNavigate();
   const [users, setUsers] = useState([]);
   const [stats, setStats] = useState({
     totalUsers: 0,
@@ -285,7 +284,7 @@ function AdminDashboard() {
                 <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
                   Access the multi-dimensional Physical, Spiritual, Social, and Environmental assessment.
                 </Typography>
-                <Button component={Link} to="/wellness-form" variant="outlined" size="small" color="success" endIcon={<Assignment />}>
+                <Button component={Link} to="/wellness" variant="outlined" size="small" color="success" endIcon={<Assignment />}>
                   Open Form
                 </Button>
               </CardContent>
@@ -429,7 +428,7 @@ function AdminDashboard() {
                                           <CardContent>
                                             <Typography variant="subtitle2" color="text.secondary" sx={{ fontWeight: 600 }}>🏃 Physical & Workout</Typography>
                                             <Typography variant="body2" sx={{ mt: 1, fontWeight: 500 }}>
-                                              {report.workoutRecommendation || "No recommendation available."}
+                                              {report.workoutSummary || "No data logged."}
                                             </Typography>
                                           </CardContent>
                                         </Card>
@@ -439,7 +438,7 @@ function AdminDashboard() {
                                           <CardContent>
                                             <Typography variant="subtitle2" color="text.secondary" sx={{ fontWeight: 600 }}>🍏 Nutrition & Diet</Typography>
                                             <Typography variant="body2" sx={{ mt: 1, fontWeight: 500 }}>
-                                              {report.dietRecommendation || "No recommendation available."}
+                                              {report.nutritionSummary || "No data logged."}
                                             </Typography>
                                           </CardContent>
                                         </Card>
@@ -449,8 +448,7 @@ function AdminDashboard() {
                                           <CardContent>
                                             <Typography variant="subtitle2" color="text.secondary" sx={{ fontWeight: 600 }}>🛌 Sleep & Quality</Typography>
                                             <Typography variant="body2" sx={{ mt: 1, fontWeight: 500 }}>
-                                              Quality: {report.sleepQuality || "N/A"}<br />
-                                              {report.sleepTips || "No recommendations."}
+                                              {report.sleepSummary || "No data logged."}
                                             </Typography>
                                           </CardContent>
                                         </Card>
@@ -460,7 +458,7 @@ function AdminDashboard() {
                                           <CardContent>
                                             <Typography variant="subtitle2" color="text.secondary" sx={{ fontWeight: 600 }}>🧠 Stress & Coping</Typography>
                                             <Typography variant="body2" sx={{ mt: 1, fontWeight: 500 }}>
-                                              {report.stressManagementTips || "No recommendations."}
+                                              {report.stressSummary || "No data logged."}
                                             </Typography>
                                           </CardContent>
                                         </Card>

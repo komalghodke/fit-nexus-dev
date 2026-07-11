@@ -7,10 +7,10 @@ import {
   Alert, Chip, Avatar, Paper
 } from "@mui/material";
 import {
-  FitnessCenter, Restaurant, Bedtime, Psychology, AssignmentTurnedIn,
+  FitnessCenter, Bedtime, Psychology, AssignmentTurnedIn,
   Print, Spa, CheckCircle, Warning, Person, FavoriteOutlined,
-  WaterDrop, SelfImprovement, NaturePeople, WorkOutline,
-  AutoAwesome, MenuBook, Lightbulb, LocalHospital, Favorite
+  WaterDrop, SelfImprovement, NaturePeople,
+  AutoAwesome, MenuBook, LocalHospital, Favorite
 } from "@mui/icons-material";
 
 // Chakra color map
