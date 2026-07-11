@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { API_URL } from "../api/apiConfig";
 import { Navigate } from "react-router-dom";
@@ -74,6 +74,14 @@ function LoginForm() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [selectedPortal, setSelectedPortal] = useState(portals[0]);
+  const [sessionExpiredMsg, setSessionExpiredMsg] = useState("");
+
+  useEffect(() => {
+    if (sessionStorage.getItem("sessionExpired") === "true") {
+      setSessionExpiredMsg("⏱️ Your session has expired. Please log in again to continue.");
+      sessionStorage.removeItem("sessionExpired");
+    }
+  }, []);
 
   const token = localStorage.getItem("token");
   const currentRole = localStorage.getItem("role") || "USER";
@@ -151,6 +159,17 @@ function LoginForm() {
             Your holistic wellness platform
           </Typography>
         </Box>
+
+        {/* Session Expired Banner */}
+        {sessionExpiredMsg && (
+          <Alert
+            severity="warning"
+            onClose={() => setSessionExpiredMsg("")}
+            sx={{ mb: 2, borderRadius: 2, fontWeight: 600 }}
+          >
+            {sessionExpiredMsg}
+          </Alert>
+        )}
 
         <Card
           sx={{

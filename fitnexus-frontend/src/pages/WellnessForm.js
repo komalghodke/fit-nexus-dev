@@ -31,10 +31,15 @@ const experienceOptions = ["Beginner", "Active", "Yoga Practitioner"];
 const energyOptions = ["Balanced", "High", "Low", "Fatigued", "Hyperactive"];
 
 const WellnessForm = () => {
+  
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
 
+  // ── Role guard: this form is exclusively for members (USER role) ──────────
+  const currentRole = localStorage.getItem("role") || "";
+
   const [activeStep, setActiveStep] = useState(0);
+
   const [inputs, setInputs] = useState({
     fullName: "",
     email: localStorage.getItem("email") || "",
@@ -90,6 +95,64 @@ const WellnessForm = () => {
 
   const userId = localStorage.getItem("userId");
   const token = localStorage.getItem("token");
+
+  if (currentRole && currentRole !== "USER") {
+    const roleLabel =
+      currentRole === "YOGA_INSTRUCTOR" ? "Yoga Instructor" :
+      currentRole === "GYM_TRAINER" ? "Gym Trainer" :
+      currentRole === "ADMIN" ? "Admin" : currentRole;
+    const backPath =
+      currentRole === "ADMIN" ? "/admin" : "/staff";
+    return (
+      <Box
+        sx={{
+          minHeight: "80vh", display: "flex", alignItems: "center",
+          justifyContent: "center",
+          background: "linear-gradient(135deg, #fdf6ff 0%, #ede7f6 100%)",
+          px: 2,
+        }}
+      >
+        <Container maxWidth="sm">
+          <Card
+            sx={{
+              borderRadius: 5, p: 2, textAlign: "center",
+              boxShadow: "0 20px 60px rgba(96,46,125,0.15)",
+              border: "2px solid #ede0fa",
+              background: "linear-gradient(145deg, #ffffff, #faf5ff)",
+            }}
+          >
+            <CardContent>
+              <Typography variant="h1" sx={{ fontSize: "4rem", mb: 2 }}>🚫</Typography>
+              <Typography variant="h5" sx={{ fontWeight: 900, color: "#602e7d", mb: 1 }}>
+                Members-Only Area
+              </Typography>
+              <Typography variant="body1" sx={{ color: "#666", mb: 3, lineHeight: 1.7 }}>
+                Hi <strong>{roleLabel}</strong>! The Wellness Assessment Form is designed
+                exclusively for registered members to track their personal wellness journey.
+                <br /><br />
+                As a staff member, you can view member reports and add guidance from your dedicated portal.
+              </Typography>
+              <Alert severity="info" sx={{ mb: 3, borderRadius: 2, textAlign: "left" }}>
+                📋 Member reports are accessible from the <strong>Staff Portal → Guidance tab</strong>.
+              </Alert>
+              <Button
+                variant="contained"
+                size="large"
+                onClick={() => navigate(backPath)}
+                sx={{
+                  bgcolor: "#602e7d", color: "#fff", fontWeight: 700, borderRadius: 3,
+                  px: 4, py: 1.5, textTransform: "none", fontSize: "1rem",
+                  "&:hover": { bgcolor: "#4a1f60" },
+                }}
+              >
+                ← Go to My Portal
+              </Button>
+            </CardContent>
+          </Card>
+        </Container>
+      </Box>
+    );
+  }
 
   const steps = [
     t("personalDetails"),

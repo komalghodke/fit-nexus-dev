@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { fetchReport } from "../api/reportsApi";
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from "recharts";
 import {
@@ -10,7 +10,8 @@ import {
   FitnessCenter, Bedtime, Psychology, AssignmentTurnedIn,
   Print, Spa, CheckCircle, Warning, Person, FavoriteOutlined,
   WaterDrop, SelfImprovement, NaturePeople,
-  AutoAwesome, MenuBook, LocalHospital, Favorite
+  AutoAwesome, MenuBook, LocalHospital, Favorite,
+  Download
 } from "@mui/icons-material";
 
 // Chakra color map
@@ -54,6 +55,8 @@ function SectionCard({ title, icon, color = "#602e7d", bg = "#fdf8ff", children 
 function ReportsPage() {
   const [report, setReport] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [pdfLoading, setPdfLoading] = useState(false);
+  const reportRef = useRef(null);
   const userId = localStorage.getItem("userId");
 
   useEffect(() => {
@@ -70,6 +73,44 @@ function ReportsPage() {
     loadReport();
   }, [userId]);
 
+  const downloadPdf = async () => {
+    if (!reportRef.current) return;
+    setPdfLoading(true);
+    try {
+      const html2canvas = (await import("html2canvas")).default;
+      const { jsPDF } = await import("jspdf");
+      const canvas = await html2canvas(reportRef.current, {
+        scale: 2,
+        useCORS: true,
+        backgroundColor: "#ffffff",
+        logging: false,
+      });
+      const imgData = canvas.toDataURL("image/jpeg", 0.92);
+      const pdf = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
+      const pageWidth = pdf.internal.pageSize.getWidth();
+      const pageHeight = pdf.internal.pageSize.getHeight();
+      const imgWidth = pageWidth;
+      const imgHeight = (canvas.height * pageWidth) / canvas.width;
+      let heightLeft = imgHeight;
+      let position = 0;
+      pdf.addImage(imgData, "JPEG", 0, position, imgWidth, imgHeight);
+      heightLeft -= pageHeight;
+      while (heightLeft > 0) {
+        position -= pageHeight;
+        pdf.addPage();
+        pdf.addImage(imgData, "JPEG", 0, position, imgWidth, imgHeight);
+        heightLeft -= pageHeight;
+      }
+      const name = report?.fullName ? report.fullName.replace(/\s+/g, "_") : "User";
+      pdf.save(`FitNexus_Wellness_Report_${name}.pdf`);
+    } catch (err) {
+      console.error("PDF generation failed:", err);
+      alert("Could not generate PDF. Please try the Print option instead.");
+    } finally {
+      setPdfLoading(false);
+    }
+  };
+
   if (loading) {
     return (
       <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", minHeight: "80vh" }}>
@@ -80,14 +121,47 @@ function ReportsPage() {
 
   if (!report) {
     return (
-      <Container maxWidth="md" sx={{ py: 6, textAlign: "center" }}>
-        <Typography variant="h5" color="text.secondary">
-          No report data found. Please complete the Wellness Assessment form first.
-        </Typography>
-        <Button variant="contained" href="/wellness" sx={{ mt: 3, bgcolor: "#602e7d" }}>
-          Go to Assessment
-        </Button>
-      </Container>
+      <Box
+        sx={{
+          minHeight: "80vh", display: "flex", alignItems: "center",
+          justifyContent: "center",
+          background: "linear-gradient(135deg, #fdf6ff 0%, #ede7f6 100%)",
+          px: 2
+        }}
+      >
+        <Container maxWidth="sm">
+          <Card sx={{
+            borderRadius: 5, p: 2, textAlign: "center",
+            boxShadow: "0 20px 60px rgba(96,46,125,0.15)",
+            border: "2px solid #ede0fa"
+          }}>
+            <CardContent>
+              <Typography variant="h1" sx={{ fontSize: "4.5rem", mb: 2 }}>🌿</Typography>
+              <Typography variant="h5" sx={{ fontWeight: 900, color: "#602e7d", mb: 1 }}>
+                Your Wellness Report Awaits
+              </Typography>
+              <Typography variant="body1" sx={{ color: "#666", mb: 3, lineHeight: 1.8 }}>
+                Complete the <strong>Wellness Assessment Form</strong> to unlock your personalised
+                holistic report — including your Wellness Score, Chakra alignment, Yoga prescription,
+                mood insights, and AYUSH recommendations.
+              </Typography>
+              <Alert severity="info" sx={{ mb: 3, borderRadius: 2, textAlign: "left" }}>
+                🕐 Takes only <strong>5–7 minutes</strong> to complete. Your data stays private and secure.
+              </Alert>
+              <Button
+                variant="contained" size="large" href="/wellness"
+                sx={{
+                  bgcolor: "#602e7d", color: "#fff", fontWeight: 700,
+                  borderRadius: 3, px: 4, py: 1.5, textTransform: "none",
+                  fontSize: "1rem", "&:hover": { bgcolor: "#4a1f60" }
+                }}
+              >
+                🧘 Start Wellness Assessment
+              </Button>
+            </CardContent>
+          </Card>
+        </Container>
+      </Box>
     );
   }
 
@@ -123,8 +197,7 @@ function ReportsPage() {
           }
         `}</style>
 
-        {/* ══ HEADER ══════════════════════════════════════════════════════ */}
-        <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 4, flexWrap: "wrap", gap: 2 }}>
+          <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 4, flexWrap: "wrap", gap: 2 }}>
           <Box>
             <Typography variant="h4" component="h1" sx={{ fontWeight: 900, color: "#602e7d" }}>
               🌿 Wellness Companion Insights
@@ -133,12 +206,35 @@ function ReportsPage() {
               Your Personalized Guidance — Holistic AYUSH/YCB Assessment Report
             </Typography>
           </Box>
-          <Button variant="contained" onClick={() => window.print()} startIcon={<Print />} className="no-print"
-            sx={{ bgcolor: "#602e7d", fontWeight: "bold", borderRadius: 3, px: 3, textTransform: "none", "&:hover": { bgcolor: "#4a1f60" } }}>
-            Print / Save PDF
-          </Button>
+          <Box sx={{ display: "flex", gap: 1.5, flexWrap: "wrap" }}>
+            <Button
+              variant="outlined" onClick={() => window.print()} startIcon={<Print />} className="no-print"
+              sx={{
+                color: "#602e7d", borderColor: "#602e7d", fontWeight: 700,
+                borderRadius: 3, px: 2.5, textTransform: "none",
+                "&:hover": { bgcolor: "#faf0ff", borderColor: "#4a1f60" }
+              }}
+            >
+              Print
+            </Button>
+            <Button
+              variant="contained"
+              onClick={downloadPdf}
+              startIcon={pdfLoading ? null : <Download />}
+              disabled={pdfLoading}
+              className="no-print"
+              sx={{
+                bgcolor: "#602e7d", fontWeight: "bold", borderRadius: 3,
+                px: 3, textTransform: "none",
+                "&:hover": { bgcolor: "#4a1f60" }
+              }}
+            >
+              {pdfLoading ? "Generating…" : "Download PDF"}
+            </Button>
+          </Box>
         </Box>
 
+        <div ref={reportRef}>
         <Grid container spacing={4}>
 
           {/* ══ LEFT COLUMN ══════════════════════════════════════════════ */}
@@ -450,7 +546,9 @@ function ReportsPage() {
 
           </Grid>
         </Grid>
+        </div>
       </Container>
+
     </Box>
   );
 }
