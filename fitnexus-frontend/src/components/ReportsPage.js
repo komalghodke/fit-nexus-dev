@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { API_URL } from "../api/apiConfig";
 
 function ReportsPage() {
   const [report, setReport] = useState(null);
@@ -13,7 +14,7 @@ function ReportsPage() {
       return;
     }
 
-    axios.get(`http://localhost:8080/api/reports/profile/${email}`, {
+    axios.get(`${API_URL}/reports/profile/${email}`, {
       headers: { Authorization: `Bearer ${token}` },
     })
     .then((res) => setReport(res.data))

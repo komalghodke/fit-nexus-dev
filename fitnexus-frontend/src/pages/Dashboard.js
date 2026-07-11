@@ -10,8 +10,9 @@ import {
   Assignment, AccountCircle, TrendingUp, SelfImprovement,
   Bolt, WaterDrop, MonitorHeart, CheckCircle
 } from "@mui/icons-material";
+import { API_URL } from "../api/apiConfig";
 
-const API = "http://localhost:8080";
+// Removed hardcoded API constant; using API_URL
 
 function StatCard({ icon, label, value, unit, color, bg }) {
   return (
@@ -67,11 +68,11 @@ function Dashboard() {
     const headers = { Authorization: `Bearer ${token}` };
 
     Promise.all([
-      axios.get(`${API}/api/users/profile/${email}`, { headers }),
-      axios.get(`${API}/api/workout/${userId}`,    { headers }).catch(() => ({ data: [] })),
-      axios.get(`${API}/api/sleep/${userId}`,      { headers }).catch(() => ({ data: [] })),
-      axios.get(`${API}/api/stress/${userId}`,     { headers }).catch(() => ({ data: [] })),
-      axios.get(`${API}/api/nutrition/${userId}`,  { headers }).catch(() => ({ data: [] }))
+      axios.get(`${API_URL}/users/profile/${email}`, { headers }),
+      axios.get(`${API_URL}/workout/${userId}`,    { headers }).catch(() => ({ data: [] })),
+      axios.get(`${API_URL}/sleep/${userId}`,      { headers }).catch(() => ({ data: [] })),
+      axios.get(`${API_URL}/stress/${userId}`,     { headers }).catch(() => ({ data: [] })),
+      axios.get(`${API_URL}/nutrition/${userId}`,  { headers }).catch(() => ({ data: [] }))
     ])
       .then(([prof, wkt, slp, str, nut]) => {
         setProfile(prof.data);

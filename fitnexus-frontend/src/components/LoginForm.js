@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
+import { API_URL } from "../api/apiConfig";
+import { Navigate } from "react-router-dom";
 import {
   Box,
   Button,
@@ -18,7 +20,8 @@ import {
   Lock,
   SelfImprovement,
   FitnessCenter,
-  Person
+  Person,
+  SupervisorAccount
 } from "@mui/icons-material";
 
 // Portal definitions
@@ -52,6 +55,16 @@ const portals = [
     gradient: "linear-gradient(135deg, #054474, #0277bd)",
     bg: "#e3f2fd",
     tagline: "Monitor member fitness and progress"
+  },
+  {
+    key: "ADMIN",
+    label: "Admin",
+    emoji: "⚙️",
+    icon: <SupervisorAccount />,
+    color: "#c62828",
+    gradient: "linear-gradient(135deg, #c62828, #e53935)",
+    bg: "#ffebee",
+    tagline: "Full system administration and oversight"
   }
 ];
 
@@ -62,25 +75,45 @@ function LoginForm() {
   const [loading, setLoading] = useState(false);
   const [selectedPortal, setSelectedPortal] = useState(portals[0]);
 
+  const token = localStorage.getItem("token");
+  const currentRole = localStorage.getItem("role") || "USER";
+
+  if (token) {
+    if (currentRole === "ADMIN") {
+      return <Navigate to="/admin" replace />;
+    } else if (currentRole === "YOGA_INSTRUCTOR" || currentRole === "GYM_TRAINER") {
+      return <Navigate to="/staff" replace />;
+    } else {
+      return <Navigate to="/dashboard" replace />;
+    }
+  }
+
   const handleLogin = async (e) => {
     e.preventDefault();
     setError("");
     setLoading(true);
     try {
-      const res = await axios.post("http://localhost:8080/api/auth/login", { email, password });
+      const res = await axios.post(`${API_URL}/auth/login`, { email, password });
+
+      // Debug logging
+      console.log('Login response:', res.data);
 
       localStorage.setItem("token", res.data.token);
       localStorage.setItem("userId", res.data.userId || res.data.id);
       localStorage.setItem("email", res.data.email);
-      localStorage.setItem("role", res.data.role || "USER");
+      // Ensure role is stored; fallback to selected portal if missing
+      const role = res.data.role || selectedPortal.key || "USER";
+      localStorage.setItem("role", role);
 
-      const role = res.data.role || "USER";
-      if (role === "YOGA_INSTRUCTOR" || role === "GYM_TRAINER") {
+      if (role === "ADMIN") {
+        window.location.replace("/admin");
+      } else if (role === "YOGA_INSTRUCTOR" || role === "GYM_TRAINER") {
         window.location.replace("/staff");
       } else {
         window.location.replace("/dashboard");
       }
     } catch (err) {
+      console.error('Login error:', err);
       setError(err.response?.data || "Login failed! Please check your credentials.");
     } finally {
       setLoading(false);

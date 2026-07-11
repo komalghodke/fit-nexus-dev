@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { API_URL } from "../api/apiConfig";
 import {
   Box,
   Button,
@@ -34,7 +35,7 @@ function StressForm() {
     setLoading(true);
 
     try {
-      await axios.post(`http://localhost:8080/api/stress/${userId}`, {
+      await axios.post(`${API_URL}/stress/${userId}`, {
         level: stress.level,
         notes: stress.notes
       }, {

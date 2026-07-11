@@ -40,24 +40,24 @@ public class ReportsService {
 		// ─── Log Summaries ────────────────────────────────────────────────
 		String workoutSummary = workouts.size() > 0
 				? "Total workouts logged: " + workouts.size()
-				: (input != null && input.getWorkoutDuration() > 0
-						? "Workout: " + input.getWorkoutDuration() + " mins, " + input.getWorkoutFrequency() + " times/week (" + input.getWorkoutType() + ")."
+				: (input != null && input.getWorkoutDuration() != null && input.getWorkoutDuration() > 0
+						? "Workout: " + input.getWorkoutDuration() + " mins, " + (input.getWorkoutFrequency() != null ? input.getWorkoutFrequency() : 0) + " times/week (" + input.getWorkoutType() + ")."
 						: "No workouts logged yet.");
 
 		String nutritionSummary = meals.size() > 0
 				? "Meals logged: " + meals.size()
-				: (input != null && input.getDailyCalories() > 0
-						? "Nutrition: " + input.getDailyCalories() + " kcal, Protein: " + input.getProteinIntake() + "g."
+				: (input != null && input.getDailyCalories() != null && input.getDailyCalories() > 0
+						? "Nutrition: " + input.getDailyCalories() + " kcal, Protein: " + (input.getProteinIntake() != null ? input.getProteinIntake() : 0) + "g."
 						: "No meals logged yet.");
 
 		double avgSleep = sleeps.stream().mapToInt(Sleep::getHours).average()
-				.orElse(input != null ? input.getSleepHours() : 0.0);
+				.orElse(input != null && input.getSleepHours() != null ? input.getSleepHours() : 0.0);
 		String sleepSummary = "Average sleep: " + String.format("%.1f", avgSleep) + " hrs"
 				+ (input != null && input.getSleepQuality() != null ? " (Quality: " + input.getSleepQuality() + ")" : "");
 
 		String stressSummary = stresses.size() > 0
 				? "Stress logs: " + stresses.size() + " entries."
-				: (input != null && input.getStressLevel() > 0
+				: (input != null && input.getStressLevel() != null && input.getStressLevel() > 0
 						? "Stress Level: " + input.getStressLevel() + "/10" + (input.getStressTriggers() != null && !input.getStressTriggers().isEmpty() ? " (Triggers: " + input.getStressTriggers() + ")" : "")
 						: "No stress entries logged.");
 
@@ -77,7 +77,7 @@ public class ReportsService {
 
 		if (input != null) {
 			// ── Sleep ────────────────────────────────────────────────────
-			if (input.getSleepHours() < 6) {
+			if (input.getSleepHours() != null && input.getSleepHours() < 6) {
 				score -= 2;
 				sleepTips.add("🌙 Practice Yoga Nidra and avoid screens before sleep.");
 			}
@@ -90,25 +90,25 @@ public class ReportsService {
 			}
 
 			// ── Stress ───────────────────────────────────────────────────
-			if (input.getStressLevel() > 7) {
+			if (input.getStressLevel() != null && input.getStressLevel() > 7) {
 				score -= 3;
 				tips.add("🧘 Severe stress detected — Yoga Nidra, guided meditation, and Anulom-Vilom pranayama are recommended.");
-			} else if (input.getStressLevel() > 5) {
+			} else if (input.getStressLevel() != null && input.getStressLevel() > 5) {
 				score -= 1;
 				tips.add("😌 Moderate stress can be eased with restorative yoga and mindful pauses.");
 			}
 
 			// ── Water ────────────────────────────────────────────────────
-			if (input.getWaterIntake() < 2.0) {
+			if (input.getWaterIntake() != null && input.getWaterIntake() < 2.0) {
 				score -= 1;
 				hydrationTips.add("💧 Your water intake is below optimal — aim for 2–3L daily for digestion and energy.");
 			} else {
-				hydrationTips.add("💧 Good hydration level — keep up the " + input.getWaterIntake() + "L daily intake.");
+				hydrationTips.add("💧 Good hydration level — keep up the " + (input.getWaterIntake() != null ? input.getWaterIntake() : 2.0) + "L daily intake.");
 			}
 
 			// ── Heart Rate ───────────────────────────────────────────────
-			int hr = input.getRestingHeartRate();
-			if (hr > 0) {
+			Integer hr = input.getRestingHeartRate();
+			if (hr != null && hr > 0) {
 				if (hr >= 60 && hr <= 100) {
 					hydrationTips.add("❤️ Resting heart rate (" + hr + " bpm) is within normal range — great job!");
 				} else if (hr < 60) {
@@ -227,11 +227,11 @@ public class ReportsService {
 			boolean isBeginner = exp == null || "Beginner".equalsIgnoreCase(exp);
 			boolean isActive   = "Active".equalsIgnoreCase(exp);
 
-			if (isBeginner && input.getStressLevel() > 7) {
+			if (isBeginner && input.getStressLevel() != null && input.getStressLevel() > 7) {
 				yogaRecommendation = "Yoga Nidra (20 min) + Gentle Breathwork (Anulom-Vilom 10 rounds) + Sukshma Vyayama";
 			} else if (isBeginner) {
 				yogaRecommendation = "Sukshma Vyayama + Pawanmuktasana Series + Shavasana (10 min)";
-			} else if (isActive && input.getStressLevel() > 5) {
+			} else if (isActive && input.getStressLevel() != null && input.getStressLevel() > 5) {
 				yogaRecommendation = "Surya Namaskar (6 rounds) + Nadi Shodhana + Yoga Nidra (15 min)";
 			} else if (isActive) {
 				yogaRecommendation = "Surya Namaskar (12 rounds) + Standing Postures + Kapalabhati + Meditation (10 min)";
@@ -240,7 +240,7 @@ public class ReportsService {
 			}
 
 			// ── Chakra Mantra & Affirmation ──────────────────────────────
-			if (input.getStressLevel() > 7 || "Anxious".equalsIgnoreCase(mood)) {
+			if ((input.getStressLevel() != null && input.getStressLevel() > 7) || "Anxious".equalsIgnoreCase(mood)) {
 				mantra      = "ॐ रं नमः (Om Ram Namah) — Manipura Chakra Activation";
 				affirmation = "I am strong. I am grounded. I release all fear and embrace inner calm.";
 			} else if ("Sad".equalsIgnoreCase(mood) || "Lonely".equalsIgnoreCase(mood)) {
@@ -269,19 +269,19 @@ public class ReportsService {
 
 		// ─── AYUSH General Recommendations ───────────────────────────────
 		List<String> recs = new ArrayList<>();
-		if (workouts.size() < 3 && (input == null || input.getWorkoutFrequency() < 3))
+		if (workouts.size() < 3 && (input == null || input.getWorkoutFrequency() == null || input.getWorkoutFrequency() < 3))
 			recs.add("Increase yoga or physical activity to at least 3 sessions per week.");
 		if (avgSleep < 7)
 			recs.add("Aim for 7–8 hours of restful sleep. Maintain regular bedtime/wake time.");
-		if (meals.size() < 2 && (input == null || input.getDailyCalories() < 1200))
+		if (meals.size() < 2 && (input == null || input.getDailyCalories() == null || input.getDailyCalories() < 1200))
 			recs.add("Ensure balanced sattvic meals with green vegetables, fruits, and proper protein intake.");
 		if (stresses.stream().anyMatch(s -> "High".equalsIgnoreCase(s.getLevel()))
-				|| (input != null && input.getStressLevel() > 5))
+				|| (input != null && input.getStressLevel() != null && input.getStressLevel() > 5))
 			recs.add("Practice deep pranayama, alternate nostril breathing, or guided meditation daily.");
 		if (input != null) {
 			if ("Beginner".equalsIgnoreCase(input.getYogaExperience()))
 				recs.add("Start with gentle beginner yoga postures (Sukshma Vyayama) and Pawanmuktasana series.");
-			if (input.getSleepHours() < 6)
+			if (input.getSleepHours() != null && input.getSleepHours() < 6)
 				recs.add("Practice Yoga Nidra for 15–20 minutes in the afternoon to compensate for short sleep.");
 		}
 

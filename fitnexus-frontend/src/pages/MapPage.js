@@ -1,0 +1,424 @@
+import React, { useState, useEffect } from "react";
+import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
+import L from "leaflet";
+import axios from "axios";
+import { API_URL } from "../api/apiConfig";
+import {
+  Box,
+  Container,
+  Typography,
+  Card,
+  CardContent,
+  Grid,
+  Chip,
+  TextField,
+  InputAdornment,
+  List,
+  ListItem,
+  ListItemText,
+  ListItemIcon,
+  Divider,
+  Rating,
+  Avatar,
+  IconButton,
+  Tooltip,
+  CircularProgress
+} from "@mui/material";
+import { Search, Map, Place, SelfImprovement, FitnessCenter, LocalHospital, GpsFixed } from "@mui/icons-material";
+
+// Fix Leaflet CSS missing import issue (leaflet CSS needs to be loaded)
+import "leaflet/dist/leaflet.css";
+
+// Pune Center Coordinates
+const PUNE_CENTER = [18.5204, 73.8567];
+
+// Helper to center the map on item click
+function MapCenterController({ coords }) {
+  const map = useMap();
+  useEffect(() => {
+    if (coords) {
+      map.setView(coords, 14, { animate: true, duration: 1.5 });
+    }
+  }, [coords, map]);
+  return null;
+}
+
+function MapPage() {
+  const [selectedType, setSelectedType] = useState("ALL");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [activeCenter, setActiveCenter] = useState(null);
+  const [mapCenter, setMapCenter] = useState(PUNE_CENTER);
+  const [centers, setCenters] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [userLocation, setUserLocation] = useState(null);
+  const [sourceInfo, setSourceInfo] = useState("Local Curated Data");
+
+  const token = localStorage.getItem("token");
+
+  // Get user location on mount
+  useEffect(() => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const coords = [position.coords.latitude, position.coords.longitude];
+          setUserLocation(coords);
+          setMapCenter(coords);
+        },
+        () => {
+          console.log("Geolocation access denied. Defaulting to Pune.");
+        }
+      );
+    }
+    // Initial fetch
+    fetchLocations("fitness", PUNE_CENTER[0], PUNE_CENTER[1]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const fetchLocations = async (queryStr, latVal, lngVal) => {
+    setLoading(true);
+    try {
+      const lat = latVal || mapCenter[0];
+      const lng = lngVal || mapCenter[1];
+      const query = queryStr || searchQuery || "wellness";
+
+      const response = await axios.get(`${API_URL}/locations`, {
+        params: { query, lat, lng },
+        headers: { Authorization: `Bearer ${token}` }
+      });
+
+      if (response.data && response.data.results) {
+        setCenters(response.data.results);
+        setSourceInfo(response.data.source === "serpapi" ? "Live SerpApi Local Search" : "Local Curated Data");
+        if (response.data.results.length > 0) {
+          // Centering to the first match
+          const first = response.data.results[0];
+          setMapCenter([first.lat, first.lng]);
+          setActiveCenter(first);
+        }
+      }
+    } catch (error) {
+      console.error("Failed to fetch locations", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSearchKeyPress = (e) => {
+    if (e.key === "Enter") {
+      fetchLocations(searchQuery);
+    }
+  };
+
+  const handleGpsClick = () => {
+    if (userLocation) {
+      setMapCenter(userLocation);
+      fetchLocations(searchQuery || "fitness", userLocation[0], userLocation[1]);
+    }
+  };
+
+  // Custom Icon Builders using CSS to avoid Webpack Leaflet asset bugs
+  const createCustomIcon = (type, isActive) => {
+    let color = "#602e7d"; // default yoga (purple)
+    if (type === "GYM") color = "#054474"; // gym (blue)
+    if (type === "WELLNESS") color = "#2e7d32"; // wellness (green)
+
+    const size = isActive ? "40px" : "32px";
+    const border = isActive ? "3px solid #fff" : "2px solid #fff";
+    const shadow = isActive ? "0 4px 12px rgba(0,0,0,0.45)" : "0 2px 6px rgba(0,0,0,0.3)";
+
+    return L.divIcon({
+      className: "custom-leaflet-marker",
+      html: `<div style="
+        background-color: ${color};
+        width: ${size};
+        height: ${size};
+        border-radius: 50% 50% 50% 0;
+        transform: rotate(-45deg);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: ${border};
+        box-shadow: ${shadow};
+      ">
+        <div style="
+          transform: rotate(45deg);
+          color: white;
+          font-size: ${isActive ? "16px" : "12px"};
+          font-weight: bold;
+        ">
+          ${type === "YOGA" ? "🧘" : type === "GYM" ? "🏋️" : "🏥"}
+        </div>
+      </div>`,
+      iconSize: isActive ? [40, 40] : [32, 32],
+      iconAnchor: isActive ? [20, 40] : [16, 32],
+      popupAnchor: [0, -32]
+    });
+  };
+
+  const handleCenterSelect = (center) => {
+    setActiveCenter(center);
+    setMapCenter([center.lat, center.lng]);
+  };
+
+  const filteredCenters = centers.filter((c) => {
+    if (selectedType === "ALL") return true;
+    return c.type === selectedType;
+  });
+
+  return (
+    <Box sx={{ minHeight: "92vh", background: "#f5f5f5", py: 4 }}>
+      <Container maxWidth="xl">
+        <Card
+          sx={{
+            mb: 4,
+            borderRadius: 4,
+            background: "linear-gradient(135deg, #054474 0%, #602e7d 100%)",
+            color: "#fff",
+            boxShadow: "0 8px 32px rgba(96, 46, 125, 0.3)"
+          }}
+        >
+          <CardContent sx={{ p: 4 }}>
+            <Box sx={{ display: "flex", alignItems: "center", justifySpaceBetween: "space-between", flexWrap: "wrap", gap: 2 }}>
+              <Box sx={{ display: "flex", alignItems: "center", gap: 2, flexGrow: 1 }}>
+                <Avatar sx={{ bgcolor: "rgba(255,255,255,0.2)", width: 56, height: 56 }}>
+                  <Map sx={{ fontSize: 28, color: "#b39ddb" }} />
+                </Avatar>
+                <Box>
+                  <Typography variant="h4" sx={{ fontWeight: 800 }}>
+                    📍 FitNexus Wellness Locator
+                  </Typography>
+                  <Typography variant="body1" sx={{ opacity: 0.9 }}>
+                    Discover real-time fitness facilities, yoga centers, and AYUSH clinics powered by live search.
+                  </Typography>
+                </Box>
+              </Box>
+              <Chip
+                label={`Source: ${sourceInfo}`}
+                sx={{
+                  bgcolor: "rgba(255,255,255,0.15)",
+                  color: "#fff",
+                  fontWeight: 700,
+                  fontSize: "0.85rem",
+                  border: "1px solid rgba(255,255,255,0.3)"
+                }}
+              />
+            </Box>
+          </CardContent>
+        </Card>
+
+        <Grid container spacing={3}>
+          {/* Sidebar & Filters */}
+          <Grid item xs={12} md={4}>
+            <Card sx={{ borderRadius: 4, height: "650px", display: "flex", flexDirection: "column", boxShadow: "0 4px 20px rgba(0,0,0,0.06)" }}>
+              <CardContent sx={{ p: 3, pb: 1 }}>
+                <Typography variant="h6" sx={{ fontWeight: 800, color: "#333", mb: 2 }}>
+                  Search Facilities
+                </Typography>
+
+                <Box sx={{ display: "flex", gap: 1, mb: 2 }}>
+                  <TextField
+                    fullWidth
+                    placeholder="Search e.g. YCB yoga, cult fit..."
+                    size="small"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    onKeyPress={handleSearchKeyPress}
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <Search />
+                        </InputAdornment>
+                      )
+                    }}
+                    sx={{ "& .MuiOutlinedInput-root": { borderRadius: 3 } }}
+                  />
+                  <IconButton
+                    color="primary"
+                    onClick={() => fetchLocations()}
+                    sx={{ border: "1px solid #ddd", borderRadius: 3 }}
+                  >
+                    <Search />
+                  </IconButton>
+                  <Tooltip title="Use Current Location">
+                    <span>
+                      <IconButton
+                        color="secondary"
+                        disabled={!userLocation}
+                        onClick={handleGpsClick}
+                        sx={{ border: "1px solid #ddd", borderRadius: 3 }}
+                      >
+                        <GpsFixed />
+                      </IconButton>
+                    </span>
+                  </Tooltip>
+                </Box>
+
+                {/* Filter Chips */}
+                <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1, mb: 2 }}>
+                  <Chip
+                    label="Show All"
+                    clickable
+                    color={selectedType === "ALL" ? "primary" : "default"}
+                    onClick={() => setSelectedType("ALL")}
+                    sx={{ fontWeight: 600 }}
+                  />
+                  <Chip
+                    label="🧘 Yoga"
+                    clickable
+                    color={selectedType === "YOGA" ? "secondary" : "default"}
+                    onClick={() => setSelectedType("YOGA")}
+                    sx={{ fontWeight: 600 }}
+                  />
+                  <Chip
+                    label="🏋️ Gyms"
+                    clickable
+                    color={selectedType === "GYM" ? "primary" : "default"}
+                    onClick={() => setSelectedType("GYM")}
+                    sx={{ fontWeight: 600 }}
+                  />
+                  <Chip
+                    label="🏥 AYUSH/Wellness"
+                    clickable
+                    color={selectedType === "WELLNESS" ? "success" : "default"}
+                    onClick={() => setSelectedType("WELLNESS")}
+                    sx={{ fontWeight: 600 }}
+                  />
+                </Box>
+                <Divider />
+              </CardContent>
+
+              {/* Facility List */}
+              <Box sx={{ flexGrow: 1, overflowY: "auto", px: 2 }}>
+                {loading ? (
+                  <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100%" }}>
+                    <CircularProgress size={30} />
+                  </Box>
+                ) : (
+                  <List>
+                    {filteredCenters.map((center, index) => {
+                      const isSelected = activeCenter?.name === center.name;
+                      return (
+                        <React.Fragment key={index}>
+                          <ListItem
+                            button
+                            onClick={() => handleCenterSelect(center)}
+                            selected={isSelected}
+                            sx={{
+                              borderRadius: 3,
+                              my: 0.5,
+                              border: isSelected ? "1px solid #602e7d" : "1px solid #f0f0f0",
+                              bgcolor: isSelected ? "rgba(96, 46, 125, 0.05)" : "transparent",
+                              transition: "all 0.2s",
+                              "&:hover": { bgcolor: isSelected ? "rgba(96, 46, 125, 0.08)" : "#f9f9f9" }
+                            }}
+                          >
+                            <ListItemIcon sx={{ minWidth: 40 }}>
+                              {center.type === "YOGA" ? (
+                                <SelfImprovement color="secondary" />
+                              ) : center.type === "GYM" ? (
+                                <FitnessCenter color="primary" />
+                              ) : (
+                                <LocalHospital color="success" />
+                              )}
+                            </ListItemIcon>
+                            <ListItemText
+                              primary={
+                                <Typography variant="subtitle2" sx={{ fontWeight: 700, color: "#333" }}>
+                                  {center.name}
+                                </Typography>
+                              }
+                              secondary={
+                                <Box sx={{ mt: 0.5 }}>
+                                  <Typography variant="caption" color="text.secondary" display="block">
+                                    {center.address}
+                                  </Typography>
+                                  <Box sx={{ display: "flex", alignItems: "center", gap: 1, mt: 0.5 }}>
+                                    <Rating value={center.rating} precision={0.1} size="small" readOnly />
+                                    <Typography variant="caption" sx={{ fontWeight: 600, color: "#666" }}>
+                                      {center.rating} ({center.reviews})
+                                    </Typography>
+                                  </Box>
+                                </Box>
+                              }
+                            />
+                          </ListItem>
+                          <Divider variant="inset" component="li" />
+                        </React.Fragment>
+                      );
+                    })}
+                    {filteredCenters.length === 0 && (
+                      <Box sx={{ textAlign: "center", py: 6, px: 2 }}>
+                        <Typography variant="body2" color="text.secondary">
+                          No facilities found. Click Search to refresh.
+                        </Typography>
+                      </Box>
+                    )}
+                  </List>
+                )}
+              </Box>
+            </Card>
+          </Grid>
+
+          {/* Interactive Map */}
+          <Grid item xs={12} md={8}>
+            <Card sx={{ borderRadius: 4, height: "650px", overflow: "hidden", boxShadow: "0 4px 20px rgba(0,0,0,0.06)", border: "1px solid #ddd" }}>
+              <MapContainer
+                center={mapCenter}
+                zoom={13}
+                style={{ width: "100%", height: "100%" }}
+                zoomControl={true}
+              >
+                <TileLayer
+                  attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                  url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                />
+
+                {filteredCenters.map((center, index) => {
+                  const isActive = activeCenter?.name === center.name;
+                  return (
+                    <Marker
+                      key={index}
+                      position={[center.lat, center.lng]}
+                      icon={createCustomIcon(center.type, isActive)}
+                      eventHandlers={{
+                        click: () => setActiveCenter(center)
+                      }}
+                    >
+                      <Popup>
+                        <Box sx={{ p: 0.5, minWidth: 200 }}>
+                          <Typography variant="subtitle2" sx={{ fontWeight: 800, color: "#333", mb: 0.5 }}>
+                            {center.name}
+                          </Typography>
+                          <Chip
+                            label={center.type === "YOGA" ? "Yoga" : center.type === "GYM" ? "Gym" : "AYUSH/Wellness"}
+                            size="small"
+                            color={center.type === "YOGA" ? "secondary" : center.type === "GYM" ? "primary" : "success"}
+                            sx={{ mb: 1, height: 20, fontSize: "0.7rem", fontWeight: 700 }}
+                          />
+                          <Typography variant="caption" display="block" color="text.secondary" sx={{ mb: 0.5 }}>
+                            📍 {center.address}
+                          </Typography>
+                          <Typography variant="caption" display="block" color="text.primary" sx={{ mb: 1, fontStyle: "italic" }}>
+                            "{center.desc}"
+                          </Typography>
+                          <Divider sx={{ my: 0.5 }} />
+                          <Typography variant="caption" display="block" sx={{ fontWeight: 700 }}>
+                            📞 Phone: {center.phone}
+                          </Typography>
+                        </Box>
+                      </Popup>
+                    </Marker>
+                  );
+                })}
+
+                <MapCenterController coords={mapCenter} />
+              </MapContainer>
+            </Card>
+          </Grid>
+        </Grid>
+      </Container>
+    </Box>
+  );
+}
+
+export default MapPage;

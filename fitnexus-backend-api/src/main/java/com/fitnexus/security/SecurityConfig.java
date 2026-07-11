@@ -21,7 +21,7 @@ public class SecurityConfig {
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http, JwtRequestFilter jwtRequestFilter) throws Exception {
 		http.csrf(csrf -> csrf.disable()).cors(cors -> {
-		}).authorizeHttpRequests(auth -> auth.requestMatchers("/api/auth/**").permitAll().anyRequest().authenticated())
+		}).authorizeHttpRequests(auth -> auth.requestMatchers("/api/auth/**", "/api/locations/**", "/api/public/**").permitAll().anyRequest().authenticated())
 				.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
 
 		return http.build();
@@ -34,24 +34,9 @@ public class SecurityConfig {
 
 	@Bean
 	public PasswordEncoder passwordEncoder() {
-		return NoOpPasswordEncoder.getInstance(); // dev only
+	    return NoOpPasswordEncoder.getInstance(); // dev only
 	}
 
-	@Bean
-	public CorsFilter corsFilter() {
-	    CorsConfiguration config = new CorsConfiguration();
-	    config.setAllowCredentials(true);
-	    config.setAllowedOrigins(Arrays.asList(
-	        "http://localhost:3000",
-	        "http://127.0.0.1:3000",
-	        "http://localhost"
-	    ));
-	    config.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type"));
-	    config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE"));
-
-	    UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-	    source.registerCorsConfiguration("/**", config);
-	    return new CorsFilter(source);
-	}
+	// Bean removed, CorsConfig provides CorsFilter
 
 }

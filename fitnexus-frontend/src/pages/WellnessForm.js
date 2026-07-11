@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { API_URL } from "../api/apiConfig";
 import { useTranslation } from "react-i18next";
 import FormHelperText from "@mui/material/FormHelperText";
 import {
@@ -151,7 +152,7 @@ const WellnessForm = () => {
     setLoading(true);
 
     try {
-      await axios.post(`http://localhost:8080/api/wellness/${userId}`, inputs, {
+      await axios.post(`${API_URL}/wellness/${userId}`, inputs, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setSuccess(t("successAlert"));

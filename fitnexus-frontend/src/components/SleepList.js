@@ -12,7 +12,7 @@ function SleepList() {
     }
 
     axios
-      .get("http://localhost:8080/api/sleep", {
+      .get("${API_URL}/sleep", {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((res) => setRecords(res.data))

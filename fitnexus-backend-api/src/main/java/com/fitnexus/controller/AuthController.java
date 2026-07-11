@@ -4,6 +4,7 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
@@ -18,6 +19,7 @@ import com.fitnexus.repository.UserRepository;
 import com.fitnexus.security.JwtUtil;
 
 @RestController
+@CrossOrigin(origins = "*")
 @RequestMapping("/api/auth")
 public class AuthController {
 
@@ -48,13 +50,27 @@ public class AuthController {
 		}
 	}
 
-	@PostMapping("/register")
-	public ResponseEntity<?> register(@RequestBody User user) {
-		if (user.getRole() == null || user.getRole().trim().isEmpty()) {
-			user.setRole("USER");
-		}
-	    userRepo.save(user); // ✅ must include email + password
-	    return ResponseEntity.ok("User registered successfully");
-	}
+	private static final String ADMIN_SECRET_CODE = "FITNEXUS-ADMIN-2026";
 
+	@PostMapping("/register")
+	public ResponseEntity<?> register(@RequestBody Map<String, String> body) {
+		String role = body.getOrDefault("role", "USER").trim();
+
+		// Admin registration requires a valid secret code
+		if ("ADMIN".equalsIgnoreCase(role)) {
+			String adminCode = body.get("adminCode");
+			if (adminCode == null || !ADMIN_SECRET_CODE.equals(adminCode.trim())) {
+				return ResponseEntity.status(403).body("Invalid admin registration code. Contact the system administrator.");
+			}
+		}
+
+		User user = new User();
+		user.setUsername(body.get("username"));
+		user.setEmail(body.get("email"));
+		user.setPassword(body.get("password"));
+		user.setRole(role.isEmpty() ? "USER" : role);
+
+		userRepo.save(user);
+		return ResponseEntity.ok("User registered successfully");
+	}
 }

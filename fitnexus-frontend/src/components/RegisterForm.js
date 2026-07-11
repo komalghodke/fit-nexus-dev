@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
+import { API_URL } from "../api/apiConfig";
+import { Navigate } from "react-router-dom";
 import {
   Box,
   Button,
@@ -19,10 +21,23 @@ import {
 import { Email, Lock, Person } from "@mui/icons-material";
 
 function RegisterForm() {
-  const [form, setForm] = useState({ username: "", email: "", password: "", role: "USER" });
+  const [form, setForm] = useState({ username: "", email: "", password: "", role: "USER", adminCode: "" });
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [loading, setLoading] = useState(false);
+
+  const token = localStorage.getItem("token");
+  const role = localStorage.getItem("role") || "USER";
+
+  if (token) {
+    if (role === "ADMIN") {
+      return <Navigate to="/admin" replace />;
+    } else if (role === "YOGA_INSTRUCTOR" || role === "GYM_TRAINER") {
+      return <Navigate to="/staff" replace />;
+    } else {
+      return <Navigate to="/dashboard" replace />;
+    }
+  }
 
   const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
 
@@ -32,7 +47,7 @@ function RegisterForm() {
     setSuccess("");
     setLoading(true);
     try {
-      await axios.post("http://localhost:8080/api/auth/register", form);
+      await axios.post(`${API_URL}/auth/register`, form);
       setSuccess("Registration successful! Redirecting to login...");
       setTimeout(() => {
         window.location.replace("/login");
@@ -177,8 +192,33 @@ function RegisterForm() {
                     <MenuItem value="USER">🧘 Member</MenuItem>
                     <MenuItem value="YOGA_INSTRUCTOR">🪷 Yoga Instructor</MenuItem>
                     <MenuItem value="GYM_TRAINER">🏋️ Gym Trainer</MenuItem>
+                    <MenuItem value="ADMIN">⚙️ Admin</MenuItem>
                   </Select>
                 </FormControl>
+
+                {form.role === "ADMIN" && (
+                   <TextField
+                     fullWidth
+                     label="Admin Secret Code"
+                     name="adminCode"
+                     type="password"
+                     value={form.adminCode || ""}
+                     onChange={handleChange}
+                     required
+                     InputProps={{
+                       startAdornment: (
+                         <InputAdornment position="start">
+                           <Lock color="action" />
+                         </InputAdornment>
+                       ),
+                     }}
+                     sx={{
+                       "& .MuiOutlinedInput-root": {
+                         borderRadius: 3,
+                       }
+                     }}
+                   />
+                 )}
 
                 <Button
                   type="submit"

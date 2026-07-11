@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { API_URL } from "../api/apiConfig";
 import {
   Box,
   Button,
@@ -38,7 +39,7 @@ function NutritionForm() {
     }
 
     try {
-      await axios.post(`http://localhost:8080/api/nutrition/${userId}`, {
+      await axios.post(`${API_URL}/nutrition/${userId}`, {
         meal: meal.meal,
         calories: parseInt(meal.calories),
         notes: meal.notes

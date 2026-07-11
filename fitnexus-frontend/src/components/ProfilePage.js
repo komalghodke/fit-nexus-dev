@@ -20,7 +20,7 @@ function ProfilePage() {
     }
 
     // ✅ Fetch profile on mount
-    axios.get(`http://localhost:8080/api/users/profile/${emailStored}`, {
+    axios.get(`${API_URL}/users/profile/${emailStored}`, {
       headers: { Authorization: `Bearer ${token}` }
     })
     .then(res => {
@@ -42,7 +42,7 @@ function ProfilePage() {
       const emailStored = localStorage.getItem("email");
 
       // ✅ Send updated profile
-      await axios.put(`http://localhost:8080/api/users/profile/${emailStored}`, profile, {
+      await axios.put(`${API_URL}/users/profile/${emailStored}`, profile, {
         headers: { Authorization: `Bearer ${token}` },
       });
       alert("Profile updated successfully!");

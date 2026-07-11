@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { Link, useNavigate } from "react-router-dom";
+import { API_URL } from "../api/apiConfig";
 import {
   Box,
   Container,
@@ -23,7 +25,9 @@ import {
   Select,
   MenuItem,
   TextField,
-  InputAdornment
+  InputAdornment,
+  IconButton,
+  Collapse
 } from "@mui/material";
 import {
   SupervisorAccount,
@@ -31,12 +35,19 @@ import {
   Assignment,
   Search,
   Delete,
-  Security
+  Security,
+  Map,
+  ArrowForward,
+  KeyboardArrowDown,
+  KeyboardArrowUp,
+  Save,
+  Assessment
 } from "@mui/icons-material";
 
-const API = "http://localhost:8080";
+const API = API_URL;
 
 function AdminDashboard() {
+  const navigate = useNavigate();
   const [users, setUsers] = useState([]);
   const [stats, setStats] = useState({
     totalUsers: 0,
@@ -51,6 +62,11 @@ function AdminDashboard() {
   const [success, setSuccess] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
 
+  // States for expandable reports & notes
+  const [expandedUserId, setExpandedUserId] = useState(null);
+  const [reports, setReports] = useState({});
+  const [editingNotes, setEditingNotes] = useState({});
+
   const token = localStorage.getItem("token");
 
   useEffect(() => {
@@ -62,11 +78,18 @@ function AdminDashboard() {
     try {
       const headers = { Authorization: `Bearer ${token}` };
       const [usersRes, statsRes] = await Promise.all([
-        axios.get(`${API}/api/users`, { headers }),
-        axios.get(`${API}/api/users/stats`, { headers })
+        axios.get(`${API}/users`, { headers }),
+        axios.get(`${API}/users/stats`, { headers })
       ]);
       setUsers(usersRes.data);
       setStats(statsRes.data);
+
+      // Initialize editingNotes with existing values
+      const initialNotes = {};
+      usersRes.data.forEach(u => {
+        initialNotes[u.id] = u.staffNotes || "";
+      });
+      setEditingNotes(initialNotes);
     } catch (err) {
       setError("Failed to load admin dashboard data. Please check your credentials.");
     } finally {
@@ -79,15 +102,13 @@ function AdminDashboard() {
     setSuccess("");
     try {
       await axios.put(
-        `${API}/api/users/${userId}/role?role=${newRole}`,
+        `${API}/users/${userId}/role?role=${newRole}`,
         {},
         { headers: { Authorization: `Bearer ${token}` } }
       );
       setSuccess("User role updated successfully!");
-      // Update local state
       setUsers(prev => prev.map(u => u.id === userId ? { ...u, role: newRole } : u));
-      // Refresh stats
-      const statsRes = await axios.get(`${API}/api/users/stats`, {
+      const statsRes = await axios.get(`${API}/users/stats`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setStats(statsRes.data);
@@ -97,17 +118,16 @@ function AdminDashboard() {
   };
 
   const handleDeleteUser = async (userId) => {
-    if (!window.confirm("Are you sure you want to delete this user?")) return;
+    if (!window.confirm("Are you sure you want to delete this user? This will also remove their wellness inputs and reports!")) return;
     setError("");
     setSuccess("");
     try {
-      await axios.delete(`${API}/api/users/${userId}`, {
+      await axios.delete(`${API}/users/${userId}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setSuccess("User deleted successfully!");
       setUsers(prev => prev.filter(u => u.id !== userId));
-      // Refresh stats
-      const statsRes = await axios.get(`${API}/api/users/stats`, {
+      const statsRes = await axios.get(`${API}/users/stats`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setStats(statsRes.data);
@@ -116,7 +136,49 @@ function AdminDashboard() {
     }
   };
 
-  const filteredUsers = users.filter(user => 
+  const handleSaveNotes = async (userId) => {
+    setError("");
+    setSuccess("");
+    try {
+      const noteText = editingNotes[userId] || "";
+      await axios.put(
+        `${API}/users/${userId}/notes`,
+        { notes: noteText },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      setSuccess("Notes saved successfully!");
+      setUsers(prev => prev.map(u => u.id === userId ? { ...u, staffNotes: noteText } : u));
+    } catch (err) {
+      setError("Failed to save notes.");
+    }
+  };
+
+  const handleNoteChange = (userId, value) => {
+    setEditingNotes(prev => ({ ...prev, [userId]: value }));
+  };
+
+  const fetchReport = async (userId) => {
+    if (reports[userId]) return; // cached
+    try {
+      const res = await axios.get(`${API}/reports/${userId}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setReports(prev => ({ ...prev, [userId]: res.data }));
+    } catch {
+      setReports(prev => ({ ...prev, [userId]: { error: true } }));
+    }
+  };
+
+  const toggleExpandReport = (userId) => {
+    if (expandedUserId === userId) {
+      setExpandedUserId(null);
+    } else {
+      setExpandedUserId(userId);
+      fetchReport(userId);
+    }
+  };
+
+  const filteredUsers = users.filter(user =>
     (user.username && user.username.toLowerCase().includes(searchQuery.toLowerCase())) ||
     (user.email && user.email.toLowerCase().includes(searchQuery.toLowerCase()))
   );
@@ -138,7 +200,7 @@ function AdminDashboard() {
 
   return (
     <Box sx={{ minHeight: "92vh", background: "#f5f5f5", py: 4 }}>
-      <Container maxWidth="lg">
+      <Container maxWidth="xl">
         {/* Header */}
         <Card
           sx={{
@@ -156,10 +218,10 @@ function AdminDashboard() {
               </Avatar>
               <Box>
                 <Typography variant="h4" sx={{ fontWeight: 800 }}>
-                  ⚙️ Admin Portal
+                  ⚙️ Admin Command Center
                 </Typography>
                 <Typography variant="body1" sx={{ opacity: 0.9 }}>
-                  Manage system users, view system statistics, and configure staff access.
+                  Monitor system stats, update roles, manage logs, record staff/member notes, and view wellness reports.
                 </Typography>
               </Box>
             </Box>
@@ -169,7 +231,7 @@ function AdminDashboard() {
         {/* Stats Grid */}
         <Grid container spacing={3} sx={{ mb: 4 }}>
           {statItems.map((item, idx) => (
-            <Grid item xs={6} sm={3} key={idx}>
+            <Grid item xs={12} sm={6} md={3} key={idx}>
               <Card sx={{ borderRadius: 4, bgcolor: item.bg, border: `1px solid ${item.color}22` }}>
                 <CardContent sx={{ display: "flex", alignItems: "center", gap: 2, p: 2.5 }}>
                   <Avatar sx={{ bgcolor: `${item.color}15`, color: item.color, width: 44, height: 44 }}>
@@ -185,15 +247,61 @@ function AdminDashboard() {
           ))}
         </Grid>
 
+        {/* Quick Actions / Shortcuts */}
+        <Typography variant="h6" sx={{ fontWeight: 800, color: "#333", mb: 2 }}>
+          ⚡ Admin Shortcuts
+        </Typography>
+        <Grid container spacing={3} sx={{ mb: 4 }}>
+          <Grid item xs={12} sm={4}>
+            <Card sx={{ borderRadius: 3, borderLeft: "5px solid #602e7d" }}>
+              <CardContent>
+                <Typography variant="h6" sx={{ fontWeight: 700, mb: 1 }}>Staff Console</Typography>
+                <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                  Access the Instructor & Trainer dashboards to manage programs and view wellness assessments.
+                </Typography>
+                <Button component={Link} to="/staff" variant="outlined" size="small" color="secondary" endIcon={<ArrowForward />}>
+                  Open Staff View
+                </Button>
+              </CardContent>
+            </Card>
+          </Grid>
+          <Grid item xs={12} sm={4}>
+            <Card sx={{ borderRadius: 3, borderLeft: "5px solid #054474" }}>
+              <CardContent>
+                <Typography variant="h6" sx={{ fontWeight: 700, mb: 1 }}>Wellness Map</Typography>
+                <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                  Open the interactive gyms, yoga centers, and AYUSH wellness facilities locator map.
+                </Typography>
+                <Button component={Link} to="/map" variant="outlined" size="small" endIcon={<Map />}>
+                  Explore Map
+                </Button>
+              </CardContent>
+            </Card>
+          </Grid>
+          <Grid item xs={12} sm={4}>
+            <Card sx={{ borderRadius: 3, borderLeft: "5px solid #2e7d32" }}>
+              <CardContent>
+                <Typography variant="h6" sx={{ fontWeight: 700, mb: 1 }}>Wellness Assessment Form</Typography>
+                <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                  Access the multi-dimensional Physical, Spiritual, Social, and Environmental assessment.
+                </Typography>
+                <Button component={Link} to="/wellness-form" variant="outlined" size="small" color="success" endIcon={<Assignment />}>
+                  Open Form
+                </Button>
+              </CardContent>
+            </Card>
+          </Grid>
+        </Grid>
+
         {error && <Alert severity="error" sx={{ mb: 3, borderRadius: 2 }}>{error}</Alert>}
         {success && <Alert severity="success" sx={{ mb: 3, borderRadius: 2 }}>{success}</Alert>}
 
         {/* User Management Table */}
         <Card sx={{ borderRadius: 4, boxShadow: "0 4px 16px rgba(0,0,0,0.06)" }}>
           <CardContent sx={{ p: 3 }}>
-            <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 3, flexWrap: "wrap", gap: 2 }}>
+            <Box sx={{ display: "flex", justifyContent: "space-between", Typography: "center", mb: 3, flexWrap: "wrap", gap: 2 }}>
               <Typography variant="h6" sx={{ fontWeight: 800, color: "#333" }}>
-                👥 User Management
+                👥 User Management & Staff Notes
               </Typography>
               <TextField
                 placeholder="Search by username or email..."
@@ -218,50 +326,162 @@ function AdminDashboard() {
               <Table>
                 <TableHead>
                   <TableRow sx={{ backgroundColor: "#f9f9f9" }}>
-                    <TableCell sx={{ fontWeight: 700, color: "#333" }}>ID</TableCell>
-                    <TableCell sx={{ fontWeight: 700, color: "#333" }}>Username</TableCell>
-                    <TableCell sx={{ fontWeight: 700, color: "#333" }}>Email</TableCell>
-                    <TableCell sx={{ fontWeight: 700, color: "#333" }}>Role</TableCell>
-                    <TableCell sx={{ fontWeight: 700, color: "#333" }} align="center">Actions</TableCell>
+                    <TableCell width="5%"></TableCell>
+                    <TableCell sx={{ fontWeight: 700, color: "#333" }} width="10%">ID</TableCell>
+                    <TableCell sx={{ fontWeight: 700, color: "#333" }} width="20%">Username & Role</TableCell>
+                    <TableCell sx={{ fontWeight: 700, color: "#333" }} width="20%">Email</TableCell>
+                    <TableCell sx={{ fontWeight: 700, color: "#333" }} width="30%">Staff/Admin Notes</TableCell>
+                    <TableCell sx={{ fontWeight: 700, color: "#333" }} align="center" width="15%">Actions</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {filteredUsers.map((user) => (
-                    <TableRow key={user.id} hover>
-                      <TableCell><Chip label={`#${user.id}`} size="small" /></TableCell>
-                      <TableCell sx={{ fontWeight: 600 }}>{user.username || "—"}</TableCell>
-                      <TableCell>{user.email}</TableCell>
-                      <TableCell>
-                        <FormControl size="small" sx={{ minWidth: 160 }}>
-                          <Select
-                            value={user.role || "USER"}
-                            onChange={(e) => handleRoleChange(user.id, e.target.value)}
-                            sx={{ borderRadius: 2 }}
-                          >
-                            <MenuItem value="USER">🧘 Member</MenuItem>
-                            <MenuItem value="YOGA_INSTRUCTOR">🪷 Yoga Instructor</MenuItem>
-                            <MenuItem value="GYM_TRAINER">🏋️ Gym Trainer</MenuItem>
-                            <MenuItem value="ADMIN">⚙️ Admin</MenuItem>
-                          </Select>
-                        </FormControl>
-                      </TableCell>
-                      <TableCell align="center">
-                        <Button
-                          color="error"
-                          size="small"
-                          onClick={() => handleDeleteUser(user.id)}
-                          startIcon={<Delete />}
-                          sx={{ textTransform: "none", fontWeight: "bold" }}
-                          disabled={user.role === "ADMIN" && user.email === localStorage.getItem("email")} // Don't self-delete
-                        >
-                          Delete
-                        </Button>
-                      </TableCell>
-                    </TableRow>
-                  ))}
+                  {filteredUsers.map((user) => {
+                    const isExpanded = expandedUserId === user.id;
+                    const report = reports[user.id];
+
+                    return (
+                      <React.Fragment key={user.id}>
+                        <TableRow hover>
+                          <TableCell>
+                            <IconButton size="small" onClick={() => toggleExpandReport(user.id)}>
+                              {isExpanded ? <KeyboardArrowUp /> : <KeyboardArrowDown />}
+                            </IconButton>
+                          </TableCell>
+                          <TableCell>
+                            <Chip label={`#${user.id}`} size="small" />
+                          </TableCell>
+                          <TableCell>
+                            <Box sx={{ display: "flex", flexDirection: "column", gap: 0.5 }}>
+                              <Typography sx={{ fontWeight: 600 }}>{user.username || "—"}</Typography>
+                              <FormControl size="small" sx={{ minWidth: 150, mt: 0.5 }}>
+                                <Select
+                                  value={user.role || "USER"}
+                                  onChange={(e) => handleRoleChange(user.id, e.target.value)}
+                                  sx={{ borderRadius: 2, fontSize: "0.85rem" }}
+                                >
+                                  <MenuItem value="USER">🧘 Member</MenuItem>
+                                  <MenuItem value="YOGA_INSTRUCTOR">🪷 Yoga Instructor</MenuItem>
+                                  <MenuItem value="GYM_TRAINER">🏋️ Gym Trainer</MenuItem>
+                                  <MenuItem value="ADMIN">⚙️ Admin</MenuItem>
+                                </Select>
+                              </FormControl>
+                            </Box>
+                          </TableCell>
+                          <TableCell>{user.email}</TableCell>
+                          <TableCell>
+                            <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                              <TextField
+                                fullWidth
+                                size="small"
+                                placeholder="Add professional feedback/notes..."
+                                value={editingNotes[user.id] || ""}
+                                onChange={(e) => handleNoteChange(user.id, e.target.value)}
+                                sx={{ "& .MuiOutlinedInput-root": { borderRadius: 2, fontSize: "0.85rem" } }}
+                              />
+                              <IconButton color="primary" onClick={() => handleSaveNotes(user.id)}>
+                                <Save />
+                              </IconButton>
+                            </Box>
+                          </TableCell>
+                          <TableCell align="center">
+                            <Box sx={{ display: "flex", flexDirection: "column", gap: 1, alignItems: "center" }}>
+                              <Button
+                                variant="text"
+                                color="secondary"
+                                size="small"
+                                startIcon={<Assessment />}
+                                onClick={() => toggleExpandReport(user.id)}
+                                sx={{ textTransform: "none", fontWeight: "bold" }}
+                              >
+                                {isExpanded ? "Hide Report" : "View Report"}
+                              </Button>
+                              <Button
+                                color="error"
+                                size="small"
+                                onClick={() => handleDeleteUser(user.id)}
+                                startIcon={<Delete />}
+                                sx={{ textTransform: "none", fontWeight: "bold" }}
+                                disabled={user.role === "ADMIN" && user.email === localStorage.getItem("email")}
+                              >
+                                Delete
+                              </Button>
+                            </Box>
+                          </TableCell>
+                        </TableRow>
+
+                        {/* Collapsible Report Row */}
+                        <TableRow>
+                          <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
+                            <Collapse in={isExpanded} timeout="auto" unmountOnExit>
+                              <Box sx={{ margin: 2, p: 2, bgcolor: "#fafafa", borderRadius: 3, border: "1px solid #e0e0e0" }}>
+                                <Typography variant="h6" gutterBottom component="div" sx={{ fontWeight: 700, color: "#602e7d" }}>
+                                  📋 Wellness Report Summary for {user.username}
+                                </Typography>
+                                {report ? (
+                                  report.error ? (
+                                    <Typography color="text.secondary" sx={{ py: 2 }}>
+                                      No wellness report exists for this user yet. They need to fill the assessment form first.
+                                    </Typography>
+                                  ) : (
+                                    <Grid container spacing={3} sx={{ mt: 1 }}>
+                                      <Grid item xs={12} sm={6} md={3}>
+                                        <Card variant="outlined" sx={{ borderRadius: 2 }}>
+                                          <CardContent>
+                                            <Typography variant="subtitle2" color="text.secondary" sx={{ fontWeight: 600 }}>🏃 Physical & Workout</Typography>
+                                            <Typography variant="body2" sx={{ mt: 1, fontWeight: 500 }}>
+                                              {report.workoutRecommendation || "No recommendation available."}
+                                            </Typography>
+                                          </CardContent>
+                                        </Card>
+                                      </Grid>
+                                      <Grid item xs={12} sm={6} md={3}>
+                                        <Card variant="outlined" sx={{ borderRadius: 2 }}>
+                                          <CardContent>
+                                            <Typography variant="subtitle2" color="text.secondary" sx={{ fontWeight: 600 }}>🍏 Nutrition & Diet</Typography>
+                                            <Typography variant="body2" sx={{ mt: 1, fontWeight: 500 }}>
+                                              {report.dietRecommendation || "No recommendation available."}
+                                            </Typography>
+                                          </CardContent>
+                                        </Card>
+                                      </Grid>
+                                      <Grid item xs={12} sm={6} md={3}>
+                                        <Card variant="outlined" sx={{ borderRadius: 2 }}>
+                                          <CardContent>
+                                            <Typography variant="subtitle2" color="text.secondary" sx={{ fontWeight: 600 }}>🛌 Sleep & Quality</Typography>
+                                            <Typography variant="body2" sx={{ mt: 1, fontWeight: 500 }}>
+                                              Quality: {report.sleepQuality || "N/A"}<br />
+                                              {report.sleepTips || "No recommendations."}
+                                            </Typography>
+                                          </CardContent>
+                                        </Card>
+                                      </Grid>
+                                      <Grid item xs={12} sm={6} md={3}>
+                                        <Card variant="outlined" sx={{ borderRadius: 2 }}>
+                                          <CardContent>
+                                            <Typography variant="subtitle2" color="text.secondary" sx={{ fontWeight: 600 }}>🧠 Stress & Coping</Typography>
+                                            <Typography variant="body2" sx={{ mt: 1, fontWeight: 500 }}>
+                                              {report.stressManagementTips || "No recommendations."}
+                                            </Typography>
+                                          </CardContent>
+                                        </Card>
+                                      </Grid>
+                                    </Grid>
+                                  )
+                                ) : (
+                                  <Box sx={{ display: "flex", justifyContent: "center", py: 2 }}>
+                                    <CircularProgress size={24} />
+                                  </Box>
+                                )}
+                              </Box>
+                            </Collapse>
+                          </TableCell>
+                        </TableRow>
+                      </React.Fragment>
+                    );
+                  })}
                   {filteredUsers.length === 0 && (
                     <TableRow>
-                      <TableCell colSpan={5} align="center" sx={{ py: 6 }}>
+                      <TableCell colSpan={6} align="center" sx={{ py: 6 }}>
                         <Typography variant="body1" color="text.secondary">
                           No users found matching your search.
                         </Typography>

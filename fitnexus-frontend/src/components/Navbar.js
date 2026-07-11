@@ -113,13 +113,17 @@ function Navbar() {
                   <>
                     <Button component={Link} to="/admin" sx={navBtn("/admin")}>Admin Panel</Button>
                     <Button component={Link} to="/staff" sx={navBtn("/staff")}>Staff Console</Button>
+                    <Button component={Link} to="/map" sx={navBtn("/map")}>Map</Button>
                   </>
                 ) : role === "YOGA_INSTRUCTOR" || role === "GYM_TRAINER" ? (
                   /* Staff navigation */
-                  <Button component={Link} to="/staff" sx={navBtn("/staff")}>
-                    {role === "YOGA_INSTRUCTOR" ? <SelfImprovementIcon sx={{ mr: 0.5, fontSize: 18 }} /> : <FitnessCenterIcon sx={{ mr: 0.5, fontSize: 18 }} />}
-                    Console
-                  </Button>
+                  <>
+                    <Button component={Link} to="/staff" sx={navBtn("/staff")}>
+                      {role === "YOGA_INSTRUCTOR" ? <SelfImprovementIcon sx={{ mr: 0.5, fontSize: 18 }} /> : <FitnessCenterIcon sx={{ mr: 0.5, fontSize: 18 }} />}
+                      Console
+                    </Button>
+                    <Button component={Link} to="/map" sx={navBtn("/map")}>Map</Button>
+                  </>
                 ) : (
                   /* Member navigation */
                   <>
@@ -127,6 +131,7 @@ function Navbar() {
                     <Button component={Link} to="/wellness"  sx={navBtn("/wellness")}>Assessment</Button>
                     <Button component={Link} to="/reports"   sx={navBtn("/reports")}>Reports</Button>
                     <Button component={Link} to="/profile"   sx={navBtn("/profile")}>Profile</Button>
+                    <Button component={Link} to="/map"       sx={navBtn("/map")}>Map</Button>
                   </>
                 )}
 

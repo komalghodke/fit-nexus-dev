@@ -91,4 +91,12 @@ public class UserController {
 
 		return ResponseEntity.ok(stats);
 	}
+
+	@PutMapping("/{id}/notes")
+	public ResponseEntity<User> updateStaffNotes(@PathVariable("id") Long id, @RequestBody Map<String, String> body) {
+		User existing = userRepository.findById(id)
+				.orElseThrow(() -> new RuntimeException("User not found with ID " + id));
+		existing.setStaffNotes(body.get("notes"));
+		return ResponseEntity.ok(userRepository.save(existing));
+	}
 }

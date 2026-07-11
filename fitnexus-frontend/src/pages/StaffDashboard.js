@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { API_URL } from "../api/apiConfig";
 import {
   Box,
   Container,
@@ -28,7 +29,6 @@ import {
 } from "@mui/material";
 import {
   Groups,
-  Person,
   FitnessCenter,
   SelfImprovement,
   ExpandMore,
@@ -49,8 +49,8 @@ function StaffDashboard() {
   const token = localStorage.getItem("token");
 
   useEffect(() => {
-    if (role !== "YOGA_INSTRUCTOR" && role !== "GYM_TRAINER") {
-      setError("Access denied. Only staff members can view this dashboard.");
+    if (role !== "YOGA_INSTRUCTOR" && role !== "GYM_TRAINER" && role !== "ADMIN") {
+      setError("Access denied. Only staff members or administrators can view this dashboard.");
       setLoading(false);
       return;
     }
@@ -60,7 +60,7 @@ function StaffDashboard() {
 
   const fetchUsers = async () => {
     try {
-      const res = await axios.get("http://localhost:8080/api/users", {
+      const res = await axios.get(`${API_URL}/users`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       // Filter to only show regular members
@@ -76,7 +76,7 @@ function StaffDashboard() {
   const fetchReport = async (userId) => {
     if (reports[userId]) return; // already cached
     try {
-      const res = await axios.get(`http://localhost:8080/api/reports/${userId}`, {
+      const res = await axios.get(`${API_URL}/reports/${userId}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setReports(prev => ({ ...prev, [userId]: res.data }));

@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fitnexus.dto.WellnessReport;
@@ -12,6 +13,7 @@ import com.fitnexus.repository.UserRepository;
 import com.fitnexus.service.ReportsService;
 
 @RestController
+@CrossOrigin(origins = "http://localhost:3000")
 @RequestMapping("/api/reports")
 public class ReportsController {
 
@@ -27,9 +29,8 @@ public class ReportsController {
 				.orElseThrow(() -> new RuntimeException("User not found with email " + email));
 		return reportsService.generateReport(user.getId());
 	}
-
-	@GetMapping("/{userId}")
-	public WellnessReport getReportByUserId(@PathVariable("userId") Long userId) {
-		return reportsService.generateReport(userId);
-	}
+    @GetMapping("/{userId}")
+    public WellnessReport getReportByUserId(@PathVariable("userId") Long userId) {
+        return reportsService.generateReport(userId);
+    }
 }

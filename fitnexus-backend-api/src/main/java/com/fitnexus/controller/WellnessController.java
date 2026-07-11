@@ -71,7 +71,7 @@ public class WellnessController {
 		input.setPainArea(request.getPainArea());
 		input.setMood(request.getMood());
 		input.setStressLevel(request.getStressLevel());
-		input.setSleepHours(request.getSleepHours());
+		input.setSleepHours(request.getSleepHours() != null ? request.getSleepHours().doubleValue() : null);
 		input.setSleepQuality(request.getSleepQuality());
 		input.setSleep(request.getSleep());
 		input.setInnerPeace(request.getInnerPeace());
@@ -108,41 +108,41 @@ public class WellnessController {
 		wellnessInputRepository.save(input);
 
 		// Optionally auto-create Workout log if duration is logged
-		if (request.getWorkoutDuration() > 0
+		if ((request.getWorkoutDuration() != null && request.getWorkoutDuration() > 0)
 				|| (request.getWorkoutType() != null && !request.getWorkoutType().isEmpty())) {
 			Workout w = new Workout();
 			w.setUser(user);
 			w.setType(request.getWorkoutType() != null && !request.getWorkoutType().isEmpty() ? request.getWorkoutType()
 					: "General");
-			w.setDuration(request.getWorkoutDuration());
+			w.setDuration(request.getWorkoutDuration() != null ? request.getWorkoutDuration() : 0);
 			w.setIntensity("Medium");
 			w.setCreatedAt(LocalDateTime.now());
 			workoutRepository.save(w);
 		}
 
 		// Optionally auto-create Nutrition log if calories are logged
-		if (request.getDailyCalories() > 0) {
+		if (request.getDailyCalories() != null && request.getDailyCalories() > 0) {
 			Nutrition n = new Nutrition();
 			n.setUser(user);
 			n.setMeal("Form Entry Log");
 			n.setCalories(request.getDailyCalories());
-			n.setNotes("Water: " + request.getWaterIntake() + "L, Protein: " + request.getProteinIntake() + "g");
+			n.setNotes("Water: " + (request.getWaterIntake() != null ? request.getWaterIntake() : 0.0) + "L, Protein: " + (request.getProteinIntake() != null ? request.getProteinIntake() : 0) + "g");
 			n.setCreatedAt(LocalDateTime.now());
 			nutritionRepository.save(n);
 		}
 
 		// Optionally auto-create Sleep log if sleep hours logged
-		if (request.getSleepHours() > 0) {
+		if (request.getSleepHours() != null && request.getSleepHours() > 0) {
 			Sleep s = new Sleep();
 			s.setUser(user);
-			s.setHours((int) request.getSleepHours());
+			s.setHours(request.getSleepHours());
 			s.setQuality(request.getSleepQuality() != null ? request.getSleepQuality() : "Good");
 			s.setCreatedAt(LocalDateTime.now());
 			sleepRepository.save(s);
 		}
 
 		// Optionally auto-create Stress log if stress logged
-		if (request.getStressLevel() > 0) {
+		if (request.getStressLevel() != null && request.getStressLevel() > 0) {
 			Stress str = new Stress();
 			str.setUser(user);
 			str.setLevel(String.valueOf(request.getStressLevel()));

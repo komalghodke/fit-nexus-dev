@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { API_URL } from "../api/apiConfig";
 import {
   Box,
   Button,
@@ -38,7 +39,7 @@ function ProfilePage() {
     async function loadData() {
       try {
         // Fetch User Account Profile
-        const userRes = await axios.get(`http://localhost:8080/api/users/profile/${emailStored}`, {
+        const userRes = await axios.get(`${API_URL}/users/profile/${emailStored}`, {
           headers: { Authorization: `Bearer ${token}` }
         });
         setProfile({
@@ -49,7 +50,7 @@ function ProfilePage() {
 
         // Fetch physical wellness inputs if they exist
         try {
-          const wellnessRes = await axios.get(`http://localhost:8080/api/wellness-input/${userId}`, {
+          const wellnessRes = await axios.get(`${API_URL}/wellness-input/${userId}`, {
             headers: { Authorization: `Bearer ${token}` }
           });
           setWellness(wellnessRes.data);
@@ -82,7 +83,7 @@ function ProfilePage() {
     }
 
     try {
-      await axios.put(`http://localhost:8080/api/users/profile/${emailStored}`, {
+      await axios.put(`${API_URL}/users/profile/${emailStored}`, {
         username: profile.username,
         password: profile.password // Backend updates password if provided
       }, {

@@ -18,6 +18,7 @@ import StressForm from "./pages/StressForm";
 import WellnessForm from "./pages/WellnessForm";
 import StaffDashboard from "./pages/StaffDashboard";
 import AdminDashboard from "./pages/AdminDashboard";
+import MapPage from "./pages/MapPage";
 import NotFoundPage from "./pages/NotFoundPage";
 import "./App.css";
 
@@ -41,6 +42,7 @@ function App() {
           <Route path="/sleep"     element={<PrivateRoute><SleepForm /></PrivateRoute>} />
           <Route path="/stress"    element={<PrivateRoute><StressForm /></PrivateRoute>} />
           <Route path="/wellness"  element={<PrivateRoute><WellnessForm /></PrivateRoute>} />
+          <Route path="/map"       element={<PrivateRoute><MapPage /></PrivateRoute>} />
 
           {/* Staff-only route */}
           <Route path="/staff" element={<StaffRoute><StaffDashboard /></StaffRoute>} />

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { API_URL } from "../api/apiConfig";
 import {
   Box,
   Button,
@@ -42,7 +43,7 @@ function SleepForm() {
     }
 
     try {
-      await axios.post(`http://localhost:8080/api/sleep/${userId}`, {
+      await axios.post(`${API_URL}/sleep/${userId}`, {
         hours: parseInt(sleep.hours),
         quality: sleep.quality
       }, {
