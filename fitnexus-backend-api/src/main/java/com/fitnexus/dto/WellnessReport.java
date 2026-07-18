@@ -248,4 +248,18 @@ public class WellnessReport {
 
 	public String getStaffNotes() { return staffNotes; }
 	public void setStaffNotes(String v) { this.staffNotes = v; }
+
+	// ─── Predictive AI Scores ────────────────────────────────────────────
+	private int predictedCalorieBurn;
+	private int predictedStressTrend;
+	private int predictedSleepQuality;
+
+	public int getPredictedCalorieBurn() { return predictedCalorieBurn; }
+	public void setPredictedCalorieBurn(int v) { this.predictedCalorieBurn = v; }
+
+	public int getPredictedStressTrend() { return predictedStressTrend; }
+	public void setPredictedStressTrend(int v) { this.predictedStressTrend = v; }
+
+	public int getPredictedSleepQuality() { return predictedSleepQuality; }
+	public void setPredictedSleepQuality(int v) { this.predictedSleepQuality = v; }
 }

@@ -20,6 +20,8 @@ import StaffDashboard from "./pages/StaffDashboard";
 import AdminDashboard from "./pages/AdminDashboard";
 import MapPage from "./pages/MapPage";
 import NotFoundPage from "./pages/NotFoundPage";
+import AboutPage from "./pages/AboutPage";
+import PrivacyPolicyPage from "./pages/PrivacyPolicyPage";
 import "./App.css";
 
 function App() {
@@ -32,6 +34,8 @@ function App() {
           <Route path="/" element={<Navigate to="/login" />} />
           <Route path="/login" element={<LoginForm />} />
           <Route path="/register" element={<RegisterForm />} />
+          <Route path="/about" element={<AboutPage />} />
+          <Route path="/privacy" element={<PrivacyPolicyPage />} />
 
           {/* Protected – any authenticated user */}
           <Route path="/dashboard" element={<PrivateRoute><Dashboard /></PrivateRoute>} />

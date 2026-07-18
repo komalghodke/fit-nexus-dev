@@ -41,7 +41,9 @@ function Footer() {
               { to: "/dashboard", label: "Dashboard" },
               { to: "/wellness",  label: "Assessment" },
               { to: "/reports",   label: "Reports" },
-              { to: "/profile",   label: "Profile" }
+              { to: "/profile",   label: "Profile" },
+              { to: "/about",     label: "About FitNexus" },
+              { to: "/privacy",   label: "Privacy Policy" }
             ].map(({ to, label }) => (
               <Box key={to} sx={{ mt: 1 }}>
                 <Typography
@@ -86,12 +88,19 @@ function Footer() {
 
         <Divider sx={{ borderColor: "rgba(255,255,255,0.12)", mb: 2 }} />
 
-        <Box sx={{ display: "flex", flexWrap: "wrap", alignItems: "center", justifyContent: "space-between", gap: 1 }}>
-          <Typography variant="caption" sx={{ color: "rgba(255,255,255,0.45)" }}>
-            © {new Date().getFullYear()} FitNexus · Built with ❤️ for Holistic Wellness · All rights reserved.
+        <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", mt: 1, gap: 0.5 }}>
+          <Typography variant="caption" sx={{ color: "rgba(255,255,255,0.6)", fontSize: "0.8rem", textAlign: "center" }}>
+            © 2026 FitNexus · Built with ❤️ for Holistic Wellness · All rights reserved.
           </Typography>
-          <Typography variant="caption" sx={{ color: "rgba(255,255,255,0.35)" }}>
-            Stack: React · Spring Boot · MySQL · JWT · Material UI
+          <Typography variant="caption" sx={{ color: "rgba(255,255,255,0.45)", fontSize: "0.75rem", textAlign: "center" }}>
+            <a
+              href="https://github.com/komalghodke/fit-nexus-dev"
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{ color: "#b39ddb", textDecoration: "none" }}
+            >
+              github.com/komalghodke/fit-nexus-dev
+            </a>
           </Typography>
         </Box>
       </Container>

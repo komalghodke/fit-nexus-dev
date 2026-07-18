@@ -66,12 +66,28 @@ function AdminDashboard() {
   const [reports, setReports] = useState({});
   const [editingNotes, setEditingNotes] = useState({});
 
+  // States for Corporate Partner Inquiries from C#
+  const [inquiries, setInquiries] = useState([]);
+  const [inquiriesLoading, setInquiriesLoading] = useState(true);
+
   const token = localStorage.getItem("token");
 
   useEffect(() => {
     fetchData();
+    fetchInquiries();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const fetchInquiries = async () => {
+    try {
+      const res = await axios.get("http://localhost:5294/api/corporate/inquiries");
+      setInquiries(res.data || []);
+    } catch (err) {
+      console.warn("Failed to load corporate inquiries from .NET dashboard endpoint:", err);
+    } finally {
+      setInquiriesLoading(false);
+    }
+  };
 
   const fetchData = async () => {
     try {
@@ -251,7 +267,7 @@ function AdminDashboard() {
           ⚡ Admin Shortcuts
         </Typography>
         <Grid container spacing={3} sx={{ mb: 4 }}>
-          <Grid item xs={12} sm={4}>
+          <Grid item xs={12} sm={3}>
             <Card sx={{ borderRadius: 3, borderLeft: "5px solid #602e7d" }}>
               <CardContent>
                 <Typography variant="h6" sx={{ fontWeight: 700, mb: 1 }}>Staff Console</Typography>
@@ -264,7 +280,7 @@ function AdminDashboard() {
               </CardContent>
             </Card>
           </Grid>
-          <Grid item xs={12} sm={4}>
+          <Grid item xs={12} sm={3}>
             <Card sx={{ borderRadius: 3, borderLeft: "5px solid #054474" }}>
               <CardContent>
                 <Typography variant="h6" sx={{ fontWeight: 700, mb: 1 }}>Wellness Map</Typography>
@@ -277,15 +293,28 @@ function AdminDashboard() {
               </CardContent>
             </Card>
           </Grid>
-          <Grid item xs={12} sm={4}>
+          <Grid item xs={12} sm={3}>
             <Card sx={{ borderRadius: 3, borderLeft: "5px solid #2e7d32" }}>
               <CardContent>
-                <Typography variant="h6" sx={{ fontWeight: 700, mb: 1 }}>Wellness Assessment Form</Typography>
+                <Typography variant="h6" sx={{ fontWeight: 700, mb: 1 }}>Wellness Assessment</Typography>
                 <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
                   Access the multi-dimensional Physical, Spiritual, Social, and Environmental assessment.
                 </Typography>
                 <Button component={Link} to="/wellness" variant="outlined" size="small" color="success" endIcon={<Assignment />}>
                   Open Form
+                </Button>
+              </CardContent>
+            </Card>
+          </Grid>
+          <Grid item xs={12} sm={3}>
+            <Card sx={{ borderRadius: 3, borderLeft: "5px solid #e65100" }}>
+              <CardContent>
+                <Typography variant="h6" sx={{ fontWeight: 700, mb: 1 }}>Corporate Dashboard</Typography>
+                <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                  Open the business-oriented corporate wellness intelligence dashboard served by ASP.NET Core.
+                </Typography>
+                <Button href="http://localhost:5294" target="_blank" rel="noopener noreferrer" variant="outlined" size="small" color="warning" endIcon={<Assessment />}>
+                  Open Corporate UI
                 </Button>
               </CardContent>
             </Card>
@@ -489,6 +518,69 @@ function AdminDashboard() {
                 </TableBody>
               </Table>
             </TableContainer>
+          </CardContent>
+        </Card>
+
+        {/* Corporate Partner Inquiries from .NET */}
+        <Card sx={{ borderRadius: 4, boxShadow: "0 4px 16px rgba(0,0,0,0.06)", mt: 4 }}>
+          <CardContent sx={{ p: 3 }}>
+            <Typography variant="h6" sx={{ fontWeight: 800, color: "#e65100", mb: 3 }}>
+              🏢 Corporate & Studio Partner Inquiries
+            </Typography>
+
+            {inquiriesLoading ? (
+              <Box sx={{ display: "flex", justifyContent: "center", py: 4 }}>
+                <CircularProgress color="warning" />
+              </Box>
+            ) : (
+              <TableContainer component={Paper} elevation={0} sx={{ borderRadius: 3, border: "1px solid #eee" }}>
+                <Table>
+                  <TableHead>
+                    <TableRow sx={{ backgroundColor: "#f9f9f9" }}>
+                      <TableCell sx={{ fontWeight: 700, color: "#333" }}>Organization</TableCell>
+                      <TableCell sx={{ fontWeight: 700, color: "#333" }}>Type</TableCell>
+                      <TableCell sx={{ fontWeight: 700, color: "#333" }}>Contact Person</TableCell>
+                      <TableCell sx={{ fontWeight: 700, color: "#333" }}>Email & Phone</TableCell>
+                      <TableCell sx={{ fontWeight: 700, color: "#333" }}>City</TableCell>
+                      <TableCell sx={{ fontWeight: 700, color: "#333" }}>Message / Goals</TableCell>
+                      <TableCell sx={{ fontWeight: 700, color: "#333" }}>Submitted At</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {inquiries.map((inq) => (
+                      <TableRow key={inq.id || inq.Id} sx={{ "&:hover": { bgcolor: "#fafafa" } }}>
+                        <TableCell sx={{ fontWeight: 600 }}>{inq.orgName || inq.OrgName}</TableCell>
+                        <TableCell>
+                          <Chip
+                            label={(inq.orgType || inq.OrgType).toUpperCase().replace("_", " ")}
+                            size="small"
+                            color="warning"
+                            variant="outlined"
+                          />
+                        </TableCell>
+                        <TableCell>{inq.contactName || inq.ContactName}</TableCell>
+                        <TableCell>
+                          <Typography variant="body2">{inq.contactEmail || inq.ContactEmail}</Typography>
+                          <Typography variant="caption" color="text.secondary">{inq.contactPhone || inq.ContactPhone}</Typography>
+                        </TableCell>
+                        <TableCell>{inq.city || inq.City || "—"}</TableCell>
+                        <TableCell sx={{ maxWidth: 300, wordBreak: "break-word" }}>{inq.message || inq.Message || "—"}</TableCell>
+                        <TableCell sx={{ fontSize: "0.8rem", color: "#666" }}>{inq.submittedAt || inq.SubmittedAt}</TableCell>
+                      </TableRow>
+                    ))}
+                    {inquiries.length === 0 && (
+                      <TableRow>
+                        <TableCell colSpan={7} align="center" sx={{ py: 6 }}>
+                          <Typography variant="body1" color="text.secondary">
+                            No partnership inquiries received yet.
+                          </Typography>
+                        </TableCell>
+                      </TableRow>
+                    )}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            )}
           </CardContent>
         </Card>
       </Container>

@@ -1,0 +1,8 @@
+C:\Users\admin\Desktop\TRIAL\fit-nexus-dev\FitNexusDashboard\obj\Debug\net8.0\FitNexusDashboard.csproj.AssemblyReference.cache
+C:\Users\admin\Desktop\TRIAL\fit-nexus-dev\FitNexusDashboard\obj\Debug\net8.0\rpswa.dswa.cache.json
+C:\Users\admin\Desktop\TRIAL\fit-nexus-dev\FitNexusDashboard\obj\Debug\net8.0\FitNexusDashboard.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\admin\Desktop\TRIAL\fit-nexus-dev\FitNexusDashboard\obj\Debug\net8.0\FitNexusDashboard.AssemblyInfoInputs.cache
+C:\Users\admin\Desktop\TRIAL\fit-nexus-dev\FitNexusDashboard\obj\Debug\net8.0\FitNexusDashboard.AssemblyInfo.cs
+C:\Users\admin\Desktop\TRIAL\fit-nexus-dev\FitNexusDashboard\obj\Debug\net8.0\FitNexusDashboard.csproj.CoreCompileInputs.cache
+C:\Users\admin\Desktop\TRIAL\fit-nexus-dev\FitNexusDashboard\obj\Debug\net8.0\FitNexusDashboard.MvcApplicationPartsAssemblyInfo.cache
+C:\Users\admin\Desktop\TRIAL\fit-nexus-dev\FitNexusDashboard\obj\Debug\net8.0\FitNexusDashboard.sourcelink.json

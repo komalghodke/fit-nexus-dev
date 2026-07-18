@@ -1,0 +1,46 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "FitNexusDashboard",
+    "version": "1.0"
+  },
+  "paths": {
+    "/api/corporate/stats": {
+      "get": {
+        "tags": [
+          "FitNexusDashboard"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/corporate/trends": {
+      "get": {
+        "tags": [
+          "FitNexusDashboard"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/corporate/demographics": {
+      "get": {
+        "tags": [
+          "FitNexusDashboard"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    }
+  },
+  "components": { }
+}

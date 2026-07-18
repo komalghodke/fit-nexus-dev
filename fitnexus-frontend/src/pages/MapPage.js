@@ -23,7 +23,8 @@ import {
   IconButton,
   Tooltip,
   CircularProgress,
-  Button
+  Button,
+  Alert
 } from "@mui/material";
 import { Search, Map, SelfImprovement, FitnessCenter, LocalHospital, GpsFixed } from "@mui/icons-material";
 
@@ -206,6 +207,19 @@ function MapPage() {
             </Box>
           </CardContent>
         </Card>
+
+        <Alert
+          severity="warning"
+          sx={{
+            mb: 3,
+            borderRadius: 3,
+            boxShadow: "0 4px 12px rgba(230,81,0,0.08)",
+            border: "1px solid #ffe082",
+            fontWeight: 500
+          }}
+        >
+          <strong>Disclaimer:</strong> This wellness locator fetches public map results near you. FitNexus does not verify the credentials, operating status, or reviews of these external facilities. Please exercise independent caution and cross-verify studio details before visiting.
+        </Alert>
 
         <Grid container spacing={3}>
           {/* Sidebar & Filters */}

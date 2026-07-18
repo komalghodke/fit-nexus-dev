@@ -393,9 +393,18 @@ function LoginForm() {
 
         {/* Portal hint footer */}
         <Box sx={{ mt: 3, textAlign: "center" }}>
-          <Typography variant="caption" sx={{ color: "#aaa" }}>
+          <Typography variant="caption" sx={{ color: "#aaa", display: "block", mb: 1 }}>
             Select your portal above then enter your credentials · Secured with JWT
           </Typography>
+          <Box sx={{ display: "flex", justifyContent: "center", gap: 2 }}>
+            <Link href="/about" sx={{ color: "#602e7d", fontWeight: "bold", fontSize: "0.8rem", textDecoration: "none", "&:hover": { textDecoration: "underline" } }}>
+              About FitNexus
+            </Link>
+            <Typography variant="caption" sx={{ color: "#ccc" }}>|</Typography>
+            <Link href="/privacy" sx={{ color: "#602e7d", fontWeight: "bold", fontSize: "0.8rem", textDecoration: "none", "&:hover": { textDecoration: "underline" } }}>
+              Privacy Policy
+            </Link>
+          </Box>
         </Box>
       </Container>
     </Box>

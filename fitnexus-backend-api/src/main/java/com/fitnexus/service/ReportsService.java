@@ -19,9 +19,80 @@ import com.fitnexus.repository.StressRepository;
 import com.fitnexus.repository.WellnessInputRepository;
 import com.fitnexus.repository.WorkoutRepository;
 import com.fitnexus.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.JsonNode;
 
 @Service
 public class ReportsService {
+
+	@Value("${gemini.api.key}")
+	private String geminiApiKey;
+
+	@Value("${gemini.model}")
+	private String geminiModel;
+
+	private final RestTemplate restTemplate = new RestTemplate();
+	private final ObjectMapper objectMapper = new ObjectMapper();
+
+	private String callGeminiAPI(String promptText) {
+		if (geminiApiKey == null || geminiApiKey.trim().isEmpty() || geminiApiKey.contains("YOUR_KEY")) {
+			return null;
+		}
+		try {
+			String url = "https://generativelanguage.googleapis.com/v1beta/models/" + geminiModel + ":generateContent?key=" + geminiApiKey;
+
+			HttpHeaders headers = new HttpHeaders();
+			headers.setContentType(MediaType.APPLICATION_JSON);
+
+			// JSON request payload for Gemini
+			String jsonPayload = "{"
+					+ "  \"contents\": [{"
+					+ "    \"parts\": [{"
+					+ "      \"text\": \"" + escapeJson(promptText) + "\""
+					+ "    }]"
+					+ "  }],"
+					+ "  \"generationConfig\": {"
+					+ "    \"responseMimeType\": \"application/json\""
+					+ "  }"
+					+ "}";
+
+			HttpEntity<String> entity = new HttpEntity<>(jsonPayload, headers);
+			ResponseEntity<String> response = restTemplate.postForEntity(url, entity, String.class);
+
+			if (response.getStatusCode().is2xxSuccessful()) {
+				JsonNode root = objectMapper.readTree(response.getBody());
+				JsonNode candidates = root.path("candidates");
+				if (candidates.isArray() && candidates.size() > 0) {
+					JsonNode textNode = candidates.get(0)
+							.path("content")
+							.path("parts")
+							.get(0)
+							.path("text");
+					return textNode.asText();
+				}
+			}
+		} catch (Exception e) {
+			System.err.println("Gemini API call failed: " + e.getMessage());
+		}
+		return null;
+	}
+
+	private String escapeJson(String text) {
+		if (text == null) return "";
+		return text.replace("\\", "\\\\")
+				.replace("\"", "\\\"")
+				.replace("\b", "\\b")
+				.replace("\f", "\\f")
+				.replace("\n", "\\n")
+				.replace("\r", "\\r")
+				.replace("\t", "\\t");
+	}
 
 	@Autowired private WorkoutRepository workoutRepo;
 	@Autowired private NutritionRepository nutritionRepo;
@@ -285,6 +356,137 @@ public class ReportsService {
 				recs.add("Practice Yoga Nidra for 15–20 minutes in the afternoon to compensate for short sleep.");
 		}
 
+		// ─── Caloric Burn Prediction ──────────────────────────────────────
+		int predictedCalorieBurn = 0;
+		if (input != null && input.getWeight() > 0 && input.getWorkoutDuration() != null && input.getWorkoutDuration() > 0) {
+			double weightKg = input.getWeight();
+			int durationMins = input.getWorkoutDuration();
+			String wType = input.getWorkoutType();
+			double met = 4.0; // default MET for moderate activity
+			if (wType != null) {
+				String wl = wType.toLowerCase();
+				if (wl.contains("yoga")) met = 3.0;
+				else if (wl.contains("cardio") || wl.contains("run")) met = 8.0;
+				else if (wl.contains("strength") || wl.contains("weight") || wl.contains("gym")) met = 6.0;
+				else if (wl.contains("walk")) met = 3.5;
+			}
+			// Calories = (MET * 3.5 * weightKg / 200) * durationMins
+			predictedCalorieBurn = (int) Math.round((met * 3.5 * weightKg / 200.0) * durationMins);
+		}
+
+		// ─── Stress Trend Prediction ──────────────────────────────────────
+		int predictedStressTrend = input != null && input.getStressLevel() != null ? input.getStressLevel() : 5;
+		if (input != null) {
+			// Deficit or factors that increase stress
+			if (input.getSleepHours() != null && input.getSleepHours() < 6) predictedStressTrend += 1;
+			if (input.getWorkSatisfaction() != null && input.getWorkSatisfaction() < 5) predictedStressTrend += 1;
+			if (input.getRestingHeartRate() != null && input.getRestingHeartRate() > 85) predictedStressTrend += 1;
+			// Factors that reduce stress
+			if (input.getWithNature() != null && input.getWithNature() > 4) predictedStressTrend -= 1;
+			if (input.getMeditationMinutes() > 15) predictedStressTrend -= 1;
+			if ("yes".equalsIgnoreCase(input.getInnerPeace())) predictedStressTrend -= 1;
+			// Clamp stress prediction to 1-10
+			if (predictedStressTrend < 1) predictedStressTrend = 1;
+			if (predictedStressTrend > 10) predictedStressTrend = 10;
+		}
+
+		// ─── Sleep Quality Score Prediction ───────────────────────────────
+		int predictedSleepQuality = 70; // baseline sleep score
+		if (input != null) {
+			double sleepHours = input.getSleepHours() != null ? input.getSleepHours() : 8.0;
+			// Sleep duration component (up to 40 points)
+			if (sleepHours >= 7 && sleepHours <= 9) predictedSleepQuality += 30;
+			else if (sleepHours > 9) predictedSleepQuality += 15;
+			else predictedSleepQuality += (int) (sleepHours * 4); // lower score for less sleep
+
+			// Sleep quality subjective input (up to 30 points)
+			String sq = input.getSleepQuality();
+			if ("Restful".equalsIgnoreCase(sq)) predictedSleepQuality += 30;
+			else if ("LightSleep".equalsIgnoreCase(sq) || "Interrupted".equalsIgnoreCase(sq)) predictedSleepQuality += 15;
+			else if ("Insomnia".equalsIgnoreCase(sq)) predictedSleepQuality += 5;
+
+			// Disruptive factors
+			if (input.getStressLevel() != null && input.getStressLevel() > 7) predictedSleepQuality -= 15;
+			if (input.getWorkSatisfaction() != null && input.getWorkSatisfaction() < 5) predictedSleepQuality -= 5;
+			if (input.getRestingHeartRate() != null && input.getRestingHeartRate() > 80) predictedSleepQuality -= 5;
+
+			// Clamp sleep score to 0-100
+			if (predictedSleepQuality < 0) predictedSleepQuality = 0;
+			if (predictedSleepQuality > 100) predictedSleepQuality = 100;
+		}
+
+		// Compute BMI helper value
+		double calculatedBmi = 22.0;
+		if (input != null && input.getHeight() > 0 && input.getWeight() > 0) {
+			double hm = input.getHeight() / 100.0;
+			calculatedBmi = Math.round((input.getWeight() / (hm * hm)) * 10.0) / 10.0;
+		}
+
+		// ─── GenAI Call ───────────────────────────────────────────────────
+		if (input != null && geminiApiKey != null && !geminiApiKey.trim().isEmpty() && !geminiApiKey.contains("YOUR_KEY")) {
+			String prompt = "Evaluate this wellness assessment data and return a JSON object. "
+					+ "The user's metrics: "
+					+ "Name: " + (input.getFullName() != null ? input.getFullName() : "User") + ", "
+					+ "Age: " + input.getAge() + ", "
+					+ "Gender: " + input.getGender() + ", "
+					+ "City: " + input.getCity() + ", "
+					+ "Height/Weight: " + input.getHeight() + "cm / " + input.getWeight() + "kg (BMI: " + calculatedBmi + "), "
+					+ "Water Intake: " + input.getWaterIntake() + "L/day, "
+					+ "Resting Heart Rate: " + input.getRestingHeartRate() + " BPM, "
+					+ "Sleep Duration/Quality: " + input.getSleepHours() + " hours / " + input.getSleepQuality() + ", "
+					+ "Mood: " + input.getMood() + ", "
+					+ "Energy: " + input.getEnergyLevel() + ", "
+					+ "Stress Level: " + input.getStressLevel() + "/10 (Triggers: " + input.getStressTriggers() + "), "
+					+ "Inner Peace: " + input.getInnerPeace() + ", "
+					+ "Social Support: " + input.getSocialSupport() + ", "
+					+ "Work Satisfaction: " + input.getWorkSatisfaction() + "/10, "
+					+ "Nature Time: " + input.getWithNature() + " hours/week, "
+					+ "Medical Disease: " + input.getHasDisease() + " (Conditions: " + input.getChronicConditions() + ", Meds: " + input.getMedications() + "), "
+					+ "Journal Entry: \\\"" + (input.getJournalEntry() != null ? input.getJournalEntry() : "") + "\\\", "
+					+ "Yoga Experience: " + input.getYogaExperience() + ", "
+					+ "Workout Type/Duration/Freq: " + input.getWorkoutType() + " / " + input.getWorkoutDuration() + " mins / " + input.getWorkoutFrequency() + " times/week. "
+					+ "Return ONLY a JSON object containing keys: 'moodInsight' (text explaining emotional reflection), 'affirmation' (uplifting text), 'mantra' (traditional sanskrit/hindi mantra corresponding to chakra/mood), 'yogaRecommendation' (sanskrit/standard names of poses/breathwork/time recommended), 'journalReflection' (text reflecting on their journal), 'sleepTips' (array of strings), 'hydrationTips' (array of strings), 'wellnessTips' (array of strings), 'recommendations' (array of strings inspired by holistic lifestyle concepts without government or AYUSH branding).";
+
+			String geminiJson = callGeminiAPI(prompt);
+			if (geminiJson != null && !geminiJson.trim().isEmpty()) {
+				try {
+					JsonNode geminiData = objectMapper.readTree(geminiJson);
+					if (geminiData.has("moodInsight")) moodInsight = geminiData.path("moodInsight").asText();
+					if (geminiData.has("affirmation")) affirmation = geminiData.path("affirmation").asText();
+					if (geminiData.has("mantra")) mantra = geminiData.path("mantra").asText();
+					if (geminiData.has("yogaRecommendation")) yogaRecommendation = geminiData.path("yogaRecommendation").asText();
+					if (geminiData.has("journalReflection")) journalReflection = geminiData.path("journalReflection").asText();
+
+					if (geminiData.has("sleepTips") && geminiData.path("sleepTips").isArray()) {
+						sleepTips.clear();
+						for (JsonNode node : geminiData.path("sleepTips")) {
+							sleepTips.add(node.asText());
+						}
+					}
+					if (geminiData.has("hydrationTips") && geminiData.path("hydrationTips").isArray()) {
+						hydrationTips.clear();
+						for (JsonNode node : geminiData.path("hydrationTips")) {
+							hydrationTips.add(node.asText());
+						}
+					}
+					if (geminiData.has("wellnessTips") && geminiData.path("wellnessTips").isArray()) {
+						tips.clear();
+						for (JsonNode node : geminiData.path("wellnessTips")) {
+							tips.add(node.asText());
+						}
+					}
+					if (geminiData.has("recommendations") && geminiData.path("recommendations").isArray()) {
+						recs.clear();
+						for (JsonNode node : geminiData.path("recommendations")) {
+							recs.add(node.asText());
+						}
+					}
+				} catch (Exception e) {
+					System.err.println("Error parsing Gemini JSON response: " + e.getMessage());
+				}
+			}
+		}
+
 		// ─── Build Report ─────────────────────────────────────────────────
 		WellnessReport report = new WellnessReport(workoutSummary, nutritionSummary, sleepSummary, stressSummary, recs);
 
@@ -325,13 +527,7 @@ public class ReportsService {
 			report.setChronicConditions(input.getChronicConditions());
 			report.setMedications(input.getMedications());
 			report.setJournalEntry(input.getJournalEntry());
-			// Compute BMI from height/weight if not already stored
-			double storedBmi = input.getBmi();
-			if (storedBmi <= 0 && input.getHeight() > 0 && input.getWeight() > 0) {
-				double hm = input.getHeight() / 100.0;
-				storedBmi = Math.round((input.getWeight() / (hm * hm)) * 10.0) / 10.0;
-			}
-			report.setBmi(storedBmi);
+			report.setBmi(calculatedBmi);
 		}
 
 		// Engine outputs
@@ -347,6 +543,11 @@ public class ReportsService {
 		report.setWellnessTips(tips);
 		report.setSleepTips(sleepTips);
 		report.setHydrationTips(hydrationTips);
+
+		// Set Predictive scores
+		report.setPredictedCalorieBurn(predictedCalorieBurn);
+		report.setPredictedStressTrend(predictedStressTrend);
+		report.setPredictedSleepQuality(predictedSleepQuality);
 
 		User user = userRepo.findById(userId).orElse(null);
 		if (user != null) {

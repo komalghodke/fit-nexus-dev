@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import { fetchReport } from "../api/reportsApi";
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from "recharts";
+import WellnessChatbot from "../components/WellnessChatbot";
 import {
   Box, Container, Grid, Card, CardContent, Typography, Button,
   Divider, List, ListItem, ListItemIcon, ListItemText, CircularProgress,
@@ -203,7 +204,7 @@ function ReportsPage() {
               🌿 Wellness Companion Insights
             </Typography>
             <Typography variant="body1" color="text.secondary">
-              Your Personalized Guidance — Holistic AYUSH/YCB Assessment Report
+              Your Personalized Guidance — Holistic Lifestyle & YCB Assessment Report
             </Typography>
           </Box>
           <Box sx={{ display: "flex", gap: 1.5, flexWrap: "wrap" }}>
@@ -258,6 +259,32 @@ function ReportsPage() {
               <Box sx={{ pl: 1 }}>
                 <InfoRow icon={<FitnessCenter fontSize="small" />} label="Height / Weight" value={report.height && report.weight ? `${report.height} cm / ${report.weight} kg` : null} />
                 <InfoRow icon={<FitnessCenter fontSize="small" />} label="Calculated BMI" value={report.bmi ? report.bmi.toFixed(1) : null} />
+                {report.bmi && (
+                  <Box sx={{ pl: 4, mb: 1 }}>
+                    {(() => {
+                      const val = report.bmi;
+                      if (val < 18.5) {
+                        return (
+                          <Typography variant="caption" sx={{ color: "#0288d1", fontWeight: 700, display: "block" }}>
+                            💡 Underweight: Nutrient-dense diet & strength workouts advised.
+                          </Typography>
+                        );
+                      } else if (val < 25) {
+                        return (
+                          <Typography variant="caption" sx={{ color: "#2e7d32", fontWeight: 700, display: "block" }}>
+                            💡 Normal Weight: Maintain balanced energy intake and exercise.
+                          </Typography>
+                        );
+                      } else {
+                        return (
+                          <Typography variant="caption" sx={{ color: "#e65100", fontWeight: 700, display: "block" }}>
+                            💡 Overweight: Caloric deficit & active dynamic yoga advised.
+                          </Typography>
+                        );
+                      }
+                    })()}
+                  </Box>
+                )}
                 <InfoRow icon={<WaterDrop fontSize="small" />} label="Water Intake" value={report.waterIntake ? `${report.waterIntake} L/day` : null} />
                 <InfoRow icon={<FavoriteOutlined fontSize="small" />} label="Resting Heart Rate" value={report.restingHeartRate ? `${report.restingHeartRate} BPM` : null} />
                 <InfoRow icon={<Bedtime fontSize="small" />} label="Sleep Duration" value={report.sleepHours ? `${report.sleepHours} hrs/night` : null} />
@@ -319,24 +346,80 @@ function ReportsPage() {
 
             {/* Wellness Score */}
             <SectionCard title="Wellness Score" icon="📊" color={themeColor} bg="#fff">
-              <Box sx={{ display: "flex", justifyContent: "center", position: "relative", height: 200 }}>
-                <ResponsiveContainer width="100%" height={220}>
+              <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", position: "relative", height: 220, mb: 1 }}>
+                <ResponsiveContainer width="100%" height="100%">
                   <PieChart>
-                    <Pie data={chartData} cx="50%" cy="70%" startAngle={180} endAngle={0}
-                      innerRadius={70} outerRadius={95} dataKey="value" stroke="none">
+                    <Pie data={chartData} cx="50%" cy="75%" startAngle={180} endAngle={0}
+                      innerRadius={65} outerRadius={85} dataKey="value" stroke="none">
                       <Cell fill={COLORS[0]} /><Cell fill={COLORS[1]} />
                     </Pie>
                     <Tooltip />
                   </PieChart>
                 </ResponsiveContainer>
-                <Box sx={{ position: "absolute", top: "52%", left: "50%", transform: "translate(-50%,-50%)", textAlign: "center" }}>
-                  <Typography variant="h3" sx={{ fontWeight: 900, color: themeColor }}>{scoreVal}/10</Typography>
-                  <Chip label={statusLabel} sx={{ bgcolor: themeColor, color: "#fff", fontWeight: 800, mt: 0.5 }} />
+                <Box sx={{ position: "absolute", bottom: 25, left: "50%", transform: "translateX(-50%)", textAlign: "center" }}>
+                  <Typography variant="h4" sx={{ fontWeight: 900, color: themeColor, lineHeight: 1.1 }}>{scoreVal}/10</Typography>
+                  <Chip label={statusLabel} size="small" sx={{ bgcolor: themeColor, color: "#fff", fontWeight: 800, mt: 0.5 }} />
                 </Box>
               </Box>
               <Typography variant="body2" sx={{ textAlign: "center", color: "#666", mt: 1 }}>
                 Your wellness score is <strong>{scoreVal}/10</strong> — {statusLabel === "Needs Attention" ? "⚠️ Needs Attention" : statusLabel === "Moderate" ? "🌤 Moderate" : "✅ Excellent"}
               </Typography>
+            </SectionCard>
+
+            {/* ── Predictive AI Wellness Forecasts ───────────────────── */}
+            <SectionCard title="Predictive AI Forecasts" icon={<AutoAwesome />} color="#6200ea" bg="#f5f0ff">
+              <Typography variant="body2" sx={{ color: "#555", mb: 2.5, lineHeight: 1.6 }}>
+                Our predictive models estimate metrics below based on your activity, sleep quality, and physiological signals:
+              </Typography>
+
+              {/* Caloric Burn */}
+              <Box sx={{ mb: 2.5 }}>
+                <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 0.8 }}>
+                  <Typography variant="body2" sx={{ fontWeight: 700, color: "#333", display: "flex", alignItems: "center", gap: 1 }}>
+                    <FitnessCenter sx={{ color: "#6200ea", fontSize: 18 }} /> Active Caloric Burn
+                  </Typography>
+                  <Typography variant="body2" sx={{ fontWeight: 800, color: "#6200ea" }}>
+                    {report.predictedCalorieBurn || 0} kcal
+                  </Typography>
+                </Box>
+                <Typography variant="caption" sx={{ color: "#666", display: "block", pl: 3.2 }}>
+                  Estimated energy expenditure per {report.workoutDuration || 30} min session.
+                </Typography>
+              </Box>
+
+              <Divider sx={{ my: 1.5 }} />
+
+              {/* Stress Forecast */}
+              <Box sx={{ mb: 2.5 }}>
+                <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 0.8 }}>
+                  <Typography variant="body2" sx={{ fontWeight: 700, color: "#333", display: "flex", alignItems: "center", gap: 1 }}>
+                    <Psychology sx={{ color: "#6200ea", fontSize: 18 }} /> Stress Level Forecast
+                  </Typography>
+                  <Typography variant="body2" sx={{ fontWeight: 800, color: "#6200ea" }}>
+                    {report.predictedStressTrend || 5}/10
+                  </Typography>
+                </Box>
+                <Typography variant="caption" sx={{ color: "#666", display: "block", pl: 3.2 }}>
+                  Calculated stress index trend based on rest duration and work satisfaction.
+                </Typography>
+              </Box>
+
+              <Divider sx={{ my: 1.5 }} />
+
+              {/* Sleep Score */}
+              <Box>
+                <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 0.8 }}>
+                  <Typography variant="body2" sx={{ fontWeight: 700, color: "#333", display: "flex", alignItems: "center", gap: 1 }}>
+                    <Bedtime sx={{ color: "#6200ea", fontSize: 18 }} /> Sleep Quality Forecast
+                  </Typography>
+                  <Typography variant="body2" sx={{ fontWeight: 800, color: "#6200ea" }}>
+                    {report.predictedSleepQuality || 70}/100
+                  </Typography>
+                </Box>
+                <Typography variant="caption" sx={{ color: "#666", display: "block", pl: 3.2 }}>
+                  Comprehensive sleep rating evaluating bedtime consistency and recovery.
+                </Typography>
+              </Box>
             </SectionCard>
 
           </Grid>
@@ -462,6 +545,10 @@ function ReportsPage() {
                 </Box>
               </Box>
 
+              <Typography variant="body2" sx={{ color: "#555", mb: 2, p: 1.5, bgcolor: "#fafafa", borderRadius: 2, borderLeft: "4px solid #602e7d", lineHeight: 1.6 }}>
+                <strong>YCB Principles mapping:</strong> In traditional Yogic practices, human emotions correspond to energy centers (Chakras) along the spine. FitNexus maps your reported mood state to a primary Chakra focus to suggest customized mindfulness points. This is a personal reflection engine and not a clinical diagnosis.
+              </Typography>
+
               {/* All chakra legend */}
               <Typography variant="caption" sx={{ fontWeight: 700, color: "#888", display: "block", mb: 1.5, textTransform: "uppercase", letterSpacing: 0.5 }}>
                 🌈 Chakra Color Legend & Meaning
@@ -482,9 +569,12 @@ function ReportsPage() {
               </Alert>
             )}
 
-            {/* ── AYUSH Lifestyle Guidelines ─────────────────────────── */}
+            {/* ── Lifestyle Guidelines ─────────────────────────── */}
             {report.recommendations && report.recommendations.length > 0 && (
-              <SectionCard title="AYUSH Lifestyle Guidelines" icon={<AssignmentTurnedIn />} color="#2e7d32" bg="#f1f8e9">
+              <SectionCard title="Lifestyle Guidelines" icon={<AssignmentTurnedIn />} color="#2e7d32" bg="#f1f8e9">
+                <Typography variant="caption" sx={{ color: "#555", display: "block", mb: 2, fontStyle: "italic", lineHeight: 1.5 }}>
+                  ⚠️ <strong>Notice:</strong> These lifestyle recommendations are generic templates inspired by Yoga Certification Board (YCB) syllabus. FitNexus is not affiliated with or endorsed by any government entity (including the Ministry of AYUSH), is not a medical diagnostic tool, and recommends consulting a doctor for any persistent symptoms.
+                </Typography>
                 <List>
                   {report.recommendations.map((rec, i) => (
                     <ListItem key={i} sx={{ py: 1, px: 0 }}>
@@ -514,6 +604,21 @@ function ReportsPage() {
                   You spend about <strong>{report.withNature} hours/week</strong> in nature, nurturing your environmental wellness.
                 </Typography>
               )}
+              {report.waterIntake > 0 && (
+                <Typography variant="body2" sx={{ color: "#555", lineHeight: 1.8, mb: 1 }}>
+                  Your daily hydration level is registered at <strong>{report.waterIntake} Liters</strong>.
+                </Typography>
+              )}
+              {report.restingHeartRate > 0 && (
+                <Typography variant="body2" sx={{ color: "#555", lineHeight: 1.8, mb: 1 }}>
+                  Your registered resting heart rate is <strong>{report.restingHeartRate} BPM</strong>.
+                </Typography>
+              )}
+              {report.chronicConditions && (
+                <Typography variant="body2" sx={{ color: "#555", lineHeight: 1.8, mb: 1 }}>
+                  Reported conditions: <strong>{report.chronicConditions}</strong>.
+                </Typography>
+              )}
               <Typography variant="body2" sx={{ color: "#555", lineHeight: 1.8, mb: 2 }}>
                 Your wellness score is <strong style={{ color: themeColor }}>{scoreVal}/10 — {statusLabel}</strong>. This reflects your overall balance across multiple dimensions.
               </Typography>
@@ -522,6 +627,21 @@ function ReportsPage() {
                 Based on your profile, yoga may support your journey through breath-led movement, emotional awareness, and gentle reflection.
               </Typography>
             </SectionCard>
+
+            {/* ── Sprint 2: GenAI & Wearables Preview ───────────────── */}
+            <Card sx={{ borderRadius: 4, background: "linear-gradient(135deg, #1a237e 0%, #283593 100%)", color: "#fff", boxShadow: "0 8px 24px rgba(26,35,126,0.2)", mb: 3 }}>
+              <CardContent sx={{ p: 3 }}>
+                <Typography variant="subtitle1" sx={{ fontWeight: 800, mb: 1, display: "flex", alignItems: "center", gap: 1 }}>
+                  🚀 Coming Soon in Sprint 2
+                </Typography>
+                <Typography variant="body2" sx={{ opacity: 0.9, lineHeight: 1.6, mb: 1.5 }}>
+                  <strong>GenAI Personalized Narration:</strong> Soon you will receive customized, natural-language wellness reflections generated specifically for your profile.
+                </Typography>
+                <Typography variant="body2" sx={{ opacity: 0.9, lineHeight: 1.6 }}>
+                  <strong>Wearable Sync:</strong> Synchronize your Fitbit device to automatically import step logs, heart rate variability, and active sleep cycles.
+                </Typography>
+              </CardContent>
+            </Card>
 
             {/* ── Next Step CTA ─────────────────────────────────────── */}
             <Card sx={{ borderRadius: 4, background: "linear-gradient(135deg, #054474 0%, #602e7d 100%)", color: "#fff", boxShadow: "0 8px 32px rgba(96,46,125,0.3)", mb: 3 }}>
@@ -546,9 +666,16 @@ function ReportsPage() {
 
           </Grid>
         </Grid>
+        
+        {/* Printable Footer */}
+        <Box sx={{ mt: 6, pt: 2, borderTop: "2px solid rgba(0,0,0,0.08)", display: "flex", justifyContent: "space-between", color: "#666", fontSize: "0.75rem", flexWrap: "wrap", gap: 1 }}>
+          <Typography variant="caption" sx={{ fontWeight: 600 }}>© 2026 FitNexus · Built with ❤️ for Holistic Wellness · All rights reserved.</Typography>
+          <Typography variant="caption" sx={{ fontWeight: 600 }}>github.com/komalghodke/fit-nexus-dev</Typography>
+        </Box>
         </div>
       </Container>
 
+      <WellnessChatbot userId={userId} report={report} />
     </Box>
   );
 }
