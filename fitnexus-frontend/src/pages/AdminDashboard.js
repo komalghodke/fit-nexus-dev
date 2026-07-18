@@ -568,7 +568,7 @@ function AdminDashboard() {
                         <TableCell sx={{ fontSize: "0.8rem", color: "#666" }}>{inq.submittedAt || inq.SubmittedAt}</TableCell>
                       </TableRow>
                     ))}
-                    {inquiries.length === 0 && (
+                    {inquiries.length === 0 ? (
                       <TableRow>
                         <TableCell colSpan={7} align="center" sx={{ py: 6 }}>
                           <Typography variant="body1" color="text.secondary">
@@ -576,7 +576,7 @@ function AdminDashboard() {
                           </Typography>
                         </TableCell>
                       </TableRow>
-                    )}
+                    ) : null}
                   </TableBody>
                 </Table>
               </TableContainer>
