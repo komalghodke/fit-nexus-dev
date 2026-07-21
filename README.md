@@ -1,4 +1,3 @@
-````markdown
 # FitNexus
 
 FitNexus is a full-stack Corporate Wellness Management System that enables users to monitor their physical and mental wellness, receive AI-powered wellness insights, explore nearby wellness centers through Google Maps integration, and provides organizations with a corporate analytics dashboard for monitoring employee wellness trends.
@@ -25,7 +24,7 @@ FitNexus is a full-stack Corporate Wellness Management System that enables users
 - Google Gemini API
 - Google Maps API
 - SERP API
-- Fitbit API (Planned)
+- Fitbit API *(Planned)*
 
 ## Tools
 - Gradle
@@ -39,7 +38,7 @@ FitNexus is a full-stack Corporate Wellness Management System that enables users
 # Features
 
 - User Registration & Login
-- JWT Authentication & Authorization
+- JWT Authentication
 - Comprehensive Wellness Assessment
 - AI-based Wellness Score Prediction
 - AI-generated Personalized Wellness Narration
@@ -48,11 +47,11 @@ FitNexus is a full-stack Corporate Wellness Management System that enables users
 - Workout Tracking
 - Stress Monitoring
 - Wellness Report Generation
-- Google Maps Integration for Nearby Yoga Studios
+- Google Maps Integration
 - Corporate Analytics Dashboard
 - Multi-language Support
-- Responsive Web Application
 - RESTful API Architecture
+- Responsive Web Application
 
 ---
 
@@ -76,12 +75,12 @@ FitNexus is a full-stack Corporate Wellness Management System that enables users
 
 ## Development Tools
 
-- Eclipse IDE or IntelliJ IDEA
+- Eclipse IDE / IntelliJ IDEA
 - Visual Studio Code
 - Visual Studio 2022
 - Git
 - Postman
-- Docker (Optional)
+- Docker *(Optional)*
 
 ---
 
@@ -100,8 +99,18 @@ cd fit-nexus-dev
 fit-nexus-dev
 │
 ├── fitnexus-backend-api
+│   ├── src
+│   ├── build.gradle
+│   ├── application.properties
+│   ├── application-secret.properties
+│   ├── application-secret.example.properties
+│   └── .gitignore
 │
 ├── fitnexus-frontend
+│   ├── src
+│   ├── public
+│   ├── package.json
+│   └── .gitignore
 │
 ├── fitnexus-corporate-dashboard
 │
@@ -112,31 +121,29 @@ fit-nexus-dev
 
 # Backend Setup (Spring Boot)
 
-Project Location
+Backend Project
 
 ```text
 fitnexus-backend-api
 ```
 
----
-
 ## Import into Eclipse
 
 1. Open Eclipse.
 2. Select **File → Import**.
-3. Choose **Gradle → Existing Gradle Project**.
-4. Browse and select:
+3. Select **Gradle → Existing Gradle Project**.
+4. Browse to:
 
 ```text
 fitnexus-backend-api
 ```
 
 5. Click **Finish**.
-6. Wait for Gradle to download all required dependencies.
+6. Wait until Gradle downloads all dependencies.
 
 ---
 
-# Configure Application Secrets
+## Configure Secrets
 
 Copy
 
@@ -144,13 +151,13 @@ Copy
 application-secret.example.properties
 ```
 
-Rename it as
+Rename it to
 
 ```text
 application-secret.properties
 ```
 
-Update the file:
+Update the following values.
 
 ```properties
 DB_URL=jdbc:mysql://localhost:3306/YOUR_DATABASE
@@ -161,29 +168,29 @@ SERPAPI_KEY=your_serpapi_key
 GEMINI_API_KEY=your_gemini_api_key
 ```
 
-> **Note:** `application-secret.properties` is excluded from Git using `.gitignore` and should never be committed.
+> **Note:** `application-secret.properties` is ignored by Git and must never be committed.
 
 ---
 
-# Create Database
+## Create Database
 
-Open MySQL and execute:
+Open MySQL and execute
 
 ```sql
 CREATE DATABASE YOUR_DATABASE;
 ```
 
-No tables need to be created manually.
-
-Hibernate automatically creates all tables because:
+Spring Boot will automatically create all required tables because
 
 ```properties
 spring.jpa.hibernate.ddl-auto=update
 ```
 
+is enabled.
+
 ---
 
-# Run Backend (Eclipse)
+## Run Backend from Eclipse
 
 Right Click Project
 
@@ -205,7 +212,7 @@ Select
 FitnexusBackendApiApplication
 ```
 
-Backend starts on
+Backend URL
 
 ```
 http://localhost:8083
@@ -213,7 +220,7 @@ http://localhost:8083
 
 ---
 
-# Run Backend (Command Prompt)
+## Run Backend from Command Prompt
 
 Open terminal inside
 
@@ -221,13 +228,13 @@ Open terminal inside
 fitnexus-backend-api
 ```
 
-Build project
+Build
 
 ```bash
 gradlew clean build
 ```
 
-Run project
+Run
 
 ```bash
 gradlew bootRun
@@ -235,13 +242,13 @@ gradlew bootRun
 
 ---
 
-# Create Executable JAR
+## Create Executable JAR
 
 ```bash
 gradlew clean build
 ```
 
-Generated JAR
+Generated file
 
 ```text
 build/libs/
@@ -257,24 +264,20 @@ java -jar build/libs/<jar-file-name>.jar
 
 # Frontend Setup (React)
 
-Project Folder
+Frontend Project
 
 ```text
 fitnexus-frontend
 ```
 
----
-
 ## Open in VS Code
-
-Open terminal
 
 ```bash
 cd fitnexus-frontend
 code .
 ```
 
-OR
+or
 
 Open VS Code
 
@@ -291,7 +294,7 @@ fitnexus-frontend
 
 ---
 
-# Install Dependencies
+## Install Dependencies
 
 ```bash
 npm install
@@ -299,13 +302,13 @@ npm install
 
 ---
 
-# Run React Application
+## Run Frontend
 
 ```bash
 npm start
 ```
 
-Application runs on
+Frontend URL
 
 ```
 http://localhost:3000
@@ -313,13 +316,13 @@ http://localhost:3000
 
 ---
 
-# Production Build
+## Production Build
 
 ```bash
 npm run build
 ```
 
-Generated production build
+Production build is generated inside
 
 ```text
 build/
@@ -335,8 +338,6 @@ Project Folder
 fitnexus-corporate-dashboard
 ```
 
----
-
 ## Open in Visual Studio 2022
 
 1. Open Visual Studio 2022.
@@ -346,8 +347,6 @@ fitnexus-corporate-dashboard
 ---
 
 ## Restore Packages
-
-Open terminal inside the project.
 
 ```bash
 dotnet restore
@@ -375,49 +374,45 @@ or simply press
 F5
 ```
 
-The Corporate Dashboard will start on the configured ASP.NET Core port.
+---
+
+## Publish
+
+```bash
+dotnet publish -c Release
+```
 
 ---
 
 # Running the Complete Application
 
-## Step 1
+### Step 1
 
 Start MySQL Server.
 
----
+### Step 2
 
-## Step 2
-
-Run the Spring Boot Backend.
+Run Spring Boot Backend.
 
 ```
 http://localhost:8083
 ```
 
----
+### Step 3
 
-## Step 3
-
-Run the React Frontend.
+Run React Frontend.
 
 ```
 http://localhost:3000
 ```
 
----
-
-## Step 4
-
-(Optional)
+### Step 4 *(Optional)*
 
 Run the ASP.NET Core Corporate Dashboard.
 
----
+### Step 5
 
-## Step 5
-
-Open the browser.
+Open
 
 ```
 http://localhost:3000
@@ -427,19 +422,17 @@ http://localhost:3000
 
 # Database
 
-Create the database
+Create database
 
 ```sql
 CREATE DATABASE YOUR_DATABASE;
 ```
 
-Since Hibernate is enabled,
+Hibernate automatically creates all required tables using
 
 ```properties
 spring.jpa.hibernate.ddl-auto=update
 ```
-
-all required tables will be generated automatically.
 
 No SQL schema file is required.
 
@@ -447,34 +440,34 @@ No SQL schema file is required.
 
 # Sample Data
 
-This repository does **not** include database records.
+This repository does not include sample database records.
 
-After running the application:
+After starting the application:
 
-- Register a new account.
-- Login.
-- Complete the Wellness Assessment.
-- Explore Wellness Reports.
-- View Corporate Dashboard.
-- Search Nearby Yoga Studios.
+- Register a new account
+- Login
+- Complete the Wellness Assessment
+- Generate Wellness Reports
+- View Corporate Dashboard
+- Search Nearby Yoga Studios
 
 ---
 
 # Security
 
-Sensitive information such as
+Sensitive information including
 
 - Database Credentials
 - Gemini API Key
 - SERP API Key
 
-is stored in
+is stored inside
 
 ```text
 application-secret.properties
 ```
 
-This file is ignored by Git.
+This file is excluded from Git using `.gitignore`.
 
 Only
 
@@ -482,7 +475,7 @@ Only
 application-secret.example.properties
 ```
 
-is committed to the repository as a template.
+is committed as a template.
 
 ---
 
@@ -518,25 +511,25 @@ gradlew test
 
 ## Frontend
 
-Install Packages
+Install
 
 ```bash
 npm install
 ```
 
-Run Development Server
+Run
 
 ```bash
 npm start
 ```
 
-Create Production Build
+Build
 
 ```bash
 npm run build
 ```
 
-Run Tests
+Test
 
 ```bash
 npm test
@@ -546,7 +539,7 @@ npm test
 
 ## Corporate Dashboard (.NET)
 
-Restore Packages
+Restore
 
 ```bash
 dotnet restore
@@ -591,18 +584,16 @@ http://localhost:3000
 # Future Enhancements
 
 - Fitbit API Integration
-- Smartwatch Data Synchronization
-- Email Notifications
+- Wearable Device Synchronization
 - AI Health Recommendations
-- Advanced Analytics
+- Cloud Deployment (AWS / Azure)
 - Docker Deployment
-- Cloud Deployment (AWS/Azure)
 - CI/CD Pipeline
-- Mobile Push Notifications
+- Push Notifications
+- Advanced Analytics Dashboard
 
 ---
 
 # License
 
-This project is developed for educational and research purposes.
-````
+This project is developed for educational and research purposes under CDAC PGCP-AC.
