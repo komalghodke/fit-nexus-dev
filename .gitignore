@@ -70,6 +70,12 @@ web_modules/
 .env.*
 !.env.example
 
+# Secret Spring Boot properties
+application-secret.properties
+
+# Keep example file in Git
+!application-secret.example.properties
+
 # parcel-bundler cache (https://parceljs.org/)
 .cache
 .parcel-cache

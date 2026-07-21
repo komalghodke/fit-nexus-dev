@@ -34,8 +34,8 @@ C:\Users\admin\Desktop\TRIAL\fit-nexus-dev\FitNexusDashboard\obj\Debug\net9.0\re
 C:\Users\admin\Desktop\TRIAL\fit-nexus-dev\FitNexusDashboard\obj\Debug\net9.0\FitNexusDashboard.pdb
 C:\Users\admin\Desktop\TRIAL\fit-nexus-dev\FitNexusDashboard\obj\Debug\net9.0\FitNexusDashboard.genruntimeconfig.cache
 C:\Users\admin\Desktop\TRIAL\fit-nexus-dev\FitNexusDashboard\obj\Debug\net9.0\ref\FitNexusDashboard.dll
-C:\Users\admin\Desktop\TRIAL\fit-nexus-dev\FitNexusDashboard\obj\Debug\net9.0\swae.build.ex.cache
 C:\Users\admin\Desktop\TRIAL\fit-nexus-dev\FitNexusDashboard\bin\Debug\net9.0\FitNexusDashboard.staticwebassets.runtime.json
-C:\Users\admin\Desktop\TRIAL\fit-nexus-dev\FitNexusDashboard\obj\Debug\net9.0\compressed\9ejtzivdkt-{0}-oybnkpx8uq-oybnkpx8uq.gz
-C:\Users\admin\Desktop\TRIAL\fit-nexus-dev\FitNexusDashboard\obj\Debug\net9.0\compressed\26q07xf3gi-{0}-fty115e5n3-fty115e5n3.gz
-C:\Users\admin\Desktop\TRIAL\fit-nexus-dev\FitNexusDashboard\obj\Debug\net9.0\compressed\ysvvf0f1wo-{0}-4dd4rzl506-4dd4rzl506.gz
+C:\Users\admin\Desktop\TRIAL\fit-nexus-dev\FitNexusDashboard\obj\Debug\net9.0\compressed\uw7yhup3ur-oybnkpx8uq.gz
+C:\Users\admin\Desktop\TRIAL\fit-nexus-dev\FitNexusDashboard\obj\Debug\net9.0\compressed\u0xbarvyrq-fty115e5n3.gz
+C:\Users\admin\Desktop\TRIAL\fit-nexus-dev\FitNexusDashboard\obj\Debug\net9.0\compressed\o38fu5ds8z-4dd4rzl506.gz
+C:\Users\admin\Desktop\TRIAL\fit-nexus-dev\FitNexusDashboard\obj\Debug\net9.0\staticwebassets.upToDateCheck.txt
