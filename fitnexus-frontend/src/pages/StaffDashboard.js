@@ -47,7 +47,8 @@ function StaffDashboard() {
   const [reports, setReports] = useState({});
   const [logs, setLogs] = useState({}); // stores { userId: { workouts: [], sleep: [], stress: [], nutrition: [] } }
 
-  const role = localStorage.getItem("role") || "USER";
+  const rawRole = localStorage.getItem("role") || "USER";
+  const role = rawRole.trim().toUpperCase();
   const token = localStorage.getItem("token");
 
   useEffect(() => {

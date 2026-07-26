@@ -226,7 +226,8 @@ function AdminDashboard() {
     { label: "Total Members", count: stats.userCount, color: "#2e7d32", bg: "#f1f8e9", icon: <People /> },
     { label: "Yoga Instructors", count: stats.yogaCount, color: "#602e7d", bg: "#f3e5f5", icon: <Security /> },
     { label: "Gym Trainers", count: stats.gymCount, color: "#054474", bg: "#e3f2fd", icon: <Security /> },
-    { label: "Total Assessments", count: stats.totalAssessments, color: "#e65100", bg: "#fff3e0", icon: <Assignment /> }
+    { label: "Total Assessments", count: stats.totalAssessments, color: "#e65100", bg: "#fff3e0", icon: <Assignment /> },
+    { label: "User Feedbacks", count: feedbacks.length, color: "#c2185b", bg: "#fce4ec", icon: <Assessment /> }
   ];
 
   return (
@@ -260,9 +261,9 @@ function AdminDashboard() {
         </Card>
 
         {/* Stats Grid */}
-        <Grid container spacing={3} sx={{ mb: 4 }}>
+        <Grid container spacing={2.5} sx={{ mb: 4 }}>
           {statItems.map((item, idx) => (
-            <Grid item xs={12} sm={6} md={3} key={idx}>
+            <Grid item xs={12} sm={6} md={2.4} key={idx}>
               <Card sx={{ borderRadius: 4, bgcolor: item.bg, border: `1px solid ${item.color}22` }}>
                 <CardContent sx={{ display: "flex", alignItems: "center", gap: 2, p: 2.5 }}>
                   <Avatar sx={{ bgcolor: `${item.color}15`, color: item.color, width: 44, height: 44 }}>

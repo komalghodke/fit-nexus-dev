@@ -292,8 +292,15 @@ function Dashboard() {
 
   useEffect(() => {
     if (!token || !email) { navigate("/login"); return; }
-    if (role === "YOGA_INSTRUCTOR" || role === "GYM_TRAINER") { navigate("/staff"); return; }
-    if (role === "ADMIN") { navigate("/admin"); return; }
+    const r = (role || "USER").trim().toUpperCase();
+    if (r === "YOGA_INSTRUCTOR" || r === "GYM_TRAINER") {
+      navigate("/staff");
+      return;
+    }
+    if (r === "ADMIN") {
+      navigate("/admin");
+      return;
+    }
     loadStats(true);
   }, [token, email, role, navigate, loadStats]);
 

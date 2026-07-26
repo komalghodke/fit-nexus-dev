@@ -33,15 +33,17 @@ public class AuthController {
 	@PostMapping("/login")
 	public ResponseEntity<?> login(@RequestBody AuthRequest req) {
 		try {
+			String normalizedEmail = req.getEmail().trim().toLowerCase();
 			authManager.authenticate(
-				    new UsernamePasswordAuthenticationToken(req.getEmail(), req.getPassword())
+				    new UsernamePasswordAuthenticationToken(normalizedEmail, req.getPassword())
 				);
-			User user = userRepo.findByEmail(req.getEmail())
-					.orElseThrow(() -> new RuntimeException("User not found with email: " + req.getEmail()));
-			String token = jwtUtil.generateToken(req.getEmail()); // ✅ subject = email
+			User user = userRepo.findByEmail(req.getEmail().trim())
+					.orElseGet(() -> userRepo.findByEmail(normalizedEmail)
+					.orElseThrow(() -> new RuntimeException("User not found with email: " + req.getEmail())));
+			String token = jwtUtil.generateToken(user.getEmail().trim().toLowerCase());
 			return ResponseEntity.ok(Map.of(
 				"token", token,
-				"email", req.getEmail(),
+				"email", user.getEmail(),
 				"userId", user.getId().toString(),
 				"role", user.getRole() != null ? user.getRole() : "USER"
 			));

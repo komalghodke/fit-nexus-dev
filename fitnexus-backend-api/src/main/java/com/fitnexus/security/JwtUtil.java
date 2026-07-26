@@ -32,7 +32,7 @@ public class JwtUtil {
     public boolean validateToken(String token, String email) {
         try {
             String extracted = extractEmail(token);
-            return (extracted.equals(email) && !isTokenExpired(token));
+            return (extracted != null && email != null && extracted.trim().equalsIgnoreCase(email.trim()) && !isTokenExpired(token));
         } catch (Exception e) {
             return false;
         }

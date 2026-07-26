@@ -106,19 +106,14 @@ function LoginForm() {
       // Debug logging
       console.log('Login response:', res.data);
 
-      const role = res.data.role || "USER";
-
-      if (role !== selectedPortal.key) {
-        setError(`Access denied. Your account is registered as a ${role.replace("_", " ")}, not as a ${selectedPortal.label}.`);
-        setLoading(false);
-        return;
-      }
+      const role = (res.data.role || "USER").trim().toUpperCase();
 
       localStorage.setItem("token", res.data.token);
       localStorage.setItem("userId", res.data.userId || res.data.id);
       localStorage.setItem("email", res.data.email);
       localStorage.setItem("role", role);
 
+      // Auto-route based on user's actual registered role
       if (role === "ADMIN") {
         window.location.replace("/admin");
       } else if (role === "YOGA_INSTRUCTOR" || role === "GYM_TRAINER") {

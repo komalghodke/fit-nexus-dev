@@ -1,70 +1,56 @@
-# Getting Started with Create React App
+# 🧘 FitNexus — Holistic Wellness Ecosystem
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+**Founder & Lead Developer:** Komal Ghodke *(Government Certified Yoga Teacher, YCB Level Certified)*  
+**Technology Stack:** React.js 18, Java 17, Spring Boot 4, C# .NET Core 8 Web API, MySQL, Google Gemini AI  
+**Governance & Compliance:** Indian DPDP Act 2023, GDPR Principles, YCB Educational Syllabus Aligned  
 
-## Available Scripts
+---
 
-In the project directory, you can run:
+## 🎤 60-Second Presentation Opening Script
 
-### `npm start`
+> *"Respected Faculty Members and Evaluators — Good morning.*  
+> *Today, I am proud to present **FitNexus** — a polyglot microservice-based **Holistic Wellness Ecosystem** that bridges 5,000 years of ancient Indian Vedic wellness science with modern predictive multi-variable artificial intelligence.*  
+> *My name is **Komal Ghodke**, and as a Government Certified Yoga Teacher (YCB Certified), I created FitNexus to address the limitations of basic step counters. FitNexus evaluates **27 health indicators** across 6 dimensions of wellness, maps energy to the **7 Chakra System**, and delivers YCB-aligned personalized yoga recommendations powered by **Google Gemini**."*
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+---
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## 🚀 Quick Start Guide
 
-### `npm test`
+### 1. Frontend Setup (React.js)
+```bash
+cd fitnexus-frontend
+npm install
+npm start
+# Server runs on http://localhost:3000
+```
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### 2. Primary Backend API (Java 17 / Spring Boot)
+```bash
+cd fitnexus-backend-api
+mvn clean compile
+mvn spring-boot:run
+# Server runs on http://localhost:8083
+```
 
-### `npm run build`
+### 3. Corporate Microservice (.NET Core)
+```bash
+cd fitnexus-dotnet-api
+dotnet run
+# API runs on http://localhost:5294
+```
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+---
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+## 📊 System Architecture & Stack
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+- **Frontend:** React.js 18, Material-UI (MUI v5), React Router v6, Axios, i18next, html2canvas, jsPDF.
+- **Primary Backend API:** Java 17, Spring Boot 4, Spring Security (JWT filter), Spring Data JPA, Hibernate ORM.
+- **Corporate Microservice:** C# .NET Core 8 Web API (Port 5294).
+- **Database:** MySQL (`fitnexusdb`).
+- **AI Engine:** Google Gemini AI (v1.5-flash / v2.0) + Offline Rule-Based Fallback.
 
-### `npm run eject`
+---
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+## 📑 Detailed Documentation & Defense Guide
+For full architecture diagrams, mathematical scoring formula, legal compliance details, and 30+ faculty viva cross-examination Q&As, view the master guide:  
+👉 **[full_project_report_viva_master_guide.md](file:///C:/Users/admin/.gemini/antigravity-ide/brain/c4362a81-c58d-4708-8a00-51d18e098251/full_project_report_viva_master_guide.md)**

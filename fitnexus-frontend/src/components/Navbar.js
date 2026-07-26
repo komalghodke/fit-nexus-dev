@@ -76,7 +76,7 @@ function Navbar() {
               variant="h6"
               noWrap
               component={Link}
-              to={token ? (isStaff ? "/staff" : "/dashboard") : "/login"}
+              to={token ? (role === "ADMIN" ? "/admin" : isStaff ? "/staff" : "/dashboard") : "/login"}
               sx={{
                 fontWeight: 900,
                 letterSpacing: "-0.5px",
@@ -106,6 +106,7 @@ function Navbar() {
 
           {/* Nav Links */}
           <Box sx={{ display: "flex", alignItems: "center", gap: 0.2 }}>
+            <Button component={Link} to="/about" sx={navBtn("/about")}>About</Button>
             {token ? (
               <>
                 {role === "ADMIN" ? (
