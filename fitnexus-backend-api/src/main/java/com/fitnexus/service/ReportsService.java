@@ -147,73 +147,36 @@ public class ReportsService {
 		String mood               = input != null ? input.getMood() : null;
 
 		if (input != null) {
-			// ── Sleep ────────────────────────────────────────────────────
-			if (input.getSleepHours() != null && input.getSleepHours() < 6) {
-				score -= 2;
-				sleepTips.add("🌙 Practice Yoga Nidra and avoid screens before sleep.");
-			}
-			String sleepQ = input.getSleepQuality();
-			if ("Insomnia".equalsIgnoreCase(sleepQ) || "DreamDisturbed".equalsIgnoreCase(sleepQ)) {
-				score -= 1;
-				sleepTips.add("🌙 Insomnia pattern detected — Try Shavasana, Legs-up-the-Wall, and herbal tea before bed.");
-			} else if ("Interrupted".equalsIgnoreCase(sleepQ) || "LightSleep".equalsIgnoreCase(sleepQ)) {
-				sleepTips.add("🌙 Light or interrupted sleep — Establish a consistent sleep schedule and practice 4-7-8 breathing.");
-			}
-
-			// ── Stress ───────────────────────────────────────────────────
-			if (input.getStressLevel() != null && input.getStressLevel() > 7) {
-				score -= 3;
-				tips.add("🧘 Severe stress detected — Yoga Nidra, guided meditation, and Anulom-Vilom pranayama are recommended.");
-			} else if (input.getStressLevel() != null && input.getStressLevel() > 5) {
-				score -= 1;
-				tips.add("😌 Moderate stress can be eased with restorative yoga and mindful pauses.");
+			// ── BMI Deduction ────────────────────────────────────────────
+			if (input.getHeight() > 0 && input.getWeight() > 0) {
+				double hm = input.getHeight() / 100.0;
+				double calculatedBmiVal = input.getWeight() / (hm * hm);
+				if (calculatedBmiVal >= 30.0) {
+					score -= 2;
+					tips.add("💡 Obese BMI (" + String.format("%.1f", calculatedBmiVal) + ") — Caloric deficit, brisk walking & dynamic Vinyasa flow advised.");
+				} else if (calculatedBmiVal >= 25.0) {
+					score -= 1;
+					tips.add("💡 Overweight BMI (" + String.format("%.1f", calculatedBmiVal) + ") — Combine 12 rounds of Surya Namaskar daily with a light sattvic diet.");
+				} else if (calculatedBmiVal < 18.5) {
+					score -= 1;
+					tips.add("💡 Underweight BMI (" + String.format("%.1f", calculatedBmiVal) + ") — Focus on nutrient-dense meals and grounding Hatha yoga poses.");
+				}
 			}
 
-			// ── Water ────────────────────────────────────────────────────
-			if (input.getWaterIntake() != null && input.getWaterIntake() < 2.0) {
-				score -= 1;
-				hydrationTips.add("💧 Your water intake is below optimal — aim for 2–3L daily for digestion and energy.");
-			} else {
-				hydrationTips.add("💧 Good hydration level — keep up the " + (input.getWaterIntake() != null ? input.getWaterIntake() : 2.0) + "L daily intake.");
-			}
-
-			// ── Heart Rate ───────────────────────────────────────────────
-			Integer hr = input.getRestingHeartRate();
-			if (hr != null && hr > 0) {
-				if (hr >= 60 && hr <= 100) {
-					hydrationTips.add("❤️ Resting heart rate (" + hr + " bpm) is within normal range — great job!");
-				} else if (hr < 60) {
-					hydrationTips.add("❤️ Low resting heart rate (" + hr + " bpm) — if you're not an athlete, consult a doctor.");
-				} else {
-					hydrationTips.add("❤️ Elevated heart rate (" + hr + " bpm) — practice Shavasana and deep abdominal breathing daily.");
+			// ── Mood Deduction ───────────────────────────────────────────
+			if (mood != null) {
+				String ml = mood.toLowerCase();
+				if (ml.contains("anxious") || ml.contains("sad") || ml.contains("lonely") || ml.contains("stressed") || ml.contains("angry") || ml.contains("irritable")) {
 					score -= 1;
 				}
-			}
-
-			// ── Pain Area ────────────────────────────────────────────────
-			String pain = input.getPainArea();
-			if (pain != null && !"None".equalsIgnoreCase(pain) && !pain.isEmpty()) {
-				score -= 2;
-				switch (pain.toLowerCase()) {
-					case "neck": tips.add("🧍 Neck pain — Try Griva Sanchalana, shoulder rolls, and Makarasana."); break;
-					case "back": tips.add("🧍 Back pain — Try Kati Sanchalana, Bhujangasana, and Shalabhasana."); break;
-					case "joints": tips.add("🧍 Joint pain — Practice Sukshma Vyayama and Pawanmuktasana Part 1."); break;
-					case "shoulder": tips.add("🧍 Shoulder pain — Practice Skandha Sanchalana, Gomukhasana."); break;
-					case "knee": tips.add("🧍 Knee discomfort — Gentle Pawanmuktasana and Virasana with support."); break;
-					default: tips.add("🧍 Pain in " + pain + " — Consult a yoga therapist for targeted asana guidance."); break;
-				}
-			}
-
-			// ── Mood Insight ─────────────────────────────────────────────
-			if (mood != null) {
-				switch (mood.toLowerCase()) {
+				switch (ml) {
 					case "lonely":
-						moodInsight = "You've shared that you're feeling lonely. This emotion often arises when we feel disconnected—not just from others, but sometimes from ourselves. Movement can be a bridge. Group yoga, mantra chanting, or even a shared breath practice can gently remind you that you are never truly alone.";
+						moodInsight = "You've shared that you're feeling lonely. This emotion often arises when we feel disconnected. Movement can be a bridge. Group yoga, mantra chanting, or even a shared breath practice can gently remind you that you are connected.";
 						chakra = "Heart";
 						tips.add("🤝 Reconnect through group yoga sessions or spiritual chanting circles (Satsang).");
 						break;
 					case "stressed":
-						moodInsight = "Stress is your body's signal asking for rest and attention. You are not failing — you are feeling. Nadi Shodhana pranayama and grounding practices can help create space between stimulus and response.";
+						moodInsight = "Stress is your body's signal asking for rest and attention. Nadi Shodhana pranayama and grounding practices can help create space between stimulus and response.";
 						chakra = "Solar Plexus";
 						tips.add("🌬️ Try Nadi Shodhana (alternate nostril breathing) for deep nervous system calming.");
 						break;
@@ -237,9 +200,9 @@ public class ReportsService {
 					case "joyful":
 					case "grateful":
 					case "hopeful":
-						moodInsight = "Your emotional state is a gift — both to yourself and to those around you. Maintain this radiance with 10 minutes of gratitude meditation each morning.";
+						moodInsight = "Your emotional state is a gift — maintain this radiance with 10 minutes of gratitude meditation each morning.";
 						chakra = "Crown";
-						tips.add("✨ Maintain your beautiful emotional state with 10 min daily gratitude meditation.");
+						tips.add("✨ Maintain your emotional balance with 10 min daily gratitude meditation.");
 						break;
 					default:
 						moodInsight = "Your mood is a window into your inner world. Continue to observe and honor what arises.";
@@ -248,49 +211,120 @@ public class ReportsService {
 				}
 			}
 
-			// ── Energy Level ─────────────────────────────────────────────
+			// ── Energy Level Deduction ───────────────────────────────────
 			String energy = input.getEnergyLevel();
 			if (energy != null) {
-				if ("Hyperactive".equalsIgnoreCase(energy) || "High".equalsIgnoreCase(energy)) {
+				if ("Low".equalsIgnoreCase(energy) || "Fatigued".equalsIgnoreCase(energy)) {
+					score -= 1;
+					tips.add("🔋 Low energy / Fatigue — Energize with Surya Namaskar, Kapalabhati pranayama, and iron-rich sattvic foods.");
+				} else if ("Hyperactive".equalsIgnoreCase(energy) || "High".equalsIgnoreCase(energy)) {
 					tips.add("⚡ High energy — Ground with slow-flow yoga and Chandra Namaskar (Moon Salutation).");
-				} else if ("Low".equalsIgnoreCase(energy) || "Fatigued".equalsIgnoreCase(energy)) {
-					tips.add("🔋 Low energy — Energize with Surya Namaskar and Kapalabhati pranayama.");
 				}
 			}
 
-			// ── Digestive ────────────────────────────────────────────────
-			String digestion = input.getDigestiveIssues();
-			if (digestion != null && !"None".equalsIgnoreCase(digestion) && !digestion.isEmpty()) {
-				tips.add("🫄 Digestive issues — Try Pawanmuktasana, Vajrasana after meals, and gentle abdominal twists.");
+			// ── Sleep ────────────────────────────────────────────────────
+			if (input.getSleepHours() != null && input.getSleepHours() < 6) {
+				score -= 2;
+				sleepTips.add("🌙 Short sleep duration (" + input.getSleepHours() + "h) — Practice Yoga Nidra and avoid screens 1 hour before sleep.");
+			} else if (input.getSleepHours() != null && input.getSleepHours() < 7) {
+				score -= 1;
+				sleepTips.add("🌙 Aim for 7–8 hours of restful sleep daily.");
+			}
+			String sleepQ = input.getSleepQuality();
+			if ("Insomnia".equalsIgnoreCase(sleepQ) || "DreamDisturbed".equalsIgnoreCase(sleepQ)) {
+				score -= 1;
+				sleepTips.add("🌙 Insomnia pattern detected — Try Shavasana, Legs-up-the-Wall (Viparita Karani), and warm chamomile tea.");
+			} else if ("Interrupted".equalsIgnoreCase(sleepQ) || "LightSleep".equalsIgnoreCase(sleepQ)) {
+				sleepTips.add("🌙 Light or interrupted sleep — Establish a consistent bedtime and practice 4-7-8 breathing.");
 			}
 
-			// ── Social / Spiritual / Environmental ───────────────────────
+			// ── Stress ───────────────────────────────────────────────────
+			if (input.getStressLevel() != null && input.getStressLevel() > 7) {
+				score -= 3;
+				tips.add("🧘 Severe stress detected (" + input.getStressLevel() + "/10) — Yoga Nidra, guided meditation, and Anulom-Vilom pranayama are strongly recommended.");
+			} else if (input.getStressLevel() != null && input.getStressLevel() >= 5) {
+				score -= 1;
+				tips.add("😌 Moderate stress (" + input.getStressLevel() + "/10) — Can be eased with restorative yoga and mindful 5-minute pauses.");
+			}
+
+			// ── Water ────────────────────────────────────────────────────
+			if (input.getWaterIntake() != null && input.getWaterIntake() < 2.0) {
+				score -= 1;
+				hydrationTips.add("💧 Water intake (" + input.getWaterIntake() + "L) is below optimal — aim for 2–3L daily for digestion and energy.");
+			} else {
+				hydrationTips.add("💧 Good hydration level — keep up the " + (input.getWaterIntake() != null ? input.getWaterIntake() : 2.0) + "L daily intake.");
+			}
+
+			// ── Heart Rate ───────────────────────────────────────────────
+			Integer hr = input.getRestingHeartRate();
+			if (hr != null && hr > 0) {
+				if (hr >= 60 && hr <= 100) {
+					hydrationTips.add("❤️ Resting heart rate (" + hr + " bpm) is within normal range — great job!");
+				} else if (hr < 60) {
+					hydrationTips.add("❤️ Low resting heart rate (" + hr + " bpm) — if not an endurance athlete, consult a doctor.");
+				} else {
+					hydrationTips.add("❤️ Elevated heart rate (" + hr + " bpm) — practice Shavasana and deep abdominal breathing daily.");
+					score -= 1;
+				}
+			}
+
+			// ── Targeted Pain Area Asanas ────────────────────────────────
+			String pain = input.getPainArea();
+			if (pain != null && !"None".equalsIgnoreCase(pain) && !pain.trim().isEmpty()) {
+				score -= 1;
+				switch (pain.toLowerCase()) {
+					case "back":
+						tips.add("🧘 Targeted Back Pain Asanas: Marjaryasana-Bitilasana (Cat-Cow 10 rounds), Bhujangasana (Cobra Pose), Shalabhasana (Locust), Setu Bandhasana (Bridge Pose).");
+						break;
+					case "neck":
+						tips.add("🧘 Targeted Neck Pain Asanas: Griva Sanchalana (Neck movements), Skandha Chakra (Shoulder socket rotation), Makarasana (Crocodile Pose).");
+						break;
+					case "knee":
+						tips.add("🧘 Targeted Knee Pain Asanas: Pawanmuktasana Part 1 (Anti-rheumatic series), Janu Naman, Supported Virasana with bolster.");
+						break;
+					case "shoulder":
+						tips.add("🧘 Targeted Shoulder Asanas: Skandha Sanchalana, Gomukhasana (Cow Face Arms), Garudasana (Eagle Arms).");
+						break;
+					case "joints":
+						tips.add("🧘 Targeted Joint Pain Asanas: Full Sukshma Vyayama sequence, Pawanmuktasana Part 1, Tadasana.");
+						break;
+					default:
+						tips.add("🧘 Pain in " + pain + " — Practice gentle Sukshma Vyayama and consult a certified yoga therapist.");
+						break;
+				}
+			}
+
+			// ── Social / Spiritual / Environmental / Work ─────────────
 			if ("no".equalsIgnoreCase(input.getSocialSupport())) {
 				score -= 1;
-				tips.add("🤝 Low social support noted — Consider joining a community yoga class or wellness group.");
+				tips.add("🤝 Low social support noted — Consider joining a community yoga class or local wellness group.");
 			}
 			if ("no".equalsIgnoreCase(input.getInnerPeace())) {
 				score -= 1;
 				tips.add("☮️ Inner peace practice suggested — Try 5-minute morning stillness and gratitude journaling daily.");
 			}
-			if (input.getWithNature() != null && input.getWithNature() < 1) {
-				tips.add("🌿 Spend at least 15–30 minutes daily in nature — barefoot on grass or sitting under a tree.");
+			if (input.getWithNature() != null && input.getWithNature() < 2) {
+				score -= 1;
+				tips.add("🌿 Time in nature is low (" + input.getWithNature() + "h/week) — Spend at least 20–30 minutes daily outdoors or barefoot on grass.");
 			}
 			if (input.getWorkSatisfaction() != null && input.getWorkSatisfaction() < 5) {
 				score -= 1;
-				tips.add("💼 Low work satisfaction — Set clear work-life boundaries and do 5-minute desk stretches every 2 hours.");
+				tips.add("💼 Low work satisfaction (" + input.getWorkSatisfaction() + "/10) — Set clear work-life boundaries and do 5-minute desk stretches every 2 hours.");
 			}
 
 			// ── Medical ──────────────────────────────────────────────────
-			if (Boolean.TRUE.equals(input.getHasDisease())) {
-				medicalAdvisory = "⚠️ Medical condition flagged — Please consult an AYUSH-certified doctor or yoga therapist before starting any new practice.";
+			if (Boolean.TRUE.equals(input.getHasDisease()) || (input.getChronicConditions() != null && !input.getChronicConditions().isEmpty() && !"None".equalsIgnoreCase(input.getChronicConditions()))) {
+				score -= 1;
+				medicalAdvisory = "⚠️ Medical condition flagged — Please consult an AYUSH-certified doctor or physician before starting intensive practices.";
 				tips.add("🏥 Consult an AYUSH doctor for restorative yoga programs tailored to your medical history.");
 			}
 
-			// ── Journal Reflection ───────────────────────────────────────
+			// ── Dynamic Journal Reflection ───────────────────────────────
 			String journal = input.getJournalEntry();
 			if (journal != null && !journal.trim().isEmpty()) {
-				journalReflection = "You're observing your inner world. Let's deepen that awareness with meditative movement and stillness. Suggestion: Try seated meditation and Trataka to enhance clarity.";
+				journalReflection = "You shared: \"" + journal.trim() + "\". Reflecting on your feelings is an empowering step toward emotional clarity. Suggestion: Combine journaling with 5 minutes of Heart-opening Anahata meditation and gentle Sukshma Vyayama.";
+			} else {
+				journalReflection = "No journal reflection logged today. Taking 2 minutes to write your thoughts can significantly enhance mindfulness.";
 			}
 
 			// ── Yoga Recommendation ──────────────────────────────────────

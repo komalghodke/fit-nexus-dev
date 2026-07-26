@@ -21,6 +21,7 @@ import AdminDashboard from "./pages/AdminDashboard";
 import MapPage from "./pages/MapPage";
 import NotFoundPage from "./pages/NotFoundPage";
 import AboutPage from "./pages/AboutPage";
+import FeedbackPage from "./pages/FeedbackPage";
 import PrivacyPolicyPage from "./pages/PrivacyPolicyPage";
 import "./App.css";
 
@@ -36,6 +37,7 @@ function App() {
           <Route path="/register" element={<RegisterForm />} />
           <Route path="/about" element={<AboutPage />} />
           <Route path="/privacy" element={<PrivacyPolicyPage />} />
+          <Route path="/feedback" element={<FeedbackPage />} />
 
           {/* Protected – any authenticated user */}
           <Route path="/dashboard" element={<PrivateRoute><Dashboard /></PrivateRoute>} />

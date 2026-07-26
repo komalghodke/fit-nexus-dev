@@ -76,10 +76,12 @@ function PrivacyPolicyPage() {
           </Typography>
 
           <Typography variant="h6" sx={{ fontWeight: 800, color: "#0d2c4e", mb: 1 }}>
-            5. Legal Disclaimer
+            5. Legal & AYUSH Non-Affiliation Disclaimer
           </Typography>
           <Typography variant="body2" sx={{ color: "#555", lineHeight: 1.7, mb: 2 }}>
-            FitNexus is a personal academic demonstration project and is not a clinical application. We do not guarantee medical outcomes. Please consult a primary physician for any clinical diagnosis or medical condition therapy.
+            FitNexus is an independent educational and personal wellness project. It is <strong>NOT affiliated with, endorsed by, or sponsored by the Ministry of AYUSH, the Government of India (GOI), or any official healthcare entity</strong>. All lifestyle recommendations are generic suggestions inspired by traditional Yoga Certification Board (YCB) educational syllabi.
+            <br /><br />
+            <strong>IMPORTANT MEDICAL NOTICE:</strong> FITNEXUS DOES NOT PROVIDE MEDICAL DIAGNOSIS, CLINICAL ADVICE, TREATMENT PLANS, OR DOCTOR PRESCRIPTIONS. Always consult a qualified healthcare professional or licensed primary physician for medical concerns, persistent symptoms, or clinical advice.
           </Typography>
 
           <Divider sx={{ my: 3 }} />

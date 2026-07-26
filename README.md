@@ -87,7 +87,7 @@ FitNexus is a full-stack Corporate Wellness Management System that enables users
 # Clone Repository
 
 ```bash
-git clone https://github.com/<your-username>/fit-nexus-dev.git
+git clone https://github.com/komalghodke/fit-nexus-dev.git
 cd fit-nexus-dev
 ```
 

@@ -1,20 +1,60 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import {
   Box, Container, Grid, Card, CardContent, Typography,
   Button, Avatar, Divider, CircularProgress, Chip,
-  TextField, MenuItem
+  TextField, MenuItem, LinearProgress, IconButton
 } from "@mui/material";
 import {
   FitnessCenter, Restaurant, Bedtime, Psychology,
   Assignment, AccountCircle, TrendingUp, SelfImprovement,
-  CheckCircle
+  CheckCircle, Spa, Air, Favorite, WaterDrop,
+  LightMode, NightsStay, PlayArrow, Pause
 } from "@mui/icons-material";
 import { API_URL } from "../api/apiConfig";
 
-// Removed hardcoded API constant; using API_URL
+// ── Daily Affirmations ──────────────────────────────────────────────
+const DAILY_AFFIRMATIONS = [
+  { quote: "Inhale peace, exhale tension. Balance is not something you find — it's something you create.", icon: "🧘" },
+  { quote: "The body achieves what the mind believes. Today, choose to move with intention and gratitude.", icon: "🌿" },
+  { quote: "Wellness is not a destination. It is the gentle art of returning to yourself, breath by breath.", icon: "🌸" },
+  { quote: "Your body is your first home. Nourish it, move it, rest it, and love it deeply.", icon: "💛" },
+  { quote: "Every sunrise is an invitation to begin again. Let today be a day of mindful living.", icon: "🌅" },
+  { quote: "Stillness is not the absence of movement — it is the presence of peace within.", icon: "🕊️" },
+  { quote: "You don't need to be flexible to start yoga. You just need to be willing to breathe.", icon: "🫁" },
+  { quote: "Health is the greatest gift, contentment the greatest wealth, faithfulness the best relationship. — Buddha", icon: "📿" },
+  { quote: "Nature does not hurry, yet everything is accomplished. Trust your rhythm. — Lao Tzu", icon: "🍃" },
+  { quote: "The quieter you become, the more you can hear. Listen to your body today.", icon: "🔔" },
+  { quote: "Prana is the bridge between body and mind. Breathe deeply, live fully.", icon: "🌬️" },
+  { quote: "Small steps every day lead to big transformations. Celebrate your consistency.", icon: "🪷" },
+  { quote: "Your wellness score is not a judgment — it's a compass. Let it guide, not define you.", icon: "🧭" },
+  { quote: "Sleep is the best meditation. Give your body the rest it deserves tonight. — Dalai Lama", icon: "🌙" },
+  { quote: "Eat food that loves you back. Every meal is an opportunity to nourish your temple.", icon: "🥗" },
+  { quote: "In the rush of daily life, pause. One conscious breath can change your entire day.", icon: "✨" },
+  { quote: "Your body hears everything your mind says. Speak kindly to yourself today.", icon: "💜" },
+  { quote: "Yoga is the journey of the self, through the self, to the self. — Bhagavad Gita", icon: "🕉️" },
+  { quote: "Movement is medicine. Even five minutes of stretching can shift your energy.", icon: "🌟" },
+  { quote: "Gratitude turns what we have into enough. Today, find three things to be grateful for.", icon: "🙏" },
+  { quote: "Healing is not linear. Be patient with yourself. Progress is progress, no matter how small.", icon: "🦋" },
+  { quote: "The food you eat can be either the safest medicine or the slowest poison. Choose wisely.", icon: "🍎" },
+  { quote: "Breathe in courage, breathe out fear. You are stronger than you think.", icon: "💪" },
+  { quote: "Meditation is not about emptying the mind — it's about observing it without judgment.", icon: "🧠" },
+  { quote: "When you own your breath, nobody can steal your peace. — Unknown", icon: "🌈" },
+  { quote: "A calm mind brings inner strength and self-confidence. That is very important for good health. — Dalai Lama", icon: "⛰️" },
+  { quote: "Let your practice be a celebration, not a punishment. Move with joy.", icon: "🎶" },
+  { quote: "Water is the driving force of all nature. Stay hydrated, stay alive. — Leonardo da Vinci", icon: "💧" },
+  { quote: "The wound is the place where the Light enters you. — Rumi", icon: "🌻" },
+  { quote: "Be where you are. Not where you think you should be. — Anonymous", icon: "🌺" },
+  { quote: "Rest when you need to. Your value is not measured by your productivity.", icon: "☕" }
+];
 
+function getTodayAffirmation() {
+  const dayOfYear = Math.floor((Date.now() - new Date(new Date().getFullYear(), 0, 0)) / (1000 * 60 * 60 * 24));
+  return DAILY_AFFIRMATIONS[dayOfYear % DAILY_AFFIRMATIONS.length];
+}
+
+// ── Stat Card Component ─────────────────────────────────────────────
 function StatCard({ icon, label, value, unit, color, bg }) {
   return (
     <Card
@@ -53,6 +93,126 @@ function StatCard({ icon, label, value, unit, color, bg }) {
   );
 }
 
+// ── Breathing Exercise Widget ───────────────────────────────────────
+function BreathingWidget() {
+  const [active, setActive] = useState(false);
+  const [phase, setPhase] = useState("ready"); // ready | inhale | hold | exhale
+  const [timer, setTimer] = useState(0);
+  const [cycles, setCycles] = useState(0);
+
+  const INHALE = 4, HOLD = 7, EXHALE = 8;
+
+  useEffect(() => {
+    if (!active) return;
+    const interval = setInterval(() => {
+      setTimer(prev => {
+        const next = prev + 1;
+        if (phase === "inhale" && next >= INHALE) { setPhase("hold"); return 0; }
+        if (phase === "hold" && next >= HOLD) { setPhase("exhale"); return 0; }
+        if (phase === "exhale" && next >= EXHALE) {
+          setCycles(c => c + 1);
+          setPhase("inhale");
+          return 0;
+        }
+        return next;
+      });
+    }, 1000);
+    return () => clearInterval(interval);
+  }, [active, phase]);
+
+  const start = () => { setActive(true); setPhase("inhale"); setTimer(0); setCycles(0); };
+  const stop = () => { setActive(false); setPhase("ready"); setTimer(0); };
+
+  const phaseConfig = {
+    ready: { label: "Press Play to Begin", color: "#602e7d", progress: 0, max: 1 },
+    inhale: { label: "Inhale deeply...", color: "#1565c0", progress: timer, max: INHALE },
+    hold: { label: "Hold gently...", color: "#e65100", progress: timer, max: HOLD },
+    exhale: { label: "Exhale slowly...", color: "#2e7d32", progress: timer, max: EXHALE }
+  };
+  const cfg = phaseConfig[phase];
+
+  return (
+    <Card
+      sx={{
+        borderRadius: 4,
+        background: "linear-gradient(135deg, #fdf8ff 0%, #f0f7ff 100%)",
+        border: "1px solid rgba(96,46,125,0.12)",
+        boxShadow: "0 4px 20px rgba(96,46,125,0.06)",
+        overflow: "hidden"
+      }}
+    >
+      <CardContent sx={{ p: 3 }}>
+        <Box sx={{ display: "flex", alignItems: "center", gap: 1.5, mb: 2 }}>
+          <Avatar sx={{ bgcolor: "#602e7d", width: 38, height: 38 }}>
+            <Air sx={{ fontSize: "1.2rem" }} />
+          </Avatar>
+          <Box>
+            <Typography variant="subtitle2" sx={{ fontWeight: 800, color: "#602e7d" }}>
+              🫁 Mindful Breathing — 4-7-8 Technique
+            </Typography>
+            <Typography variant="caption" sx={{ color: "#888" }}>
+              Inhale 4s · Hold 7s · Exhale 8s — Calms the nervous system
+            </Typography>
+          </Box>
+        </Box>
+
+        <Box sx={{ textAlign: "center", py: 2 }}>
+          {/* Animated circle */}
+          <Box
+            sx={{
+              width: 100, height: 100, borderRadius: "50%", mx: "auto", mb: 2,
+              display: "flex", alignItems: "center", justifyContent: "center",
+              background: `radial-gradient(circle, ${cfg.color}15 0%, ${cfg.color}05 100%)`,
+              border: `3px solid ${cfg.color}`,
+              transition: "all 1s ease",
+              transform: phase === "inhale" ? "scale(1.15)" : phase === "exhale" ? "scale(0.85)" : "scale(1)",
+            }}
+          >
+            <Typography variant="h3" sx={{ fontWeight: 900, color: cfg.color }}>
+              {phase === "ready" ? "🧘" : phase === "inhale" ? timer : phase === "hold" ? timer : timer}
+            </Typography>
+          </Box>
+
+          <Typography variant="body1" sx={{ fontWeight: 700, color: cfg.color, mb: 1 }}>
+            {cfg.label}
+          </Typography>
+
+          {active && (
+            <LinearProgress
+              variant="determinate"
+              value={(cfg.progress / cfg.max) * 100}
+              sx={{
+                height: 6, borderRadius: 3, mb: 1.5, mx: "auto", maxWidth: 200,
+                bgcolor: `${cfg.color}15`,
+                "& .MuiLinearProgress-bar": { bgcolor: cfg.color, borderRadius: 3 }
+              }}
+            />
+          )}
+
+          {cycles > 0 && (
+            <Typography variant="caption" sx={{ color: "#888", display: "block", mb: 1 }}>
+              {cycles} cycle{cycles > 1 ? "s" : ""} completed 🌟
+            </Typography>
+          )}
+
+          <IconButton
+            onClick={active ? stop : start}
+            sx={{
+              bgcolor: active ? "#c2185b20" : "#602e7d15",
+              color: active ? "#c2185b" : "#602e7d",
+              "&:hover": { bgcolor: active ? "#c2185b30" : "#602e7d25" },
+              width: 48, height: 48
+            }}
+          >
+            {active ? <Pause /> : <PlayArrow />}
+          </IconButton>
+        </Box>
+      </CardContent>
+    </Card>
+  );
+}
+
+// ── Main Dashboard ──────────────────────────────────────────────────
 function Dashboard() {
   const [profile, setProfile] = useState(null);
   const [stats, setStats]     = useState({ workouts: 0, sleepAvg: "—", stressLast: "—", mealCount: 0 });
@@ -72,26 +232,16 @@ function Dashboard() {
   const [sleepMsg, setSleepMsg]     = useState("");
   const [stressMsg, setStressMsg]   = useState("");
 
+  // Insight data
+  const [allSleeps, setAllSleeps]     = useState([]);
+  const [allStresses, setAllStresses] = useState([]);
+
   const token  = localStorage.getItem("token");
   const email  = localStorage.getItem("email");
   const userId = localStorage.getItem("userId");
   const role   = localStorage.getItem("role");
 
-  useEffect(() => {
-    if (!token || !email) { navigate("/login"); return; }
-    if (role === "YOGA_INSTRUCTOR" || role === "GYM_TRAINER") {
-      navigate("/staff");
-      return;
-    }
-    if (role === "ADMIN") {
-      navigate("/admin");
-      return;
-    }
-    loadStats(true);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  const loadStats = (showSpinner = false) => {
+  const loadStats = useCallback((showSpinner = false) => {
     if (showSpinner) setLoading(true);
     const headers = { Authorization: `Bearer ${token}` };
 
@@ -105,10 +255,13 @@ function Dashboard() {
       .then(([prof, wkt, slp, str, nut]) => {
         setProfile(prof.data);
         const sleeps = slp.data || [];
+        const stresses = str.data || [];
+        setAllSleeps(sleeps);
+        setAllStresses(stresses);
+
         const avgSleep = sleeps.length
           ? (sleeps.reduce((s, x) => s + (x.hours || 0), 0) / sleeps.length).toFixed(1)
           : "—";
-        const stresses = str.data || [];
         const lastStress = stresses.length ? stresses[stresses.length - 1].level || "—" : "—";
         setStats({
           workouts:   (wkt.data || []).length,
@@ -135,7 +288,14 @@ function Dashboard() {
         }
       })
       .finally(() => setLoading(false));
-  };
+  }, [token, email, userId, navigate]);
+
+  useEffect(() => {
+    if (!token || !email) { navigate("/login"); return; }
+    if (role === "YOGA_INSTRUCTOR" || role === "GYM_TRAINER") { navigate("/staff"); return; }
+    if (role === "ADMIN") { navigate("/admin"); return; }
+    loadStats(true);
+  }, [token, email, role, navigate, loadStats]);
 
   const handleQuickWorkout = async (e) => {
     e.preventDefault();
@@ -215,12 +375,30 @@ function Dashboard() {
     );
   }
 
-  const sections = [
-    { title: "Workout Log",   desc: "Log yoga sessions, gym workouts, and physical activity.",  icon: <FitnessCenter />, route: "/workout",   color: "#2e7d32", bg: "#f1f8e9" },
-    { title: "Nutrition Log", desc: "Track meals, macro-nutrients, calories, and water intake.", icon: <Restaurant />,   route: "/nutrition", color: "#e65100", bg: "#fff3e0" },
-    { title: "Sleep Log",     desc: "Record sleeping hours, bedtime, wake time, and quality.",   icon: <Bedtime />,      route: "/sleep",     color: "#1565c0", bg: "#e3f2fd" },
-    { title: "Stress Log",    desc: "Track stress levels, mood, and meditation minutes.",        icon: <Psychology />,   route: "/stress",    color: "#c2185b", bg: "#fce4ec" }
-  ];
+  const totalLogs = stats.workouts + stats.mealCount + (allSleeps.length || 0) + (allStresses.length || 0);
+  const todayComplete = Object.values(todayLogs).filter(Boolean).length;
+
+  // Sleep insight
+  const sleepInsight = allSleeps.length >= 2
+    ? (() => {
+        const recent = allSleeps.slice(-3);
+        const avg = recent.reduce((s, x) => s + (x.hours || 0), 0) / recent.length;
+        if (avg >= 7.5) return { label: "Excellent Sleep", color: "#2e7d32", emoji: "🌟", tip: "Your recent sleep is above 7.5 hrs average. Keep it up!" };
+        if (avg >= 6) return { label: "Moderate Sleep", color: "#e65100", emoji: "🌤️", tip: `Recent avg: ${avg.toFixed(1)} hrs. Try sleeping 30 mins earlier tonight.` };
+        return { label: "Needs Attention", color: "#c62828", emoji: "⚠️", tip: `Recent avg: ${avg.toFixed(1)} hrs. Practice Yoga Nidra before bed.` };
+      })()
+    : { label: "Log More Data", color: "#888", emoji: "📊", tip: "Log 2+ sleep entries to see your trend." };
+
+  // Stress insight
+  const stressInsight = allStresses.length >= 2
+    ? (() => {
+        const recent = allStresses.slice(-3);
+        const avg = recent.reduce((s, x) => s + (x.level || 0), 0) / recent.length;
+        if (avg <= 3) return { label: "Low Stress", color: "#2e7d32", emoji: "😌", tip: "You're managing stress well. Continue your pranayama practice!" };
+        if (avg <= 6) return { label: "Moderate Stress", color: "#e65100", emoji: "😐", tip: `Recent avg: ${avg.toFixed(1)}/10. Try 5 min Nadi Shodhana breathing.` };
+        return { label: "High Stress", color: "#c62828", emoji: "🔴", tip: `Recent avg: ${avg.toFixed(1)}/10. Consider Bhramari pranayama & journaling.` };
+      })()
+    : { label: "Log More Data", color: "#888", emoji: "📊", tip: "Log 2+ stress entries to see your trend." };
 
   const quickStats = [
     { icon: <FitnessCenter />, label: "Workouts",     value: stats.workouts, unit: "logged",   color: "#2e7d32", bg: "#f1f8e9" },
@@ -228,6 +406,8 @@ function Dashboard() {
     { icon: <Psychology />,    label: "Last Stress",  value: stats.stressLast, unit: "",       color: "#c2185b", bg: "#fce4ec" },
     { icon: <Restaurant />,    label: "Meals Logged", value: stats.mealCount, unit: "entries", color: "#e65100", bg: "#fff3e0" }
   ];
+
+  const affirmation = getTodayAffirmation();
 
   return (
     <Box sx={{ minHeight: "90vh", background: "#f8f9fc" }}>
@@ -237,7 +417,7 @@ function Dashboard() {
         <Box
           sx={{
             display: "flex", alignItems: "center", flexWrap: "wrap",
-            justifyContent: "space-between", gap: 3, mb: 5, p: 4,
+            justifyContent: "space-between", gap: 3, mb: 4, p: 4,
             borderRadius: 5,
             background: "linear-gradient(135deg, #0d2c4e 0%, #255f9a 50%, #602e7d 100%)",
             color: "white",
@@ -262,6 +442,10 @@ function Dashboard() {
                 <Chip icon={<CheckCircle sx={{ fontSize: "0.85rem !important", color: "#a5d6a7 !important" }} />}
                   label="YCB Aligned" size="small"
                   sx={{ bgcolor: "rgba(255,255,255,0.15)", color: "#fff", fontWeight: 600, fontSize: "0.7rem" }} />
+                {todayComplete === 4 && (
+                  <Chip label="✨ All Logged Today!" size="small"
+                    sx={{ bgcolor: "rgba(76,175,80,0.3)", color: "#fff", fontWeight: 700, fontSize: "0.7rem", border: "1px solid rgba(76,175,80,0.5)" }} />
+                )}
               </Box>
             </Box>
           </Box>
@@ -278,150 +462,294 @@ function Dashboard() {
           </Button>
         </Box>
 
+        {/* ── Daily Mindful Affirmation ──────────────────────────── */}
+        <Card
+          sx={{
+            mb: 4, borderRadius: 4,
+            background: "linear-gradient(135deg, #faf6ff 0%, #f5f0ff 50%, #fdf8ff 100%)",
+            border: "1px solid rgba(96,46,125,0.1)",
+            boxShadow: "0 4px 20px rgba(96,46,125,0.06)",
+            position: "relative", overflow: "hidden"
+          }}
+        >
+          {/* Decorative orb */}
+          <Box sx={{
+            position: "absolute", top: -30, right: -30, width: 120, height: 120,
+            borderRadius: "50%",
+            background: "radial-gradient(circle, rgba(96,46,125,0.08) 0%, transparent 70%)",
+            filter: "blur(8px)"
+          }} />
+          <CardContent sx={{ p: { xs: 3, md: 4 }, position: "relative" }}>
+            <Box sx={{ display: "flex", alignItems: "flex-start", gap: 2 }}>
+              <Typography sx={{ fontSize: "2.5rem", lineHeight: 1 }}>{affirmation.icon}</Typography>
+              <Box>
+                <Typography variant="overline" sx={{ fontWeight: 800, color: "#602e7d", letterSpacing: 2 }}>
+                  ✨ Today's Mindful Reflection
+                </Typography>
+                <Typography variant="h6" sx={{
+                  fontWeight: 600, color: "#3f2652", fontStyle: "italic",
+                  lineHeight: 1.6, mt: 0.5, maxWidth: 700
+                }}>
+                  "{affirmation.quote}"
+                </Typography>
+              </Box>
+            </Box>
+          </CardContent>
+        </Card>
+
         {/* ── Quick Stats ─────────────────────────────────────────── */}
-        <Grid container spacing={3} sx={{ mb: 5 }}>
+        <Grid container spacing={3} sx={{ mb: 4 }}>
           {quickStats.map((s, i) => (
             <Grid item xs={6} sm={3} key={i}>
               <StatCard {...s} />
             </Grid>
           ))}
         </Grid>
-        {/* ── Interactive Workspace Row (Guidelines & Completeness Tracker) ── */}
-        {(profile?.staffNotes || true) && (
-          <Grid container spacing={3} sx={{ mb: 5 }}>
-            {/* Guidelines Card */}
-            {profile?.staffNotes && (
-              <Grid item xs={12} md={8}>
-                <Card
-                  sx={{
-                    borderRadius: 4,
-                    height: "100%",
-                    background: "linear-gradient(135deg, #ffffff 0%, #fbf8ff 100%)",
-                    border: "1px solid rgba(96, 46, 125, 0.15)",
-                    boxShadow: "0 4px 20px rgba(96, 46, 125, 0.05)",
-                    position: "relative",
-                    overflow: "hidden"
-                  }}
-                >
-                  {/* Decorative corner glow */}
-                  <Box
-                    sx={{
-                      position: "absolute",
-                      top: -40,
-                      right: -40,
-                      width: 120,
-                      height: 120,
-                      borderRadius: "50%",
-                      background: "radial-gradient(circle, rgba(96, 46, 125, 0.15) 0%, transparent 70%)",
-                      filter: "blur(10px)"
-                    }}
-                  />
-                  <CardContent sx={{ p: 3.5 }}>
-                    <Box sx={{ display: "flex", alignItems: "center", gap: 1.5, mb: 2 }}>
-                      <Avatar sx={{ bgcolor: "#602e7d", width: 44, height: 44 }}>
-                        <SelfImprovement sx={{ color: "#fff" }} />
-                      </Avatar>
-                      <Box>
-                        <Typography variant="subtitle1" sx={{ fontWeight: 800, color: "#602e7d" }}>
-                          📢 Professional Trainer & Instructor Guidelines
-                        </Typography>
-                        <Typography variant="caption" color="text.secondary">
-                          Personalised prescription logged by your instructor
-                        </Typography>
-                      </Box>
-                    </Box>
-                    <Divider sx={{ mb: 2 }} />
-                    <Box
-                      sx={{
-                        p: 2.5,
-                        bgcolor: "#faf6ff",
-                        borderRadius: 3,
-                        borderLeft: "4px solid #602e7d",
-                        minHeight: 80
-                      }}
-                    >
-                      <Typography variant="body2" sx={{ whiteSpace: "pre-line", color: "#3f2652", fontWeight: 500, lineHeight: 1.6 }}>
-                        {profile.staffNotes}
-                      </Typography>
-                    </Box>
-                  </CardContent>
-                </Card>
-              </Grid>
-            )}
 
-            {/* Daily Tracker Checklist */}
-            <Grid item xs={12} md={profile?.staffNotes ? 4 : 12}>
+        {/* ── Wellness Insights Row ──────────────────────────────── */}
+        <Grid container spacing={3} sx={{ mb: 4 }}>
+          {/* Sleep Insight */}
+          <Grid item xs={12} sm={6} md={3}>
+            <Card sx={{
+              borderRadius: 4, height: "100%",
+              borderLeft: `5px solid ${sleepInsight.color}`,
+              boxShadow: "0 4px 16px rgba(0,0,0,0.05)"
+            }}>
+              <CardContent sx={{ p: 2.5 }}>
+                <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1.5 }}>
+                  <NightsStay sx={{ color: sleepInsight.color, fontSize: "1.2rem" }} />
+                  <Typography variant="subtitle2" sx={{ fontWeight: 800, color: sleepInsight.color }}>
+                    Sleep Trend
+                  </Typography>
+                </Box>
+                <Typography sx={{ fontSize: "1.8rem", mb: 0.5 }}>{sleepInsight.emoji}</Typography>
+                <Typography variant="body2" sx={{ fontWeight: 700, color: sleepInsight.color, mb: 0.5 }}>
+                  {sleepInsight.label}
+                </Typography>
+                <Typography variant="caption" sx={{ color: "#777", lineHeight: 1.5 }}>
+                  {sleepInsight.tip}
+                </Typography>
+              </CardContent>
+            </Card>
+          </Grid>
+
+          {/* Stress Insight */}
+          <Grid item xs={12} sm={6} md={3}>
+            <Card sx={{
+              borderRadius: 4, height: "100%",
+              borderLeft: `5px solid ${stressInsight.color}`,
+              boxShadow: "0 4px 16px rgba(0,0,0,0.05)"
+            }}>
+              <CardContent sx={{ p: 2.5 }}>
+                <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1.5 }}>
+                  <Psychology sx={{ color: stressInsight.color, fontSize: "1.2rem" }} />
+                  <Typography variant="subtitle2" sx={{ fontWeight: 800, color: stressInsight.color }}>
+                    Stress Trend
+                  </Typography>
+                </Box>
+                <Typography sx={{ fontSize: "1.8rem", mb: 0.5 }}>{stressInsight.emoji}</Typography>
+                <Typography variant="body2" sx={{ fontWeight: 700, color: stressInsight.color, mb: 0.5 }}>
+                  {stressInsight.label}
+                </Typography>
+                <Typography variant="caption" sx={{ color: "#777", lineHeight: 1.5 }}>
+                  {stressInsight.tip}
+                </Typography>
+              </CardContent>
+            </Card>
+          </Grid>
+
+          {/* Wellness Journey Milestone */}
+          <Grid item xs={12} sm={6} md={3}>
+            <Card sx={{
+              borderRadius: 4, height: "100%",
+              borderLeft: "5px solid #602e7d",
+              boxShadow: "0 4px 16px rgba(0,0,0,0.05)"
+            }}>
+              <CardContent sx={{ p: 2.5 }}>
+                <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1.5 }}>
+                  <Favorite sx={{ color: "#602e7d", fontSize: "1.2rem" }} />
+                  <Typography variant="subtitle2" sx={{ fontWeight: 800, color: "#602e7d" }}>
+                    Your Journey
+                  </Typography>
+                </Box>
+                <Typography variant="h3" sx={{ fontWeight: 900, color: "#602e7d", lineHeight: 1 }}>
+                  {totalLogs}
+                </Typography>
+                <Typography variant="body2" sx={{ fontWeight: 600, color: "#602e7d", mb: 0.5 }}>
+                  Total Wellness Logs
+                </Typography>
+                <Typography variant="caption" sx={{ color: "#777", lineHeight: 1.5 }}>
+                  {totalLogs === 0 ? "Start logging to build your wellness story!" :
+                   totalLogs < 10 ? "Great start! Keep building your wellness habit." :
+                   totalLogs < 50 ? "You're building a beautiful wellness journey! 🌿" :
+                   "Incredible dedication! You're a wellness champion! 🏆"}
+                </Typography>
+              </CardContent>
+            </Card>
+          </Grid>
+
+          {/* Today's Progress */}
+          <Grid item xs={12} sm={6} md={3}>
+            <Card sx={{
+              borderRadius: 4, height: "100%",
+              borderLeft: `5px solid ${todayComplete === 4 ? "#2e7d32" : "#e65100"}`,
+              boxShadow: "0 4px 16px rgba(0,0,0,0.05)"
+            }}>
+              <CardContent sx={{ p: 2.5 }}>
+                <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1.5 }}>
+                  <LightMode sx={{ color: todayComplete === 4 ? "#2e7d32" : "#e65100", fontSize: "1.2rem" }} />
+                  <Typography variant="subtitle2" sx={{ fontWeight: 800, color: todayComplete === 4 ? "#2e7d32" : "#e65100" }}>
+                    Today's Mindfulness
+                  </Typography>
+                </Box>
+                <Typography variant="h3" sx={{ fontWeight: 900, color: todayComplete === 4 ? "#2e7d32" : "#e65100", lineHeight: 1 }}>
+                  {todayComplete}/4
+                </Typography>
+                <Typography variant="body2" sx={{ fontWeight: 600, color: todayComplete === 4 ? "#2e7d32" : "#e65100", mb: 0.5 }}>
+                  Dimensions Logged
+                </Typography>
+                <LinearProgress
+                  variant="determinate"
+                  value={(todayComplete / 4) * 100}
+                  sx={{
+                    height: 6, borderRadius: 3, mt: 1,
+                    bgcolor: "#eee",
+                    "& .MuiLinearProgress-bar": {
+                      bgcolor: todayComplete === 4 ? "#2e7d32" : "#e65100",
+                      borderRadius: 3
+                    }
+                  }}
+                />
+              </CardContent>
+            </Card>
+          </Grid>
+        </Grid>
+
+        {/* ── Breathing + Tracker + Guidelines Row ──────────────── */}
+        <Grid container spacing={3} sx={{ mb: 4 }}>
+          {/* Breathing Widget */}
+          <Grid item xs={12} md={4}>
+            <BreathingWidget />
+          </Grid>
+
+          {/* Daily Tracker Checklist */}
+          <Grid item xs={12} md={profile?.staffNotes ? 4 : 8}>
+            <Card
+              sx={{
+                borderRadius: 4, height: "100%",
+                bgcolor: "#ffffff",
+                boxShadow: "0 4px 20px rgba(0,0,0,0.04)",
+                border: "1px solid #eee"
+              }}
+            >
+              <CardContent sx={{ p: 3.5, display: "flex", flexDirection: "column", height: "100%" }}>
+                <Typography variant="subtitle1" sx={{ fontWeight: 800, color: "#2c2c2c", mb: 0.5 }}>
+                  🎯 Today's Wellness Tracker
+                </Typography>
+                <Typography variant="caption" color="text.secondary" sx={{ display: "block", mb: 2 }}>
+                  Log all 4 dimensions daily to maintain balance
+                </Typography>
+                <Divider sx={{ mb: 2 }} />
+
+                {/* Checklist items */}
+                <Box sx={{ display: "flex", flexDirection: "column", gap: 1.5 }}>
+                  {[
+                    { key: "workout", label: "Logged Workout/Yoga", color: "#2e7d32" },
+                    { key: "nutrition", label: "Logged Meals/Calories", color: "#e65100" },
+                    { key: "sleep", label: "Logged Sleep Quality", color: "#1565c0" },
+                    { key: "stress", label: "Logged Stress Level", color: "#c2185b" }
+                  ].map((item) => {
+                    const completed = todayLogs[item.key];
+                    return (
+                      <Box
+                        key={item.key}
+                        sx={{
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "space-between",
+                          p: 1.2, px: 2, borderRadius: 2.5,
+                          bgcolor: completed ? `${item.color}08` : "#f9f9f9",
+                          border: completed ? `1px solid ${item.color}25` : "1px solid #f0f0f0"
+                        }}
+                      >
+                        <Typography variant="body2" sx={{ fontWeight: 600, color: completed ? item.color : "#555" }}>
+                          {item.label}
+                        </Typography>
+                        <Chip
+                          label={completed ? "Logged ✓" : "Pending"}
+                          size="small"
+                          color={completed ? "success" : "default"}
+                          sx={{
+                            fontWeight: 700, fontSize: "0.65rem", height: 20,
+                            bgcolor: completed ? `${item.color}20` : undefined,
+                            color: completed ? item.color : undefined
+                          }}
+                        />
+                      </Box>
+                    );
+                  })}
+                </Box>
+              </CardContent>
+            </Card>
+          </Grid>
+
+          {/* Guidelines Card (conditional) */}
+          {profile?.staffNotes && (
+            <Grid item xs={12} md={4}>
               <Card
                 sx={{
-                  borderRadius: 4,
-                  height: "100%",
-                  bgcolor: "#ffffff",
-                  boxShadow: "0 4px 20px rgba(0,0,0,0.04)",
-                  border: "1px solid #eee"
+                  borderRadius: 4, height: "100%",
+                  background: "linear-gradient(135deg, #ffffff 0%, #fbf8ff 100%)",
+                  border: "1px solid rgba(96, 46, 125, 0.15)",
+                  boxShadow: "0 4px 20px rgba(96, 46, 125, 0.05)",
+                  position: "relative", overflow: "hidden"
                 }}
               >
-                <CardContent sx={{ p: 3.5, display: "flex", flexDirection: "column", height: "100%" }}>
-                  <Typography variant="subtitle1" sx={{ fontWeight: 800, color: "#2c2c2c", mb: 0.5 }}>
-                    🎯 Today's Wellness Tracker
-                  </Typography>
-                  <Typography variant="caption" color="text.secondary" sx={{ display: "block", mb: 2 }}>
-                    Log all 4 dimensions daily to maintain balance
-                  </Typography>
+                {/* Decorative corner glow */}
+                <Box
+                  sx={{
+                    position: "absolute", top: -40, right: -40, width: 120, height: 120,
+                    borderRadius: "50%",
+                    background: "radial-gradient(circle, rgba(96, 46, 125, 0.15) 0%, transparent 70%)",
+                    filter: "blur(10px)"
+                  }}
+                />
+                <CardContent sx={{ p: 3.5 }}>
+                  <Box sx={{ display: "flex", alignItems: "center", gap: 1.5, mb: 2 }}>
+                    <Avatar sx={{ bgcolor: "#602e7d", width: 44, height: 44 }}>
+                      <SelfImprovement sx={{ color: "#fff" }} />
+                    </Avatar>
+                    <Box>
+                      <Typography variant="subtitle1" sx={{ fontWeight: 800, color: "#602e7d" }}>
+                        📢 Trainer Guidelines
+                      </Typography>
+                      <Typography variant="caption" color="text.secondary">
+                        Personalised by your instructor
+                      </Typography>
+                    </Box>
+                  </Box>
                   <Divider sx={{ mb: 2 }} />
-
-                  {/* Checklist items */}
-                  <Box sx={{ display: "flex", flexDirection: "column", gap: 1.5 }}>
-                    {[
-                      { key: "workout", label: "Logged Workout/Yoga", color: "#2e7d32" },
-                      { key: "nutrition", label: "Logged Meals/Calories", color: "#e65100" },
-                      { key: "sleep", label: "Logged Sleep Quality", color: "#1565c0" },
-                      { key: "stress", label: "Logged Stress Level", color: "#c2185b" }
-                    ].map((item) => {
-                      const completed = todayLogs[item.key];
-                      return (
-                        <Box
-                          key={item.key}
-                          sx={{
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "space-between",
-                            p: 1.2,
-                            px: 2,
-                            borderRadius: 2.5,
-                            bgcolor: completed ? `${item.color}08` : "#f9f9f9",
-                            border: completed ? `1px solid ${item.color}25` : "1px solid #f0f0f0"
-                          }}
-                        >
-                          <Typography variant="body2" sx={{ fontWeight: 600, color: completed ? item.color : "#555" }}>
-                            {item.label}
-                          </Typography>
-                          <Chip
-                            label={completed ? "Logged ✓" : "Pending"}
-                            size="small"
-                            color={completed ? "success" : "default"}
-                            sx={{
-                              fontWeight: 700,
-                              fontSize: "0.65rem",
-                              height: 20,
-                              bgcolor: completed ? `${item.color}20` : undefined,
-                              color: completed ? item.color : undefined
-                            }}
-                          />
-                        </Box>
-                      );
-                    })}
+                  <Box
+                    sx={{
+                      p: 2.5, bgcolor: "#faf6ff", borderRadius: 3,
+                      borderLeft: "4px solid #602e7d", minHeight: 80
+                    }}
+                  >
+                    <Typography variant="body2" sx={{ whiteSpace: "pre-line", color: "#3f2652", fontWeight: 500, lineHeight: 1.6 }}>
+                      {profile.staffNotes}
+                    </Typography>
                   </Box>
                 </CardContent>
               </Card>
             </Grid>
-          </Grid>
-        )}
+          )}
+        </Grid>
 
-        {/* ──⚡ FitNexus Quick-Log Desk ───────────────────────────── */}
+        {/* ── Quick-Log Desk ─────────────────────────────────────── */}
         <Typography variant="h6" sx={{ fontWeight: 800, color: "#333", mb: 2 }}>
           ⚡ FitNexus Quick-Log Desk
         </Typography>
-        <Grid container spacing={3} sx={{ mb: 5 }}>
+        <Grid container spacing={3} sx={{ mb: 4 }}>
           {/* Quick Workout Log */}
           <Grid item xs={12} sm={6} md={3}>
             <Card sx={{ borderRadius: 4, height: "100%", borderLeft: "5px solid #2e7d32", boxShadow: "0 2px 10px rgba(0,0,0,0.05)" }}>
@@ -433,9 +761,7 @@ function Dashboard() {
                 <Divider sx={{ mb: 2 }} />
                 <Box sx={{ display: "flex", flexDirection: "column", gap: 1.5 }}>
                   <TextField
-                    select
-                    label="Workout Type"
-                    size="small"
+                    select label="Workout Type" size="small"
                     value={quickWorkout.type}
                     onChange={e => setQuickWorkout({ ...quickWorkout, type: e.target.value })}
                   >
@@ -446,9 +772,7 @@ function Dashboard() {
                     <MenuItem value="Meditation">Meditation</MenuItem>
                   </TextField>
                   <TextField
-                    label="Duration (mins)"
-                    type="number"
-                    size="small"
+                    label="Duration (mins)" type="number" size="small"
                     value={quickWorkout.duration}
                     onChange={e => setQuickWorkout({ ...quickWorkout, duration: e.target.value })}
                   />
@@ -471,9 +795,7 @@ function Dashboard() {
                 <Divider sx={{ mb: 2 }} />
                 <Box sx={{ display: "flex", flexDirection: "column", gap: 1.5 }}>
                   <TextField
-                    select
-                    label="Meal Category"
-                    size="small"
+                    select label="Meal Category" size="small"
                     value={quickMeal.meal}
                     onChange={e => setQuickMeal({ ...quickMeal, meal: e.target.value })}
                   >
@@ -483,9 +805,7 @@ function Dashboard() {
                     <MenuItem value="Snack">Snack</MenuItem>
                   </TextField>
                   <TextField
-                    label="Calories (kcal)"
-                    type="number"
-                    size="small"
+                    label="Calories (kcal)" type="number" size="small"
                     value={quickMeal.calories}
                     onChange={e => setQuickMeal({ ...quickMeal, calories: e.target.value })}
                   />
@@ -508,16 +828,12 @@ function Dashboard() {
                 <Divider sx={{ mb: 2 }} />
                 <Box sx={{ display: "flex", flexDirection: "column", gap: 1.5 }}>
                   <TextField
-                    label="Hours Slept"
-                    type="number"
-                    size="small"
+                    label="Hours Slept" type="number" size="small"
                     value={quickSleep.hours}
                     onChange={e => setQuickSleep({ ...quickSleep, hours: e.target.value })}
                   />
                   <TextField
-                    select
-                    label="Sleep Quality"
-                    size="small"
+                    select label="Sleep Quality" size="small"
                     value={quickSleep.quality}
                     onChange={e => setQuickSleep({ ...quickSleep, quality: e.target.value })}
                   >
@@ -545,16 +861,12 @@ function Dashboard() {
                 <Divider sx={{ mb: 2 }} />
                 <Box sx={{ display: "flex", flexDirection: "column", gap: 1.5 }}>
                   <TextField
-                    label="Stress Level (1-10)"
-                    type="number"
-                    size="small"
+                    label="Stress Level (1-10)" type="number" size="small"
                     value={quickStress.level}
                     onChange={e => setQuickStress({ ...quickStress, level: parseInt(e.target.value) || 5 })}
                   />
                   <TextField
-                    label="Triggers / Notes"
-                    size="small"
-                    placeholder="e.g. Work load, study..."
+                    label="Triggers / Notes" size="small" placeholder="e.g. Work load, study..."
                     value={quickStress.notes}
                     onChange={e => setQuickStress({ ...quickStress, notes: e.target.value })}
                   />
@@ -571,7 +883,7 @@ function Dashboard() {
         <Card
           sx={{
             borderRadius: 4, boxShadow: "0 4px 16px rgba(0,0,0,0.06)",
-            borderLeft: "6px solid #602e7d", mb: 5, background: "#fdf8ff"
+            borderLeft: "6px solid #602e7d", mb: 4, background: "#fdf8ff"
           }}
         >
           <CardContent sx={{ p: 4 }}>
@@ -605,50 +917,8 @@ function Dashboard() {
           </CardContent>
         </Card>
 
-        <Divider sx={{ mb: 4 }}>
-          <Typography variant="body2" color="text.secondary" sx={{ fontWeight: 700, px: 2, letterSpacing: 1 }}>
-            DAILY TRACKING LOGS
-          </Typography>
-        </Divider>
-
-        {/* ── Logger Cards ────────────────────────────────────────── */}
-        <Grid container spacing={3}>
-          {sections.map((sec, idx) => (
-            <Grid item xs={12} sm={6} md={3} key={idx}>
-              <Card
-                sx={{
-                  height: "100%", display: "flex", flexDirection: "column",
-                  borderRadius: 4, boxShadow: "0 4px 12px rgba(0,0,0,0.05)",
-                  transition: "transform 0.2s, box-shadow 0.2s",
-                  "&:hover": { transform: "translateY(-4px)", boxShadow: "0 10px 28px rgba(0,0,0,0.09)" }
-                }}
-              >
-                <Box sx={{ p: 3, background: sec.bg, borderRadius: "16px 16px 0 0", display: "flex", justifyContent: "center", alignItems: "center" }}>
-                  {React.cloneElement(sec.icon, { sx: { fontSize: "2.8rem", color: sec.color } })}
-                </Box>
-                <CardContent sx={{ flexGrow: 1, px: 3, py: 2.5, display: "flex", flexDirection: "column" }}>
-                  <Typography variant="h6" sx={{ fontWeight: 800, mb: 0.8 }}>{sec.title}</Typography>
-                  <Typography variant="body2" color="text.secondary" sx={{ mb: 2.5, flexGrow: 1 }}>
-                    {sec.desc}
-                  </Typography>
-                  <Button
-                    variant="outlined" fullWidth component={Link} to={sec.route}
-                    sx={{
-                      mt: "auto", borderRadius: 2.5, textTransform: "none", fontWeight: "bold",
-                      color: sec.color, borderColor: `${sec.color}88`,
-                      "&:hover": { bgcolor: `${sec.color}08`, borderColor: sec.color }
-                    }}
-                  >
-                    Log Now
-                  </Button>
-                </CardContent>
-              </Card>
-            </Grid>
-          ))}
-        </Grid>
-
         {/* ── View Reports Link ───────────────────────────────────── */}
-        <Box sx={{ textAlign: "center", mt: 7 }}>
+        <Box sx={{ textAlign: "center", mt: 5 }}>
           <Button
             variant="text" component={Link} to="/reports" startIcon={<TrendingUp />}
             sx={{

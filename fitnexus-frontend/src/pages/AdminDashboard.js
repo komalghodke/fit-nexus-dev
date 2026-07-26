@@ -70,11 +70,16 @@ function AdminDashboard() {
   const [inquiries, setInquiries] = useState([]);
   const [inquiriesLoading, setInquiriesLoading] = useState(true);
 
+  // States for User Feedbacks
+  const [feedbacks, setFeedbacks] = useState([]);
+  const [feedbacksLoading, setFeedbacksLoading] = useState(true);
+
   const token = localStorage.getItem("token");
 
   useEffect(() => {
     fetchData();
     fetchInquiries();
+    fetchFeedbacks();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -86,6 +91,17 @@ function AdminDashboard() {
       console.warn("Failed to load corporate inquiries from .NET dashboard endpoint:", err);
     } finally {
       setInquiriesLoading(false);
+    }
+  };
+
+  const fetchFeedbacks = async () => {
+    try {
+      const res = await axios.get(`${API}/feedback`);
+      setFeedbacks(res.data || []);
+    } catch (err) {
+      console.warn("Failed to load user feedbacks:", err);
+    } finally {
+      setFeedbacksLoading(false);
     }
   };
 
@@ -573,6 +589,67 @@ function AdminDashboard() {
                         <TableCell colSpan={7} align="center" sx={{ py: 6 }}>
                           <Typography variant="body1" color="text.secondary">
                             No partnership inquiries received yet.
+                          </Typography>
+                        </TableCell>
+                      </TableRow>
+                    ) : null}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            )}
+          </CardContent>
+        </Card>
+
+        {/* User Feedbacks Audit Section */}
+        <Card sx={{ borderRadius: 4, boxShadow: "0 4px 16px rgba(0,0,0,0.06)", mt: 4, mb: 4 }}>
+          <CardContent sx={{ p: 3 }}>
+            <Typography variant="h6" sx={{ fontWeight: 800, color: "#602e7d", mb: 3 }}>
+              💬 User Feedbacks & Suggestions Audit
+            </Typography>
+
+            {feedbacksLoading ? (
+              <Box sx={{ display: "flex", justifyContent: "center", py: 4 }}>
+                <CircularProgress color="secondary" />
+              </Box>
+            ) : (
+              <TableContainer component={Paper} elevation={0} sx={{ borderRadius: 3, border: "1px solid #eee" }}>
+                <Table>
+                  <TableHead>
+                    <TableRow sx={{ backgroundColor: "#f9f9f9" }}>
+                      <TableCell sx={{ fontWeight: 700, color: "#333" }}>User Name</TableCell>
+                      <TableCell sx={{ fontWeight: 700, color: "#333" }}>Email</TableCell>
+                      <TableCell sx={{ fontWeight: 700, color: "#333" }}>Rating</TableCell>
+                      <TableCell sx={{ fontWeight: 700, color: "#333" }}>Category</TableCell>
+                      <TableCell sx={{ fontWeight: 700, color: "#333" }}>Feedback Message</TableCell>
+                      <TableCell sx={{ fontWeight: 700, color: "#333" }}>Submitted At</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {feedbacks.map((fb) => (
+                      <TableRow key={fb.id} sx={{ "&:hover": { bgcolor: "#fafafa" } }}>
+                        <TableCell sx={{ fontWeight: 600 }}>{fb.fullName || "Anonymous"}</TableCell>
+                        <TableCell sx={{ fontWeight: 500, color: "#1976d2" }}>{fb.email}</TableCell>
+                        <TableCell>
+                          <Chip
+                            label={`${fb.rating || 5} ★`}
+                            size="small"
+                            color={(fb.rating || 5) >= 4 ? "success" : (fb.rating || 5) >= 3 ? "warning" : "error"}
+                          />
+                        </TableCell>
+                        <TableCell>
+                          <Chip label={fb.category || "General"} size="small" variant="outlined" />
+                        </TableCell>
+                        <TableCell sx={{ maxWidth: 350, wordBreak: "break-word" }}>{fb.message}</TableCell>
+                        <TableCell sx={{ fontSize: "0.8rem", color: "#666" }}>
+                          {fb.createdAt ? new Date(fb.createdAt).toLocaleString() : "—"}
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                    {feedbacks.length === 0 ? (
+                      <TableRow>
+                        <TableCell colSpan={6} align="center" sx={{ py: 6 }}>
+                          <Typography variant="body1" color="text.secondary">
+                            No user feedback submitted yet.
                           </Typography>
                         </TableCell>
                       </TableRow>

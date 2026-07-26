@@ -114,6 +114,7 @@ function Navbar() {
                     <Button component={Link} to="/admin" sx={navBtn("/admin")}>Admin Panel</Button>
                     <Button component={Link} to="/staff" sx={navBtn("/staff")}>Staff Console</Button>
                     <Button component={Link} to="/map" sx={navBtn("/map")}>Map</Button>
+                    <Button component={Link} to="/feedback" sx={navBtn("/feedback")}>Feedback</Button>
                     <Button href="http://localhost:5294" target="_blank" rel="noopener noreferrer" sx={navBtn("")}>Corporate</Button>
                   </>
                 ) : role === "YOGA_INSTRUCTOR" || role === "GYM_TRAINER" ? (
@@ -124,6 +125,7 @@ function Navbar() {
                       Console
                     </Button>
                     <Button component={Link} to="/map" sx={navBtn("/map")}>Map</Button>
+                    <Button component={Link} to="/feedback" sx={navBtn("/feedback")}>Feedback</Button>
                     <Button href="http://localhost:5294" target="_blank" rel="noopener noreferrer" sx={navBtn("")}>Corporate</Button>
                   </>
                 ) : (
@@ -134,6 +136,7 @@ function Navbar() {
                     <Button component={Link} to="/reports"   sx={navBtn("/reports")}>Reports</Button>
                     <Button component={Link} to="/profile"   sx={navBtn("/profile")}>Profile</Button>
                     <Button component={Link} to="/map"       sx={navBtn("/map")}>Map</Button>
+                    <Button component={Link} to="/feedback"  sx={navBtn("/feedback")}>Feedback</Button>
                     <Button href="http://localhost:5294" target="_blank" rel="noopener noreferrer" sx={navBtn("")}>Corporate</Button>
                   </>
                 )}
@@ -184,6 +187,7 @@ function Navbar() {
               </>
             ) : (
               <>
+                <Button component={Link} to="/feedback" sx={navBtn("/feedback")}>Feedback</Button>
                 <Button href="http://localhost:5294" target="_blank" rel="noopener noreferrer" sx={navBtn("")}>Corporate</Button>
                 <Button
                   component={Link}

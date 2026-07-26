@@ -94,16 +94,36 @@ function ReportsPage() {
       const imgHeight = (canvas.height * pageWidth) / canvas.width;
       let heightLeft = imgHeight;
       let position = 0;
+
+      // Function to add FITNEXUS watermark (subtle, faint watermark)
+      const drawWatermark = (pdfDoc) => {
+        pdfDoc.saveGraphicsState();
+        try {
+          pdfDoc.setGState(new pdfDoc.GState({ opacity: 0.07 }));
+        } catch {
+          // fallback if GState is not available
+        }
+        pdfDoc.setFont("helvetica", "bold");
+        pdfDoc.setFontSize(50);
+        pdfDoc.setTextColor(160, 140, 195); // Subtle faint lavender
+        pdfDoc.text("FITNEXUS", pageWidth / 2, pageHeight / 2, { angle: 45, align: "center" });
+        pdfDoc.restoreGraphicsState();
+      };
+
       pdf.addImage(imgData, "JPEG", 0, position, imgWidth, imgHeight);
+      drawWatermark(pdf);
       heightLeft -= pageHeight;
+
       while (heightLeft > 0) {
         position -= pageHeight;
         pdf.addPage();
         pdf.addImage(imgData, "JPEG", 0, position, imgWidth, imgHeight);
+        drawWatermark(pdf);
         heightLeft -= pageHeight;
       }
+
       const name = report?.fullName ? report.fullName.replace(/\s+/g, "_") : "User";
-      pdf.save(`FitNexus_Wellness_Report_${name}.pdf`);
+      pdf.save(`YOG_FitNexus_Wellness_Report_${name}.pdf`);
     } catch (err) {
       console.error("PDF generation failed:", err);
       alert("Could not generate PDF. Please try the Print option instead.");
@@ -236,6 +256,112 @@ function ReportsPage() {
         </Box>
 
         <div ref={reportRef}>
+
+        {/* ── Professional Report Header Banner ────────────────────────── */}
+        <Box
+          sx={{
+            mb: 4,
+            p: 0,
+            borderRadius: 4,
+            overflow: "hidden",
+            boxShadow: "0 8px 32px rgba(96,46,125,0.12)",
+            border: "1px solid rgba(96,46,125,0.15)"
+          }}
+        >
+          {/* Top gradient banner */}
+          <Box
+            sx={{
+              background: "linear-gradient(135deg, #0d2c4e 0%, #255f9a 40%, #602e7d 100%)",
+              color: "#fff",
+              px: { xs: 3, md: 5 },
+              py: { xs: 3, md: 3.5 },
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              flexWrap: "wrap",
+              gap: 2
+            }}
+          >
+            <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+              <Avatar sx={{ width: 56, height: 56, bgcolor: "rgba(255,255,255,0.15)", border: "2px solid rgba(255,255,255,0.3)", fontSize: "1.8rem" }}>
+                🧘
+              </Avatar>
+              <Box>
+                <Typography variant="h5" sx={{ fontWeight: 900, letterSpacing: 1.5, lineHeight: 1.1 }}>
+                  FITNEXUS
+                </Typography>
+                <Typography variant="caption" sx={{ opacity: 0.85, letterSpacing: 2.5, textTransform: "uppercase", fontSize: "0.6rem" }}>
+                  Holistic Wellness Ecosystem
+                </Typography>
+              </Box>
+            </Box>
+            <Box sx={{ textAlign: { xs: "left", md: "right" } }}>
+              <Typography variant="subtitle2" sx={{ fontWeight: 700, opacity: 0.9 }}>
+                Wellness Assessment Report
+              </Typography>
+              <Typography variant="caption" sx={{ opacity: 0.7 }}>
+                Generated: {new Date().toLocaleDateString("en-IN", { day: "2-digit", month: "long", year: "numeric" })}
+              </Typography>
+            </Box>
+          </Box>
+
+          {/* User details row */}
+          <Box
+            sx={{
+              px: { xs: 3, md: 5 },
+              py: 2.5,
+              bgcolor: "#faf8ff",
+              display: "flex",
+              flexWrap: "wrap",
+              gap: { xs: 2, md: 4 },
+              alignItems: "center",
+              borderBottom: "1px solid rgba(96,46,125,0.08)"
+            }}
+          >
+            <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+              <Person sx={{ color: "#602e7d", fontSize: "1.1rem" }} />
+              <Box>
+                <Typography variant="caption" sx={{ color: "#999", display: "block", fontSize: "0.6rem", textTransform: "uppercase", letterSpacing: 0.8 }}>Full Name</Typography>
+                <Typography variant="body2" sx={{ fontWeight: 700, color: "#333" }}>{report.fullName || "—"}</Typography>
+              </Box>
+            </Box>
+            {report.email && (
+              <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                <Typography sx={{ color: "#602e7d", fontSize: "1.1rem" }}>📧</Typography>
+                <Box>
+                  <Typography variant="caption" sx={{ color: "#999", display: "block", fontSize: "0.6rem", textTransform: "uppercase", letterSpacing: 0.8 }}>Email</Typography>
+                  <Typography variant="body2" sx={{ fontWeight: 700, color: "#333" }}>{report.email}</Typography>
+                </Box>
+              </Box>
+            )}
+            {report.mobileNumber && (
+              <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                <Typography sx={{ color: "#602e7d", fontSize: "1.1rem" }}>📱</Typography>
+                <Box>
+                  <Typography variant="caption" sx={{ color: "#999", display: "block", fontSize: "0.6rem", textTransform: "uppercase", letterSpacing: 0.8 }}>Contact</Typography>
+                  <Typography variant="body2" sx={{ fontWeight: 700, color: "#333" }}>{report.mobileNumber}</Typography>
+                </Box>
+              </Box>
+            )}
+            {report.city && (
+              <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                <NaturePeople sx={{ color: "#602e7d", fontSize: "1.1rem" }} />
+                <Box>
+                  <Typography variant="caption" sx={{ color: "#999", display: "block", fontSize: "0.6rem", textTransform: "uppercase", letterSpacing: 0.8 }}>City</Typography>
+                  <Typography variant="body2" sx={{ fontWeight: 700, color: "#333" }}>{report.city}</Typography>
+                </Box>
+              </Box>
+            )}
+          </Box>
+
+          {/* About this report */}
+          <Box sx={{ px: { xs: 3, md: 5 }, py: 2, bgcolor: "#fff" }}>
+            <Typography variant="caption" sx={{ color: "#777", lineHeight: 1.7, display: "block" }}>
+              <strong style={{ color: "#602e7d" }}>About This Report:</strong> This comprehensive wellness report is generated by the FitNexus Holistic Wellness Ecosystem based on your self-reported assessment across 27 health indicators spanning physical, mental, spiritual, and social dimensions. The report maps your wellness profile to the 7 Chakra energy system and provides AYUSH-aligned yoga, pranayama, and lifestyle recommendations tailored to your unique health profile.
+            </Typography>
+          </Box>
+        </Box>
+
         <Grid container spacing={4}>
 
           {/* ══ LEFT COLUMN ══════════════════════════════════════════════ */}
@@ -628,20 +754,7 @@ function ReportsPage() {
               </Typography>
             </SectionCard>
 
-            {/* ── Sprint 2: GenAI & Wearables Preview ───────────────── */}
-            <Card sx={{ borderRadius: 4, background: "linear-gradient(135deg, #1a237e 0%, #283593 100%)", color: "#fff", boxShadow: "0 8px 24px rgba(26,35,126,0.2)", mb: 3 }}>
-              <CardContent sx={{ p: 3 }}>
-                <Typography variant="subtitle1" sx={{ fontWeight: 800, mb: 1, display: "flex", alignItems: "center", gap: 1 }}>
-                  🚀 Coming Soon in Sprint 2
-                </Typography>
-                <Typography variant="body2" sx={{ opacity: 0.9, lineHeight: 1.6, mb: 1.5 }}>
-                  <strong>GenAI Personalized Narration:</strong> Soon you will receive customized, natural-language wellness reflections generated specifically for your profile.
-                </Typography>
-                <Typography variant="body2" sx={{ opacity: 0.9, lineHeight: 1.6 }}>
-                  <strong>Wearable Sync:</strong> Synchronize your Fitbit device to automatically import step logs, heart rate variability, and active sleep cycles.
-                </Typography>
-              </CardContent>
-            </Card>
+
 
             {/* ── Next Step CTA ─────────────────────────────────────── */}
             <Card sx={{ borderRadius: 4, background: "linear-gradient(135deg, #054474 0%, #602e7d 100%)", color: "#fff", boxShadow: "0 8px 32px rgba(96,46,125,0.3)", mb: 3 }}>
@@ -667,10 +780,57 @@ function ReportsPage() {
           </Grid>
         </Grid>
         
-        {/* Printable Footer */}
-        <Box sx={{ mt: 6, pt: 2, borderTop: "2px solid rgba(0,0,0,0.08)", display: "flex", justifyContent: "space-between", color: "#666", fontSize: "0.75rem", flexWrap: "wrap", gap: 1 }}>
-          <Typography variant="caption" sx={{ fontWeight: 600 }}>© 2026 FitNexus · Built with ❤️ for Holistic Wellness · All rights reserved.</Typography>
-          <Typography variant="caption" sx={{ fontWeight: 600 }}>github.com/komalghodke/fit-nexus-dev</Typography>
+        {/* ── Professional Report Footer ──────────────────────────── */}
+        <Box
+          sx={{
+            mt: 6,
+            borderRadius: 4,
+            overflow: "hidden",
+            border: "1px solid rgba(96,46,125,0.12)",
+            boxShadow: "0 4px 16px rgba(0,0,0,0.04)"
+          }}
+        >
+          {/* Disclaimer */}
+          <Box sx={{ px: { xs: 3, md: 5 }, py: 2.5, bgcolor: "#fef9f0", borderLeft: "4px solid #e65100" }}>
+            <Typography variant="caption" sx={{ color: "#b45309", fontWeight: 800, textTransform: "uppercase", letterSpacing: 1, display: "block", mb: 0.5, fontSize: "0.6rem" }}>
+              ⚠️ Important Disclaimer
+            </Typography>
+            <Typography variant="caption" sx={{ color: "#8b6914", lineHeight: 1.7, display: "block" }}>
+              FITNEXUS DOES NOT PROVIDE MEDICAL DIAGNOSIS, MEDICAL ADVICE, OR DOCTOR PRESCRIPTIONS. This report is generated from self-reported data for educational and wellness demonstration purposes only. Always consult a qualified healthcare professional before making health-related decisions. FitNexus is an independent project and is <strong>NOT affiliated with or endorsed by the Ministry of AYUSH or Government of India (GOI)</strong>.
+            </Typography>
+          </Box>
+
+          {/* Footer credits */}
+          <Box
+            sx={{
+              px: { xs: 3, md: 5 },
+              py: 2,
+              background: "linear-gradient(135deg, #0d2c4e 0%, #602e7d 100%)",
+              color: "#fff",
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              flexWrap: "wrap",
+              gap: 1.5
+            }}
+          >
+            <Box>
+              <Typography variant="caption" sx={{ fontWeight: 700, display: "block", letterSpacing: 0.5, opacity: 0.95 }}>
+                © 2026 FitNexus — Holistic Wellness Ecosystem
+              </Typography>
+              <Typography variant="caption" sx={{ opacity: 0.7, fontSize: "0.6rem" }}>
+                Developed by Komal Ghodke · Built with ❤️ for Holistic Wellness
+              </Typography>
+            </Box>
+            <Box sx={{ textAlign: { xs: "left", md: "right" } }}>
+              <Typography variant="caption" sx={{ fontWeight: 600, display: "block", opacity: 0.9, fontSize: "0.65rem" }}>
+                🔗 github.com/komalghodke/fit-nexus-dev
+              </Typography>
+              <Typography variant="caption" sx={{ opacity: 0.6, fontSize: "0.55rem" }}>
+                React · Spring Boot · .NET Core · Google Gemini AI
+              </Typography>
+            </Box>
+          </Box>
         </Box>
         </div>
       </Container>

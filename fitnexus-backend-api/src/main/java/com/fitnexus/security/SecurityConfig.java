@@ -16,7 +16,7 @@ public class SecurityConfig {
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http, JwtRequestFilter jwtRequestFilter) throws Exception {
 		http.csrf(csrf -> csrf.disable()).cors(cors -> {
-		}).authorizeHttpRequests(auth -> auth.requestMatchers("/api/auth/**", "/api/locations/**", "/api/public/**", "/api/chat").permitAll().anyRequest().authenticated())
+		}).authorizeHttpRequests(auth -> auth.requestMatchers("/api/auth/**", "/api/locations/**", "/api/public/**", "/api/chat", "/api/chat/**", "/api/feedback", "/api/feedback/**").permitAll().anyRequest().authenticated())
 				.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
 
 		return http.build();

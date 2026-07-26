@@ -1,6 +1,0 @@
-wwwroot\css\dashboard.css
-wwwroot\index.html
-wwwroot\js\dashboard.js
-C:\Users\admin\Desktop\TRIAL\fit-nexus-dev\FitNexusDashboard\wwwroot\css\dashboard.css
-C:\Users\admin\Desktop\TRIAL\fit-nexus-dev\FitNexusDashboard\wwwroot\index.html
-C:\Users\admin\Desktop\TRIAL\fit-nexus-dev\FitNexusDashboard\wwwroot\js\dashboard.js
