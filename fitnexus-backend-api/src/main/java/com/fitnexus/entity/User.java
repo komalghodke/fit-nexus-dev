@@ -2,6 +2,8 @@ package com.fitnexus.entity;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -19,13 +21,22 @@ public class User {
 	private String username;
 	private String email;
 	private String password;
+	private String role = "USER";
+	private String staffNotes;
 
+	@JsonIgnore
 	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<Workout> workouts;
+
+	@JsonIgnore
 	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<Nutrition> nutritionLogs;
+
+	@JsonIgnore
 	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<Sleep> sleepLogs;
+
+	@JsonIgnore
 	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<Stress> stressLogs;
 
@@ -94,5 +105,21 @@ public class User {
 
 	public void setStressLogs(List<Stress> stressLogs) {
 		this.stressLogs = stressLogs;
+	}
+
+	public String getRole() {
+		return role;
+	}
+
+	public void setRole(String role) {
+		this.role = role;
+	}
+
+	public String getStaffNotes() {
+		return staffNotes;
+	}
+
+	public void setStaffNotes(String staffNotes) {
+		this.staffNotes = staffNotes;
 	}
 }

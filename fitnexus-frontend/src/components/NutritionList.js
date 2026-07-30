@@ -12,7 +12,7 @@ function NutritionList() {
     }
 
     axios
-      .get("http://localhost:8080/api/nutrition", {
+      .get("${API_URL}/nutrition", {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((res) => setMeals(res.data))

@@ -12,7 +12,7 @@ function StressList() {
     }
 
     axios
-      .get("http://localhost:8080/api/stress", {
+      .get("${API_URL}/stress", {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((res) => setRecords(res.data))

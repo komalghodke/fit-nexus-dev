@@ -14,7 +14,7 @@ function Dashboard() {
     return;
   }
 
-  axios.get(`http://localhost:8080/api/users/profile/${email}`, {
+  axios.get(`${API_URL}/users/profile/${email}`, {
     headers: { Authorization: `Bearer ${token}` }
   })
   .then(res => {

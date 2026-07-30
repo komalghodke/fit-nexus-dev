@@ -1,70 +1,67 @@
-# Getting Started with Create React App
+# 🧘 FitNexus — Frontend (React.js 18)
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+[![GitHub](https://img.shields.io/badge/GitHub-fit--nexus--dev-181717?logo=github&logoColor=white)](https://github.com/komalghodke/fit-nexus-dev)
+![React](https://img.shields.io/badge/React-18-61DAFB?logo=react&logoColor=black)
+![MUI](https://img.shields.io/badge/MUI-v5-007FFF?logo=mui&logoColor=white)
 
-## Available Scripts
+> React.js 18 Single Page Application — the user-facing frontend of the FitNexus Holistic Wellness Ecosystem.
 
-In the project directory, you can run:
+---
 
-### `npm start`
+## 🗂️ About This Module
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+This folder contains the **React.js frontend** for FitNexus. It connects to two backend microservices:
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+| Microservice | Local URL | Production URL |
+|:---|:---|:---|
+| Spring Boot Java API | `http://localhost:8083` | `https://fitnexus-api-java.azurewebsites.net` |
+| C# .NET Corporate API | `http://localhost:5294` | `https://fitnexus-dotnet.azurewebsites.net` |
 
-### `npm test`
+API base URL is configured in [`src/api/apiConfig.js`](src/api/apiConfig.js).
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+---
 
-### `npm run build`
+## 🚀 Local Development
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+```bash
+# Install dependencies
+npm install
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+# Start the development server
+npm start
+# App runs on http://localhost:3000
+```
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+---
 
-### `npm run eject`
+## 📦 Production Build
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+```bash
+npm run build
+# Output goes to /build folder
+```
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+---
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+## 🗂️ Project Structure
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+```
+src/
+├── api/           # Axios config & API base URL (apiConfig.js)
+├── components/    # Shared components (Navbar, PrivateRoute, LoginForm...)
+├── pages/         # All page components (Dashboard, About, Reports, Admin...)
+├── i18n/          # Multi-language support (i18next)
+└── App.js         # Root component with React Router routes
+```
 
-## Learn More
+---
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+## ☁️ Azure Deployment
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+See full deployment guide: [`../Exec/plans/azure_free_deployment_guide_28July.md`](../Exec/plans/azure_free_deployment_guide_28July.md)
 
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+**Before deploying**, update `src/api/apiConfig.js`:
+```js
+// Change this line to your live Azure API URL
+export const API_URL = "https://fitnexus-api-java.azurewebsites.net/api";
+```

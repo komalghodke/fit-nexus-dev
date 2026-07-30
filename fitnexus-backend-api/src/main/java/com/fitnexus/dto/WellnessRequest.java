@@ -15,53 +15,54 @@ public class WellnessRequest {
 	private Boolean hasDisease;
 	// Workout
 	private String workoutType;
-	private int workoutDuration;
-	private int workoutFrequency;
+	private Integer workoutDuration;
+	private Integer workoutFrequency;
 
 	// Nutrition
-	private int dailyCalories;
-	private int proteinIntake;
-	private double waterIntake;
-	private int fruitServings;
-	private int vegetableServings;
+	private Integer dailyCalories;
+	private Integer proteinIntake;
+	private Double waterIntake;
+	private Integer fruitServings;
+	private Integer vegetableServings;
 
 	// Sleep
-	private int sleepHours;
+	private Integer sleepHours;
 	private String sleepQuality;
 	private String bedtime;
 	private String wakeTime;
 
 	// Stress
-	private int stressLevel;
+	private Integer stressLevel;
 	private String stressTriggers;
 	private String relaxationPractice;
 
 	// Lifestyle
 	private String smoking;
 	private String alcohol;
-	private int screenTime;
-	private int physicalActivity;
+	private Integer screenTime;
+	private Integer physicalActivity;
 
 	// Mental Wellness
 	private String mood;
-	private int meditationMinutes;
+	private Integer meditationMinutes;
 	private String socialSupport;
 
 	// Medical
-	private int age;
-	private int height;
-	private int weight;
+	private Integer age;
+	private Integer height;
+	private Integer weight;
 	private String chronicConditions;
 	private String medications;
-	private double bmi;
+	private Double bmi;
+	private Integer restingHeartRate;
 
 	// Other
 	private String energyLevel;
 	private String digestiveIssues;
 	private String painArea;
 	private String yogaExperience;
-	private int daysPerWeek;
-	private int minutesPerSession;
+	private Integer daysPerWeek;
+	private Integer minutesPerSession;
 	private String journalEntry;
 
 	public WellnessRequest() {
@@ -70,13 +71,13 @@ public class WellnessRequest {
 
 	public WellnessRequest(String fullName, String email, String mobileNumber, String gender, String city, String sleep,
 			String innerPeace, Integer workSatisfaction, Integer withNature, Boolean hasDisease, String workoutType,
-			int workoutDuration, int workoutFrequency, int dailyCalories, int proteinIntake, double waterIntake,
-			int fruitServings, int vegetableServings, int sleepHours, String sleepQuality, String bedtime,
-			String wakeTime, int stressLevel, String stressTriggers, String relaxationPractice, String smoking,
-			String alcohol, int screenTime, int physicalActivity, String mood, int meditationMinutes,
-			String socialSupport, int age, int height, int weight, String chronicConditions, String medications,
-			double bmi, String energyLevel, String digestiveIssues, String painArea, String yogaExperience,
-			int daysPerWeek, int minutesPerSession, String journalEntry) {
+			Integer workoutDuration, Integer workoutFrequency, Integer dailyCalories, Integer proteinIntake, Double waterIntake,
+			Integer fruitServings, Integer vegetableServings, Integer sleepHours, String sleepQuality, String bedtime,
+			String wakeTime, Integer stressLevel, String stressTriggers, String relaxationPractice, String smoking,
+			String alcohol, Integer screenTime, Integer physicalActivity, String mood, Integer meditationMinutes,
+			String socialSupport, Integer age, Integer height, Integer weight, String chronicConditions, String medications,
+			Double bmi, String energyLevel, String digestiveIssues, String painArea, String yogaExperience,
+			Integer daysPerWeek, Integer minutesPerSession, String journalEntry) {
 		super();
 		this.fullName = fullName;
 		this.email = email;
@@ -214,67 +215,67 @@ public class WellnessRequest {
 		this.workoutType = workoutType;
 	}
 
-	public int getWorkoutDuration() {
+	public Integer getWorkoutDuration() {
 		return workoutDuration;
 	}
 
-	public void setWorkoutDuration(int workoutDuration) {
+	public void setWorkoutDuration(Integer workoutDuration) {
 		this.workoutDuration = workoutDuration;
 	}
 
-	public int getWorkoutFrequency() {
+	public Integer getWorkoutFrequency() {
 		return workoutFrequency;
 	}
 
-	public void setWorkoutFrequency(int workoutFrequency) {
+	public void setWorkoutFrequency(Integer workoutFrequency) {
 		this.workoutFrequency = workoutFrequency;
 	}
 
-	public int getDailyCalories() {
+	public Integer getDailyCalories() {
 		return dailyCalories;
 	}
 
-	public void setDailyCalories(int dailyCalories) {
+	public void setDailyCalories(Integer dailyCalories) {
 		this.dailyCalories = dailyCalories;
 	}
 
-	public int getProteinIntake() {
+	public Integer getProteinIntake() {
 		return proteinIntake;
 	}
 
-	public void setProteinIntake(int proteinIntake) {
+	public void setProteinIntake(Integer proteinIntake) {
 		this.proteinIntake = proteinIntake;
 	}
 
-	public double getWaterIntake() {
+	public Double getWaterIntake() {
 		return waterIntake;
 	}
 
-	public void setWaterIntake(double waterIntake) {
+	public void setWaterIntake(Double waterIntake) {
 		this.waterIntake = waterIntake;
 	}
 
-	public int getFruitServings() {
+	public Integer getFruitServings() {
 		return fruitServings;
 	}
 
-	public void setFruitServings(int fruitServings) {
+	public void setFruitServings(Integer fruitServings) {
 		this.fruitServings = fruitServings;
 	}
 
-	public int getVegetableServings() {
+	public Integer getVegetableServings() {
 		return vegetableServings;
 	}
 
-	public void setVegetableServings(int vegetableServings) {
+	public void setVegetableServings(Integer vegetableServings) {
 		this.vegetableServings = vegetableServings;
 	}
 
-	public int getSleepHours() {
+	public Integer getSleepHours() {
 		return sleepHours;
 	}
 
-	public void setSleepHours(int sleepHours) {
+	public void setSleepHours(Integer sleepHours) {
 		this.sleepHours = sleepHours;
 	}
 
@@ -302,11 +303,11 @@ public class WellnessRequest {
 		this.wakeTime = wakeTime;
 	}
 
-	public int getStressLevel() {
+	public Integer getStressLevel() {
 		return stressLevel;
 	}
 
-	public void setStressLevel(int stressLevel) {
+	public void setStressLevel(Integer stressLevel) {
 		this.stressLevel = stressLevel;
 	}
 
@@ -342,19 +343,19 @@ public class WellnessRequest {
 		this.alcohol = alcohol;
 	}
 
-	public int getScreenTime() {
+	public Integer getScreenTime() {
 		return screenTime;
 	}
 
-	public void setScreenTime(int screenTime) {
+	public void setScreenTime(Integer screenTime) {
 		this.screenTime = screenTime;
 	}
 
-	public int getPhysicalActivity() {
+	public Integer getPhysicalActivity() {
 		return physicalActivity;
 	}
 
-	public void setPhysicalActivity(int physicalActivity) {
+	public void setPhysicalActivity(Integer physicalActivity) {
 		this.physicalActivity = physicalActivity;
 	}
 
@@ -366,11 +367,11 @@ public class WellnessRequest {
 		this.mood = mood;
 	}
 
-	public int getMeditationMinutes() {
+	public Integer getMeditationMinutes() {
 		return meditationMinutes;
 	}
 
-	public void setMeditationMinutes(int meditationMinutes) {
+	public void setMeditationMinutes(Integer meditationMinutes) {
 		this.meditationMinutes = meditationMinutes;
 	}
 
@@ -382,27 +383,27 @@ public class WellnessRequest {
 		this.socialSupport = socialSupport;
 	}
 
-	public int getAge() {
+	public Integer getAge() {
 		return age;
 	}
 
-	public void setAge(int age) {
+	public void setAge(Integer age) {
 		this.age = age;
 	}
 
-	public int getHeight() {
+	public Integer getHeight() {
 		return height;
 	}
 
-	public void setHeight(int height) {
+	public void setHeight(Integer height) {
 		this.height = height;
 	}
 
-	public int getWeight() {
+	public Integer getWeight() {
 		return weight;
 	}
 
-	public void setWeight(int weight) {
+	public void setWeight(Integer weight) {
 		this.weight = weight;
 	}
 
@@ -422,11 +423,11 @@ public class WellnessRequest {
 		this.medications = medications;
 	}
 
-	public double getBmi() {
+	public Double getBmi() {
 		return bmi;
 	}
 
-	public void setBmi(double bmi) {
+	public void setBmi(Double bmi) {
 		this.bmi = bmi;
 	}
 
@@ -462,19 +463,19 @@ public class WellnessRequest {
 		this.yogaExperience = yogaExperience;
 	}
 
-	public int getDaysPerWeek() {
+	public Integer getDaysPerWeek() {
 		return daysPerWeek;
 	}
 
-	public void setDaysPerWeek(int daysPerWeek) {
+	public void setDaysPerWeek(Integer daysPerWeek) {
 		this.daysPerWeek = daysPerWeek;
 	}
 
-	public int getMinutesPerSession() {
+	public Integer getMinutesPerSession() {
 		return minutesPerSession;
 	}
 
-	public void setMinutesPerSession(int minutesPerSession) {
+	public void setMinutesPerSession(Integer minutesPerSession) {
 		this.minutesPerSession = minutesPerSession;
 	}
 
@@ -484,6 +485,14 @@ public class WellnessRequest {
 
 	public void setJournalEntry(String journalEntry) {
 		this.journalEntry = journalEntry;
+	}
+
+	public Integer getRestingHeartRate() {
+		return restingHeartRate;
+	}
+
+	public void setRestingHeartRate(Integer restingHeartRate) {
+		this.restingHeartRate = restingHeartRate;
 	}
 
 	@Override

@@ -12,6 +12,7 @@ import WorkoutForm from "./pages/WorkoutForm";
 import NutritionForm from "./pages/NutritionForm";
 import SleepForm from "./pages/SleepForm";
 import StressForm from "./pages/StressForm";
+import Footer from "./components/Footer";
 
 function App() {
   return (
@@ -30,6 +31,7 @@ function App() {
           <Route path="/sleep" element={<SleepForm />} />
           <Route path="/stress" element={<StressForm />} />
         </Routes>
+        <Footer />
       </Router>
     </WellnessProvider>
   );

@@ -12,7 +12,7 @@ function WorkoutList() {
     }
 
     axios
-      .get("http://localhost:8080/api/workouts", {
+      .get("${API_URL}/workouts", {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((res) => setWorkouts(res.data))
