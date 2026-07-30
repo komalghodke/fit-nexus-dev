@@ -182,7 +182,7 @@ function PrivacyPolicyPage() {
               🏛️ GOVERNMENT OF INDIA &amp; MINISTRY OF AYUSH NON-AFFILIATION
             </Typography>
             <Typography variant="body2" sx={{ color: "#8b6914", lineHeight: 1.8 }}>
-              FitNexus is an independent educational and personal wellness project developed by Komal Ghodke (Government Certified Yoga Teacher, YCB). FitNexus is <strong>NOT affiliated with, endorsed by, sponsored by, or officially connected with the Ministry of AYUSH, the Government of India (GOI), or any government health authority</strong>. All references to YCB (Yoga Certification Board) refer to educational syllabus standards used for curriculum alignment only.
+              FitNexus is an independent educational wellness platform. FitNexus is <strong>NOT affiliated with, endorsed by, sponsored by, or officially connected with the Ministry of AYUSH, the Government of India (GOI), or any government health authority</strong>. All references to YCB (Yoga Certification Board) refer to educational syllabus standards used for curriculum alignment only.
             </Typography>
           </Box>
 
@@ -194,10 +194,10 @@ function PrivacyPolicyPage() {
               FitNexus Data Protection &amp; Governance Office
             </Typography>
             <Typography variant="body2" sx={{ color: "#555" }}>
-              Chief Data Protection Officer: <strong>Komal Ghodke</strong> (Govt Certified Yoga Teacher, YCB)
+              Data Governance &amp; Security Team (YCB Curriculum Aligned)
             </Typography>
             <Typography variant="caption" sx={{ color: "#777", display: "block", mt: 0.5 }}>
-              Repository &amp; Security Audits: <u>github.com/komalghodke/fit-nexus-dev</u> · Contact: komalghodke@fitnexus.dev
+              Repository &amp; Security Audits: <u>github.com/komalghodke/fit-nexus-dev</u> · Contact: support@fitnexus.dev
             </Typography>
           </Box>
         </Paper>

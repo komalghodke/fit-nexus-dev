@@ -43,7 +43,7 @@ function AboutPage() {
               <Box sx={{ display: "flex", alignItems: "center", gap: 1.5, mb: 2.5, flexWrap: "wrap" }}>
                 <Chip
                   icon={<Verified sx={{ color: "#a5d6a7 !important" }} />}
-                  label="Govt Certified Yoga Teacher (YCB, Ministry of AYUSH)"
+                  label="YCB Certified Yoga Curriculum Aligned"
                   sx={{ bgcolor: "rgba(255,255,255,0.18)", color: "#ffffff", fontWeight: 700, fontSize: "0.75rem", border: "1px solid rgba(255,255,255,0.3)" }}
                 />
                 <Chip
@@ -71,7 +71,7 @@ function AboutPage() {
               </Typography>
 
               <Typography variant="body1" sx={{ color: "rgba(255,255,255,0.92)", lineHeight: 1.8, fontSize: "1.12rem", mb: 3.5, maxWidth: 750 }}>
-                Welcome to <strong>FitNexus</strong> — India's premier holistic wellness ecosystem. Founded by <strong>Komal Ghodke</strong> (Government Certified Yoga Teacher, YCB Level Certified), FitNexus bridges 5,000 years of Vedic wellness principles with cutting-edge multi-variable AI analytics to guide you toward balanced health in body, mind, and spirit.
+                Welcome to <strong>FitNexus</strong> — India's premier holistic wellness ecosystem. FitNexus bridges 5,000 years of Vedic wellness principles with cutting-edge multi-variable AI analytics to guide you toward balanced health in body, mind, and spirit.
               </Typography>
 
               <Box sx={{ display: "flex", gap: 2, flexWrap: "wrap" }}>
@@ -97,7 +97,7 @@ function AboutPage() {
               </Box>
             </Grid>
 
-            {/* Founder Profile Card */}
+            {/* Project Identity Card */}
             <Grid item xs={12} md={4}>
               <Card
                 sx={{
@@ -114,24 +114,24 @@ function AboutPage() {
                   sx={{
                     width: 92, height: 92, mx: "auto", mb: 2,
                     bgcolor: "#ffffff", color: "#602e7d", border: "3px solid rgba(255,255,255,0.5)",
-                    fontSize: "2.5rem", fontWeight: 900,
+                    fontSize: "2.2rem", fontWeight: 900,
                     boxShadow: "0 8px 24px rgba(0,0,0,0.2)"
                   }}
                 >
-                  KG
+                  🌿
                 </Avatar>
                 <Typography variant="h6" sx={{ fontWeight: 900, mb: 0.5, color: "#ffffff" }}>
-                  Komal Ghodke
+                  FitNexus Team
                 </Typography>
                 <Typography variant="caption" sx={{ display: "block", color: "#ffe082", fontWeight: 800, mb: 1.5, letterSpacing: 0.8, textTransform: "uppercase" }}>
-                  FOUNDER &amp; LEAD YOGA EXPERT
+                  HOLISTIC WELLNESS PLATFORM
                 </Typography>
                 <Typography variant="body2" sx={{ color: "rgba(255,255,255,0.9)", fontSize: "0.83rem", lineHeight: 1.6, mb: 2 }}>
-                  Government Certified Yoga Teacher (YCB Level Certified, Ministry of AYUSH Syllabus Aligned). Dedicated to empowering individuals through evidence-based yogic science and holistic lifestyle education.
+                  A dedicated team committed to integrating ancient Vedic wisdom with modern AI technology, empowering every individual on their wellness journey.
                 </Typography>
                 <Chip
                   icon={<School sx={{ color: "#ffffff !important", fontSize: "0.9rem !important" }} />}
-                  label="YCB Level Certified"
+                  label="YCB Curriculum Aligned"
                   size="small"
                   sx={{ bgcolor: "rgba(255,255,255,0.22)", color: "#ffffff", fontWeight: 700, fontSize: "0.7rem", border: "1px solid rgba(255,255,255,0.4)" }}
                 />
@@ -177,7 +177,7 @@ function AboutPage() {
                   FitNexus is an independent educational and personal wellness ecosystem created to address the modern health crisis of chronic stress, digital fatigue, sedentary posture, and fragmented wellness tracking.
                 </Typography>
                 <Typography variant="body2" sx={{ color: "#555555", lineHeight: 1.8, mb: 2 }}>
-                  Founded by <strong>Komal Ghodke</strong>, Government Certified Yoga Teacher (YCB Level Certified), FitNexus is rooted in the conviction that true health is not merely the absence of disease, but a vibrant, multi-dimensional state of physical, mental, emotional, and spiritual harmony.
+                  FitNexus is rooted in the conviction that true health is not merely the absence of disease, but a vibrant, multi-dimensional state of physical, mental, emotional, and spiritual harmony.
                 </Typography>
                 <Typography variant="body2" sx={{ color: "#555555", lineHeight: 1.8, mb: 2 }}>
                   Unlike basic step counters or calorie-tracking apps, FitNexus measures your complete well-being across <strong>27 qualitative and quantitative health indicators</strong> — mapping your energy state to the ancient <strong>7 Chakra system</strong> and traditional <strong>YCB (Yoga Certification Board)</strong> educational standards.
@@ -395,13 +395,13 @@ function AboutPage() {
 
           {/* Author Byline Box */}
           <Box sx={{ display: "flex", alignItems: "center", gap: 2, p: 2.5, bgcolor: "#faf6ff", borderRadius: 3, borderLeft: "4px solid #602e7d", mb: 4 }}>
-            <Avatar sx={{ bgcolor: "#602e7d", color: "#fff", fontWeight: "bold", width: 50, height: 50 }}>KG</Avatar>
+            <Avatar sx={{ bgcolor: "#602e7d", color: "#fff", fontWeight: "bold", width: 50, height: 50 }}>🌿</Avatar>
             <Box>
               <Typography variant="subtitle1" sx={{ fontWeight: 800, color: "#602e7d" }}>
-                By Komal Ghodke
+                FitNexus Wellness Team
               </Typography>
               <Typography variant="caption" sx={{ color: "#555", display: "block" }}>
-                Government Certified Yoga Teacher · YCB (Yoga Certification Board) Level Certified · Ministry of AYUSH Syllabus Aligned
+                YCB (Yoga Certification Board) Curriculum Aligned · Ministry of AYUSH Educational Standards · Vedic Wellness Practitioners
               </Typography>
             </Box>
           </Box>
@@ -486,6 +486,7 @@ function AboutPage() {
               </Grid>
             </Grid>
 
+            <br />
             <Typography variant="h5" sx={{ fontWeight: 800, color: "#0d2c4e", mt: 4, mb: 1.5 }}>
               3. The Power of Abhyasa (Consistent Practice) &amp; Vairagya
             </Typography>
@@ -526,7 +527,7 @@ function AboutPage() {
             ⚠️ Important Disclaimer &amp; Non-Affiliation Statement
           </Typography>
           <Typography variant="caption" sx={{ color: "#8b6914", lineHeight: 1.7, display: "block" }}>
-            FitNexus is an independent educational and personal wellness project founded by Komal Ghodke (Government Certified Yoga Teacher, YCB). FitNexus is <strong>NOT affiliated with, endorsed by, or sponsored by the Ministry of AYUSH or the Government of India (GOI)</strong>. All YCB references pertain to educational syllabus standards used for curriculum alignment. <strong>FITNEXUS DOES NOT PROVIDE MEDICAL DIAGNOSIS, CLINICAL ADVICE, OR DOCTOR PRESCRIPTIONS.</strong> Always consult a qualified physician for medical concerns.
+            FitNexus is an independent educational wellness platform. FitNexus is <strong>NOT affiliated with, endorsed by, or sponsored by the Ministry of AYUSH or the Government of India (GOI)</strong>. All YCB references pertain to educational syllabus standards used for curriculum alignment. <strong>FITNEXUS DOES NOT PROVIDE MEDICAL DIAGNOSIS, CLINICAL ADVICE, OR DOCTOR PRESCRIPTIONS.</strong> Always consult a qualified physician for medical concerns.
           </Typography>
         </Paper>
 

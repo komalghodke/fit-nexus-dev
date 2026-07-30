@@ -819,7 +819,7 @@ function ReportsPage() {
                 © 2026 FitNexus — Holistic Wellness Ecosystem
               </Typography>
               <Typography variant="caption" sx={{ opacity: 0.7, fontSize: "0.6rem" }}>
-                Developed by Komal Ghodke · Built with ❤️ for Holistic Wellness
+                Developed by FitNexus Team · Built with ❤️ for Holistic Wellness
               </Typography>
             </Box>
             <Box sx={{ textAlign: { xs: "left", md: "right" } }}>

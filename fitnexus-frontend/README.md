@@ -1,56 +1,67 @@
-# 🧘 FitNexus — Holistic Wellness Ecosystem
+# 🧘 FitNexus — Frontend (React.js 18)
 
-**Founder & Lead Developer:** Komal Ghodke *(Government Certified Yoga Teacher, YCB Level Certified)*  
-**Technology Stack:** React.js 18, Java 17, Spring Boot 4, C# .NET Core 8 Web API, MySQL, Google Gemini AI  
-**Governance & Compliance:** Indian DPDP Act 2023, GDPR Principles, YCB Educational Syllabus Aligned  
+[![GitHub](https://img.shields.io/badge/GitHub-fit--nexus--dev-181717?logo=github&logoColor=white)](https://github.com/komalghodke/fit-nexus-dev)
+![React](https://img.shields.io/badge/React-18-61DAFB?logo=react&logoColor=black)
+![MUI](https://img.shields.io/badge/MUI-v5-007FFF?logo=mui&logoColor=white)
 
----
-
-## 🎤 60-Second Presentation Opening Script
-
-> *"Respected Faculty Members and Evaluators — Good morning.*  
-> *Today, I am proud to present **FitNexus** — a polyglot microservice-based **Holistic Wellness Ecosystem** that bridges 5,000 years of ancient Indian Vedic wellness science with modern predictive multi-variable artificial intelligence.*  
-> *My name is **Komal Ghodke**, and as a Government Certified Yoga Teacher (YCB Certified), I created FitNexus to address the limitations of basic step counters. FitNexus evaluates **27 health indicators** across 6 dimensions of wellness, maps energy to the **7 Chakra System**, and delivers YCB-aligned personalized yoga recommendations powered by **Google Gemini**."*
+> React.js 18 Single Page Application — the user-facing frontend of the FitNexus Holistic Wellness Ecosystem.
 
 ---
 
-## 🚀 Quick Start Guide
+## 🗂️ About This Module
 
-### 1. Frontend Setup (React.js)
+This folder contains the **React.js frontend** for FitNexus. It connects to two backend microservices:
+
+| Microservice | Local URL | Production URL |
+|:---|:---|:---|
+| Spring Boot Java API | `http://localhost:8083` | `https://fitnexus-api-java.azurewebsites.net` |
+| C# .NET Corporate API | `http://localhost:5294` | `https://fitnexus-dotnet.azurewebsites.net` |
+
+API base URL is configured in [`src/api/apiConfig.js`](src/api/apiConfig.js).
+
+---
+
+## 🚀 Local Development
+
 ```bash
-cd fitnexus-frontend
+# Install dependencies
 npm install
+
+# Start the development server
 npm start
-# Server runs on http://localhost:3000
-```
-
-### 2. Primary Backend API (Java 17 / Spring Boot)
-```bash
-cd fitnexus-backend-api
-mvn clean compile
-mvn spring-boot:run
-# Server runs on http://localhost:8083
-```
-
-### 3. Corporate Microservice (.NET Core)
-```bash
-cd fitnexus-dotnet-api
-dotnet run
-# API runs on http://localhost:5294
+# App runs on http://localhost:3000
 ```
 
 ---
 
-## 📊 System Architecture & Stack
+## 📦 Production Build
 
-- **Frontend:** React.js 18, Material-UI (MUI v5), React Router v6, Axios, i18next, html2canvas, jsPDF.
-- **Primary Backend API:** Java 17, Spring Boot 4, Spring Security (JWT filter), Spring Data JPA, Hibernate ORM.
-- **Corporate Microservice:** C# .NET Core 8 Web API (Port 5294).
-- **Database:** MySQL (`fitnexusdb`).
-- **AI Engine:** Google Gemini AI (v1.5-flash / v2.0) + Offline Rule-Based Fallback.
+```bash
+npm run build
+# Output goes to /build folder
+```
 
 ---
 
-## 📑 Detailed Documentation & Defense Guide
-For full architecture diagrams, mathematical scoring formula, legal compliance details, and 30+ faculty viva cross-examination Q&As, view the master guide:  
-👉 **[full_project_report_viva_master_guide.md](file:///C:/Users/admin/.gemini/antigravity-ide/brain/c4362a81-c58d-4708-8a00-51d18e098251/full_project_report_viva_master_guide.md)**
+## 🗂️ Project Structure
+
+```
+src/
+├── api/           # Axios config & API base URL (apiConfig.js)
+├── components/    # Shared components (Navbar, PrivateRoute, LoginForm...)
+├── pages/         # All page components (Dashboard, About, Reports, Admin...)
+├── i18n/          # Multi-language support (i18next)
+└── App.js         # Root component with React Router routes
+```
+
+---
+
+## ☁️ Azure Deployment
+
+See full deployment guide: [`../Exec/plans/azure_free_deployment_guide_28July.md`](../Exec/plans/azure_free_deployment_guide_28July.md)
+
+**Before deploying**, update `src/api/apiConfig.js`:
+```js
+// Change this line to your live Azure API URL
+export const API_URL = "https://fitnexus-api-java.azurewebsites.net/api";
+```

@@ -1,599 +1,104 @@
-# FitNexus
+# 🧘 FitNexus — Holistic Wellness Ecosystem
 
-FitNexus is a full-stack Corporate Wellness Management System that enables users to monitor their physical and mental wellness, receive AI-powered wellness insights, explore nearby wellness centers through Google Maps integration, and provides organizations with a corporate analytics dashboard for monitoring employee wellness trends.
+[![GitHub](https://img.shields.io/badge/GitHub-fit--nexus--dev-181717?logo=github&logoColor=white)](https://github.com/komalghodke/fit-nexus-dev)
+![React](https://img.shields.io/badge/React-18-61DAFB?logo=react&logoColor=black)
+![Spring Boot](https://img.shields.io/badge/Spring_Boot-4.0.6-6DB33F?logo=springboot&logoColor=white)
+![.NET](https://img.shields.io/badge/.NET-8_LTS-512BD4?logo=dotnet&logoColor=white)
+![MySQL](https://img.shields.io/badge/MySQL-8-4479A1?logo=mysql&logoColor=white)
+![Gemini AI](https://img.shields.io/badge/Gemini_AI-2.0_Flash-4285F4?logo=google&logoColor=white)
 
----
-
-# Technology Stack
-
-## Frontend
-- React.js (Web Application)
-- React Native (Mobile Application)
-
-## Backend
-- Spring Boot (Java REST API)
-- ASP.NET Core (.NET 9) – Corporate Dashboard
-
-## Database
-- MySQL
-
-## Security
-- JWT Authentication
-
-## APIs
-- Google Gemini API
-- Google Maps API
-- SERP API
-- Fitbit API *(Planned)*
-
-## Tools
-- Gradle
-- Docker
-- Postman
-- Git
-- GitHub
+> A polyglot microservice-based **Holistic Wellness Ecosystem** that bridges ancient Indian Vedic wellness science with modern predictive AI — evaluating **27 health indicators** across **6 dimensions of wellness**.
 
 ---
 
-# Features
+## 🗂️ Project Overview
 
-- User Registration & Login
-- JWT Authentication
-- Comprehensive Wellness Assessment
-- AI-based Wellness Score Prediction
-- AI-generated Personalized Wellness Narration
-- Nutrition Tracking
-- Sleep Tracking
-- Workout Tracking
-- Stress Monitoring
-- Wellness Report Generation
-- Google Maps Integration
-- Corporate Analytics Dashboard
-- Multi-language Support
-- RESTful API Architecture
-- Responsive Web Application
+| Field | Details |
+|:---|:---|
+| **Project Name** | FitNexus — Holistic Wellness Ecosystem |
+| **Type** | Polyglot Microservices Web Application |
+| **GitHub** | [github.com/komalghodke/fit-nexus-dev](https://github.com/komalghodke/fit-nexus-dev) |
+| **Technology Stack** | React.js 18, Java 17, Spring Boot 4, C# .NET Core 8, MySQL, Google Gemini AI |
+| **Compliance** | Indian DPDP Act 2023, GDPR Principles |
 
 ---
 
-# System Requirements
+## 📊 System Architecture & Stack
 
-## Operating System
+```
+React Frontend (Port 3000)
+      │
+      ├──► Spring Boot Java API (Port 8083)  ──► MySQL (fitnexusdb)
+      │                                       ──► Google Gemini AI
+      │
+      └──► .NET Core C# API (Port 5294)
+```
 
-- Windows 10 / 11
-- macOS
-- Linux
-
-## Runtime Requirements
-
-- Java Development Kit (JDK) 17+
-- Node.js v18+
-- .NET SDK 9.0
-
-## Database
-
-- MySQL Server 8.0+
-
-## Development Tools
-
-- Eclipse IDE / IntelliJ IDEA
-- Visual Studio Code
-- Visual Studio 2022
-- Git
-- Postman
-- Docker *(Optional)*
+| Layer | Technology |
+|:---|:---|
+| **Frontend** | React.js 18, Material-UI v5, React Router v6, Axios, i18next, jsPDF |
+| **Primary Backend API** | Java 17, Spring Boot 4, Spring Security (JWT), Spring Data JPA, Hibernate |
+| **Corporate Microservice** | C# ASP.NET Core 8 Web API |
+| **Database** | MySQL (`fitnexusdb`) |
+| **AI Engine** | Google Gemini AI (gemini-2.0-flash) + Offline Rule-Based Fallback |
 
 ---
 
-# Clone Repository
+## 🚀 Quick Local Development Setup
 
-```bash
-git clone https://github.com/komalghodke/fit-nexus-dev.git
-cd fit-nexus-dev
-```
-
----
-
-# Project Structure
-
-```text
-fit-nexus-dev
-│
-├── fitnexus-backend-api
-│   ├── src
-│   ├── build.gradle
-│   ├── application.properties
-│   ├── application-secret.properties
-│   ├── application-secret.example.properties
-│   └── .gitignore
-│
-├── fitnexus-frontend
-│   ├── src
-│   ├── public
-│   ├── package.json
-│   └── .gitignore
-│
-├── fitnexus-corporate-dashboard
-│
-└── README.md
-```
-
----
-
-# Backend Setup (Spring Boot)
-
-Backend Project
-
-```text
-fitnexus-backend-api
-```
-
-## Import into Eclipse
-
-1. Open Eclipse.
-2. Select **File → Import**.
-3. Select **Gradle → Existing Gradle Project**.
-4. Browse to:
-
-```text
-fitnexus-backend-api
-```
-
-5. Click **Finish**.
-6. Wait until Gradle downloads all dependencies.
-
----
-
-## Configure Secrets
-
-Copy
-
-```text
-application-secret.example.properties
-```
-
-Rename it to
-
-```text
-application-secret.properties
-```
-
-Update the following values.
-
-```properties
-DB_URL=jdbc:mysql://localhost:3306/YOUR_DATABASE
-DB_USERNAME=your_username
-DB_PASSWORD=your_password
-
-SERPAPI_KEY=your_serpapi_key
-GEMINI_API_KEY=your_gemini_api_key
-```
-
-> **Note:** `application-secret.properties` is ignored by Git and must never be committed.
-
----
-
-## Create Database
-
-Open MySQL and execute
-
-```sql
-CREATE DATABASE YOUR_DATABASE;
-```
-
-Spring Boot will automatically create all required tables because
-
-```properties
-spring.jpa.hibernate.ddl-auto=update
-```
-
-is enabled.
-
----
-
-## Run Backend from Eclipse
-
-Right Click Project
-
-```
-Run As
-    Spring Boot App
-```
-
-or
-
-```
-Run As
-    Java Application
-```
-
-Select
-
-```
-FitnexusBackendApiApplication
-```
-
-Backend URL
-
-```
-http://localhost:8083
-```
-
----
-
-## Run Backend from Command Prompt
-
-Open terminal inside
-
-```text
-fitnexus-backend-api
-```
-
-Build
-
-```bash
-gradlew clean build
-```
-
-Run
-
-```bash
-gradlew bootRun
-```
-
----
-
-## Create Executable JAR
-
-```bash
-gradlew clean build
-```
-
-Generated file
-
-```text
-build/libs/
-```
-
-Run
-
-```bash
-java -jar build/libs/<jar-file-name>.jar
-```
-
----
-
-# Frontend Setup (React)
-
-Frontend Project
-
-```text
-fitnexus-frontend
-```
-
-## Open in VS Code
-
+### 1. Frontend (React.js)
 ```bash
 cd fitnexus-frontend
-code .
-```
-
-or
-
-Open VS Code
-
-```
-File
-    Open Folder
-```
-
-Select
-
-```text
-fitnexus-frontend
-```
-
----
-
-## Install Dependencies
-
-```bash
 npm install
-```
-
----
-
-## Run Frontend
-
-```bash
 npm start
+# Runs on http://localhost:3000
 ```
 
-Frontend URL
-
-```
-http://localhost:3000
-```
-
----
-
-## Production Build
-
+### 2. Primary Backend API (Java 17 / Spring Boot + Gradle)
 ```bash
-npm run build
+cd fitnexus-backend-api
+.\gradlew.bat bootRun
+# Runs on http://localhost:8083
 ```
 
-Production build is generated inside
-
-```text
-build/
-```
-
----
-
-# Corporate Dashboard (.NET)
-
-Project Folder
-
-```text
-fitnexus-corporate-dashboard
-```
-
-## Open in Visual Studio 2022
-
-1. Open Visual Studio 2022.
-2. Click **Open a Project or Solution**.
-3. Select the `fitnexus-corporate-dashboard` project.
-
----
-
-## Restore Packages
-
+### 3. Corporate Microservice (C# .NET Core)
 ```bash
-dotnet restore
-```
-
----
-
-## Build
-
-```bash
-dotnet build
-```
-
----
-
-## Run
-
-```bash
+cd FitNexusDashboard
 dotnet run
-```
-
-or simply press
-
-```
-F5
+# Runs on http://localhost:5294
 ```
 
 ---
 
-## Publish
+## ☁️ 100% Free Azure Cloud Deployment
 
-```bash
-dotnet publish -c Release
-```
+| Component | Cloud Service | Cost |
+|:---|:---|:---:|
+| **React Frontend** | Azure Static Web Apps (Free) | **$0** |
+| **Spring Boot API** | Azure App Service F1 Free Tier | **$0** |
+| **C# .NET API** | Azure App Service F1 Free Tier | **$0** |
+| **MySQL Database** | Aiven for MySQL (Free Plan) | **$0** |
+| | **Total / Month** | **$0** |
 
----
-
-# Running the Complete Application
-
-### Step 1
-
-Start MySQL Server.
-
-### Step 2
-
-Run Spring Boot Backend.
-
-```
-http://localhost:8083
-```
-
-### Step 3
-
-Run React Frontend.
-
-```
-http://localhost:3000
-```
-
-### Step 4 *(Optional)*
-
-Run the ASP.NET Core Corporate Dashboard.
-
-### Step 5
-
-Open
-
-```
-http://localhost:3000
-```
+Full deployment guide: [`Exec/plans/azure_free_deployment_guide_28July.md`](Exec/plans/azure_free_deployment_guide_28July.md)
 
 ---
 
-# Database
+## ✨ Key Features
 
-Create database
-
-```sql
-CREATE DATABASE YOUR_DATABASE;
-```
-
-Hibernate automatically creates all required tables using
-
-```properties
-spring.jpa.hibernate.ddl-auto=update
-```
-
-No SQL schema file is required.
+- 🧘 **YCB-Aligned Yoga Prescriptions** — personalized poses for back, neck, joint & knee pain
+- 🤖 **Google Gemini AI Wellness Companion** — with 100% offline fallback
+- 📊 **27-Indicator Assessment** across 6 Dimensions of Wellness
+- 🔮 **7 Chakra Energy Mapping Engine**
+- 📄 **Exportable PDF Wellness Reports** with watermark & disclaimers
+- 🔐 **JWT-Secured Role-Based Portals** — Member, Yoga Instructor, Gym Trainer, Admin
+- 🌍 **Multi-language Support** (i18next)
+- 🛡️ **DPDP Act 2023 & GDPR Compliant** Privacy Policy
 
 ---
 
-# Sample Data
+## ⚠️ Disclaimers
 
-This repository does not include sample database records.
+> **Medical Disclaimer:** FitNexus does NOT provide medical diagnosis, medical advice, clinical treatment plans, or doctor prescriptions. All content is for educational and wellness demonstration purposes only.
 
-After starting the application:
-
-- Register a new account
-- Login
-- Complete the Wellness Assessment
-- Generate Wellness Reports
-- View Corporate Dashboard
-- Search Nearby Yoga Studios
-
----
-
-# Security
-
-Sensitive information including
-
-- Database Credentials
-- Gemini API Key
-- SERP API Key
-
-is stored inside
-
-```text
-application-secret.properties
-```
-
-This file is excluded from Git using `.gitignore`.
-
-Only
-
-```text
-application-secret.example.properties
-```
-
-is committed as a template.
-
----
-
-# Useful Commands
-
-## Backend
-
-Build
-
-```bash
-gradlew clean build
-```
-
-Run
-
-```bash
-gradlew bootRun
-```
-
-Clean
-
-```bash
-gradlew clean
-```
-
-Run Tests
-
-```bash
-gradlew test
-```
-
----
-
-## Frontend
-
-Install
-
-```bash
-npm install
-```
-
-Run
-
-```bash
-npm start
-```
-
-Build
-
-```bash
-npm run build
-```
-
-Test
-
-```bash
-npm test
-```
-
----
-
-## Corporate Dashboard (.NET)
-
-Restore
-
-```bash
-dotnet restore
-```
-
-Build
-
-```bash
-dotnet build
-```
-
-Run
-
-```bash
-dotnet run
-```
-
-Publish
-
-```bash
-dotnet publish -c Release
-```
-
----
-
-# Default URLs
-
-## Backend
-
-```
-http://localhost:8083
-```
-
-## Frontend
-
-```
-http://localhost:3000
-```
-
----
-
-# Future Enhancements
-
-- Fitbit API Integration
-- Wearable Device Synchronization
-- AI Health Recommendations
-- Cloud Deployment (AWS / Azure)
-- Docker Deployment
-- CI/CD Pipeline
-- Push Notifications
-- Advanced Analytics Dashboard
-
----
-
-# License
-
-This project is developed for educational and research purposes under CDAC PGCP-AC.
+> **Affiliation Disclaimer:** FitNexus is an independent academic project. It is NOT affiliated with or endorsed by the Ministry of AYUSH or the Government of India.
