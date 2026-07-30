@@ -436,7 +436,19 @@ function Dashboard() {
               <AccountCircle sx={{ fontSize: "2.8rem" }} />
             </Avatar>
             <Box>
-              <Typography variant="h4" component="h1" sx={{ fontWeight: 800, lineHeight: 1.1 }}>
+              <Typography
+                variant="h4"
+                component="h1"
+                sx={{
+                  fontWeight: 900,
+                  lineHeight: 1.15,
+                  letterSpacing: -0.5,
+                  background: "linear-gradient(90deg, #ffe082 0%, #a5d6a7 50%, #ffffff 100%)",
+                  WebkitBackgroundClip: "text",
+                  WebkitTextFillColor: "transparent",
+                  filter: "drop-shadow(0 2px 8px rgba(0,0,0,0.3))"
+                }}
+              >
                 Namaste, {profile?.username || "Friend"} 🙏
               </Typography>
               <Typography variant="body1" sx={{ opacity: 0.8, mt: 0.5 }}>
@@ -898,7 +910,15 @@ function Dashboard() {
               <Grid item xs={12} md={8}>
                 <Box sx={{ display: "flex", alignItems: "center", gap: 1.5, mb: 1 }}>
                   <Assignment sx={{ color: "#602e7d", fontSize: "1.8rem" }} />
-                  <Typography variant="h5" sx={{ fontWeight: 800, color: "#602e7d" }}>
+                  <Typography
+                    variant="h5"
+                    sx={{
+                      fontWeight: 900,
+                      background: "linear-gradient(90deg, #602e7d 0%, #054474 50%, #2e7d32 100%)",
+                      WebkitBackgroundClip: "text",
+                      WebkitTextFillColor: "transparent"
+                    }}
+                  >
                     🌿 Holistic Wellness Assessment
                   </Typography>
                 </Box>

@@ -70,17 +70,15 @@ dotnet run
 
 ---
 
-## ☁️ 100% Free Azure Cloud Deployment
+## ☁️ Azure Cloud Deployment
 
 | Component | Cloud Service | Cost |
 |:---|:---|:---:|
-| **React Frontend** | Azure Static Web Apps (Free) | **$0** |
-| **Spring Boot API** | Azure App Service F1 Free Tier | **$0** |
-| **C# .NET API** | Azure App Service F1 Free Tier | **$0** |
-| **MySQL Database** | Aiven for MySQL (Free Plan) | **$0** |
-| | **Total / Month** | **$0** |
-
-Full deployment guide: [`Exec/plans/azure_free_deployment_guide_28July.md`](Exec/plans/azure_free_deployment_guide_28July.md)
+| **React Frontend** | Azure Static Web Apps (Free) |
+| **Spring Boot API** | Azure App Service F1 Free Tier |
+| **C# .NET API** | Azure App Service F1 Free Tier |
+| **MySQL Database** | Aiven for MySQL (Free Plan) |
+| | **Total / Month** |
 
 ---
 

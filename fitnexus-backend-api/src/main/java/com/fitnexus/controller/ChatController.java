@@ -59,26 +59,28 @@ public class ChatController {
 			// Build context from user's wellness data
 			String context = buildUserContext(request.getUserId());
 
-			// Create a wellness-focused prompt
-			String systemPrompt = "You are FitNexus Wellness Companion — an empathetic, knowledgeable AI wellness assistant "
-					+ "specializing in holistic health, yoga, Ayurveda, stress management, sleep improvement, nutrition, "
-					+ "fitness, body care (eyes, hair, skin, posture), mental well-being, and Indian wellness traditions. "
-					+ "PERSONALITY: You are warm, caring, conversational, and encouraging — like a knowledgeable wellness friend. "
-					+ "Use a friendly, chat-like tone. Start responses with empathy or acknowledgment of the user's concern. "
-					+ "SCOPE RULES: "
-					+ "1) Answer questions about wellness, yoga, fitness, nutrition, sleep, stress, meditation, health, body care "
-					+ "(eyes, hair, skin, nails, posture, digestion), mental health, Ayurveda, pranayama, chakras, BMI, weight, "
-					+ "hydration, immunity, women's health, aging, and general well-being. "
-					+ "2) For topics like BMI, explain what it is, how it's calculated (weight/height^2), what ranges mean, and give actionable advice. "
-					+ "3) For body-related queries (eyes, hair, skin), provide yoga poses, nutrition tips, and Ayurvedic remedies that help. "
-					+ "4) If the user asks something completely unrelated (politics, coding, movies, etc.), gently redirect: "
-					+ "'That's an interesting topic! However, I specialize in wellness and health. How about I help you with...' "
-					+ "5) Give detailed, helpful responses — aim for 3-6 sentences with actionable advice. Don't be too brief. "
-					+ "6) Include specific yoga poses, pranayama techniques, or Ayurvedic remedies when relevant. "
-					+ "7) For medical topics, always add: 'Please consult a healthcare professional for personalized medical advice.' "
-					+ "8) Do NOT use markdown formatting (no *, #, -, etc.) — respond in clean plain text. "
-					+ "9) When the user's wellness profile data is available, personalize your advice based on their BMI, stress level, "
-					+ "sleep hours, mood, pain areas, and chronic conditions.";
+			// Create a comprehensive wellness, health, gym & nutrition prompt
+			String systemPrompt = "You are FitNexus AI Companion — an empathetic, expert AI assistant "
+					+ "specializing in holistic health, yoga, gym workouts, body building, strength training, fitness, "
+					+ "diet plans, food, nutrition, protein intake, weight management, Ayurveda, stress management, "
+					+ "sleep improvement, body care (eyes, hair, skin, posture, digestion), mental well-being, and Indian wellness traditions. "
+					+ "PERSONALITY: You are warm, caring, encouraging, and highly knowledgeable — like an expert personal coach and wellness mentor. "
+					+ "SCOPE & RESPONSE RULES: "
+					+ "1) ALWAYS answer questions about health, wellness, yoga, gym workouts, fitness training, exercise routines, "
+					+ "diet, food recipes, nutrition, protein intake, calorie counting, weight loss, muscle gain, sleep, stress, "
+					+ "meditation, body care (eyes, hair, skin, posture, gut health), mental well-being, Ayurveda, pranayama, chakras, BMI, "
+					+ "immunity, women's health, and aging. "
+					+ "2) For Gym & Workout questions: Provide specific exercises (squats, bench press, deadlifts, pull-ups, push-ups), "
+					+ "sets, reps, muscle groups targeted, and warm-up/cool-down advice. "
+					+ "3) For Diet & Food questions: Give clear meal ideas, macronutrient breakdowns (protein, carbs, healthy fats), "
+					+ "sattvic and Ayurvedic food suggestions, and hydration guidance. "
+					+ "4) For Yoga questions: Recommend specific asanas, pranayama techniques, duration, and benefits. "
+					+ "5) If asked something completely unrelated (politics, coding, movies), gently bring it back: "
+					+ "'That is an interesting topic! However, I am specialized in health, gym, diet, yoga, and wellness. How about I help you with...' "
+					+ "6) Provide clear, detailed, and actionable advice (3 to 6 sentences or structured bullet points). "
+					+ "7) For clinical medical conditions, kindly add: 'Please consult a healthcare professional for clinical advice.' "
+					+ "8) When user wellness profile data is available, personalize your guidance based on their age, BMI, stress level, "
+					+ "sleep, mood, pain areas, and chronic conditions.";
 
 			String fullPrompt = systemPrompt + "\n\n";
 			if (!context.isEmpty()) {
@@ -430,13 +432,21 @@ public class ChatController {
 					+ "personalized yoga and pranayama recommendations, and a Corporate Dashboard for gyms and yoga studios. "
 					+ "Built with React, Spring Boot, .NET Core, and Google Gemini AI.";
 		}
-		if (msg.contains("fitness") || msg.contains("exercise") || msg.contains("workout") || msg.contains("gym") || msg.contains("cardio") || msg.contains("strength")) {
-			return "A well-rounded fitness routine covers all bases! Here's the ideal mix: "
-					+ "Strength training (2-3 days/week with bodyweight or weights), "
-					+ "Cardio (brisk walking, cycling, or swimming 3-4 days/week for 30 minutes), "
-					+ "Flexibility work (daily stretching or yoga), and Rest days (1-2 per week for recovery). "
-					+ "Warm up for 5 minutes before exercise and cool down with stretches afterward. "
-					+ "Track your workouts in FitNexus to monitor MET-based calorie burn and progress trends! 💪";
+		if (msg.contains("protein") || msg.contains("muscle") || msg.contains("gym diet") || msg.contains("bcaa") || msg.contains("creatine") || msg.contains("whey")) {
+			return "Protein & Muscle Building Guidance: "
+					+ "To build and repair lean muscle, aim for 1.2 to 2.0 grams of protein per kilogram of body weight daily. "
+					+ "Great vegetarian sources: Paneer, Tofu, Greek Yogurt, Sprouts, Chana (Chickpeas), Moong Dal, Soy Chunks, Almonds, and Chia Seeds. "
+					+ "Non-vegetarian sources: Eggs, Chicken Breast, Fish, and Lean Meat. "
+					+ "Timing: Consume 20-30g of protein within 45 minutes after your workout to maximize muscle protein synthesis. "
+					+ "Pair protein with complex carbs (sweet potato, brown rice, oats) for optimal recovery!";
+		}
+		if (msg.contains("fitness") || msg.contains("exercise") || msg.contains("workout") || msg.contains("gym") || msg.contains("cardio") || msg.contains("strength") || msg.contains("squat") || msg.contains("bench")) {
+			return "A well-rounded Gym & Fitness routine covers 4 pillars: "
+					+ "1) Progressive Strength Training (3-4 days/week: Compound movements like Squats, Deadlifts, Bench Press, Lat Pulldowns). "
+					+ "2) Cardiovascular Conditioning (HIIT, brisk walking, cycling 30 mins, 3 days/week). "
+					+ "3) Flexibility & Mobility (10-15 mins of post-workout yoga or stretching). "
+					+ "4) Rest & Recovery (7-8 hours sleep for muscle repair). "
+					+ "Always warm up for 5 minutes before lifting and cool down with stretches afterwards. Track your workouts in FitNexus!";
 		}
 		if (msg.contains("thank") || msg.contains("thanks") || msg.contains("bye") || msg.contains("good")) {
 			return "You're welcome! 🙏 Remember: wellness is a journey, not a destination. "
@@ -446,12 +456,13 @@ public class ChatController {
 		}
 
 		// ── Default: attempt a helpful general response ──
-		return "That's a thoughtful question! While I'd love to give you a detailed answer, let me share what I know best as your wellness companion. "
-				+ "I can help you with: yoga poses and sequences for any condition, pranayama breathing techniques, "
-				+ "Ayurvedic remedies and nutrition advice, eye/hair/skin care through yoga and diet, "
-				+ "stress and anxiety management, sleep improvement strategies, BMI and weight guidance, "
-				+ "meditation and mindfulness practices, chakra balancing, and understanding your FitNexus wellness report. "
-				+ "Try asking me something specific like 'How can I improve my sleep?' or 'What yoga helps with hair fall?' — "
-				+ "I'd love to help! 😊";
+		return "That's a great health & wellness question! As your FitNexus Companion, I am here to help you with anything related to: "
+				+ "1) Yoga poses, Pranayama, and 7 Chakra alignment, "
+				+ "2) Gym workouts, strength training, muscle gain & fat burn routines, "
+				+ "3) Diet plans, protein sources, sattvic nutrition & meal ideas, "
+				+ "4) Eye care, hair care, skin glow & posture correction, "
+				+ "5) Stress, sleep, mental well-being, and understanding your FitNexus wellness score. "
+				+ "Feel free to ask me any specific question like 'What is a good high-protein breakfast?' or 'Which gym exercises burn the most calories?' — "
+				+ "I'm always ready to help! 😊";
 	}
 }

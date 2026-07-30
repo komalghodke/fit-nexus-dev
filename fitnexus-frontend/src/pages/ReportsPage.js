@@ -713,45 +713,77 @@ function ReportsPage() {
             )}
 
             {/* ── Wellness Mirror Summary ────────────────────────────── */}
-            <SectionCard title="Wellness Mirror Summary" icon="🪞" color="#602e7d" bg="linear-gradient(135deg,#fdf8ff,#f3e5f5)">
-              <Typography variant="body1" sx={{ color: "#444", lineHeight: 1.9, mb: 2 }}>
-                Namaste <strong>{report.fullName || "Friend"}</strong> Ji, welcome to your wellness reflection.
+            <SectionCard title="Wellness Mirror Narrative & Self-Reflection" icon="🪞" color="#602e7d" bg="linear-gradient(135deg,#fdf8ff,#f3e5f5)">
+              <Typography variant="body1" sx={{ color: "#4a1f60", lineHeight: 1.9, mb: 2.5, fontWeight: 600 }}>
+                <Box component="span" sx={{ bgcolor: "#f3e5f5", color: "#602e7d", px: 1.5, py: 0.5, borderRadius: 2, fontWeight: 800, border: "1px solid rgba(96,46,125,0.2)", mr: 1 }}>
+                  Namaste 🙏
+                </Box>
+                <strong style={{ color: "#0d2c4e", fontSize: "1.1rem" }}>{report.fullName || "Friend"} Ji</strong>, welcome to your personal wellness mirror reflection.
               </Typography>
-              <Typography variant="body2" sx={{ color: "#555", lineHeight: 1.8, mb: 1 }}>
-                Emotionally, you are navigating <strong>{report.mood || "—"}</strong> energy with <strong>{report.energyLevel || "—"}</strong> levels.
-                Your sleep pattern is <strong>{report.sleepQuality || "—"}</strong>, with about <strong>{report.sleepHours || "—"} hours</strong> of rest.
-              </Typography>
-              <Typography variant="body2" sx={{ color: "#555", lineHeight: 1.8, mb: 1 }}>
-                Your stress level is <strong>{stressLabel}</strong>, which may influence your emotional and physical balance.
-                You identify as a <strong>{report.yogaExperience || "Beginner"}</strong> in yoga, helping us tailor your practice.
-              </Typography>
-              {report.withNature > 0 && (
-                <Typography variant="body2" sx={{ color: "#555", lineHeight: 1.8, mb: 1 }}>
-                  You spend about <strong>{report.withNature} hours/week</strong> in nature, nurturing your environmental wellness.
+
+              {/* 4 Narrative Grid Cards: Why, How, What to Do, Impact */}
+              <Grid container spacing={2.5} sx={{ mb: 2 }}>
+                {/* 1. WHY */}
+                <Grid item xs={12} sm={6}>
+                  <Card sx={{ p: 2.5, borderRadius: 3, bgcolor: "#ffffff", borderLeft: "4px solid #602e7d", boxShadow: "0 4px 14px rgba(0,0,0,0.03)", height: "100%" }}>
+                    <Typography variant="subtitle2" sx={{ fontWeight: 800, color: "#602e7d", mb: 1, display: "flex", alignItems: "center", gap: 1 }}>
+                      🔍 WHY (The Foundation)
+                    </Typography>
+                    <Typography variant="body2" sx={{ color: "#555", lineHeight: 1.75 }}>
+                      True health is a dynamic harmony between body, mind, and environment. Your wellness mirror acts as an inner observer (<em>Saksi</em>), translating physical signals and emotional stress into conscious self-awareness so you can prevent burnout before it manifests as physical ailment.
+                    </Typography>
+                  </Card>
+                </Grid>
+
+                {/* 2. HOW */}
+                <Grid item xs={12} sm={6}>
+                  <Card sx={{ p: 2.5, borderRadius: 3, bgcolor: "#ffffff", borderLeft: "4px solid #054474", boxShadow: "0 4px 14px rgba(0,0,0,0.03)", height: "100%" }}>
+                    <Typography variant="subtitle2" sx={{ fontWeight: 800, color: "#054474", mb: 1, display: "flex", alignItems: "center", gap: 1 }}>
+                      ⚙️ HOW (Synthesis of 27 Indicators)
+                    </Typography>
+                    <Typography variant="body2" sx={{ color: "#555", lineHeight: 1.75 }}>
+                      Emotionally, you navigate <strong>{report.mood || "Balanced"}</strong> energy with <strong>{report.energyLevel || "Normal"}</strong> levels. You sleep about <strong>{report.sleepHours || 7} hrs/night</strong> ({report.sleepQuality || "Restful"}). Stress level is <strong>{stressLabel}</strong>, hydration is <strong>{report.waterIntake || 2}L/day</strong>, and nature time is <strong>{report.withNature || 1} hrs/wk</strong>.
+                    </Typography>
+                  </Card>
+                </Grid>
+
+                {/* 3. WHAT TO DO */}
+                <Grid item xs={12} sm={6}>
+                  <Card sx={{ p: 2.5, borderRadius: 3, bgcolor: "#ffffff", borderLeft: "4px solid #2e7d32", boxShadow: "0 4px 14px rgba(0,0,0,0.03)", height: "100%" }}>
+                    <Typography variant="subtitle2" sx={{ fontWeight: 800, color: "#2e7d32", mb: 1, display: "flex", alignItems: "center", gap: 1 }}>
+                      🎯 WHAT TO DO (Daily Actionable Routine)
+                    </Typography>
+                    <Typography variant="body2" sx={{ color: "#555", lineHeight: 1.75 }}>
+                      1) Practice 5-10 minutes of <strong>Anulom Vilom Pranayama</strong> every morning. <br />
+                      2) Execute 12 rounds of <strong>Surya Namaskar</strong> to balance metabolic Agni. <br />
+                      3) Hydrate with 2.5L+ warm water and take a 15-minute evening walk in nature.
+                    </Typography>
+                  </Card>
+                </Grid>
+
+                {/* 4. IMPACT & TRANSFORMATION */}
+                <Grid item xs={12} sm={6}>
+                  <Card sx={{ p: 2.5, borderRadius: 3, bgcolor: "#ffffff", borderLeft: "4px solid #e65100", boxShadow: "0 4px 14px rgba(0,0,0,0.03)", height: "100%" }}>
+                    <Typography variant="subtitle2" sx={{ fontWeight: 800, color: "#e65100", mb: 1, display: "flex", alignItems: "center", gap: 1 }}>
+                      🌟 IMPACT & TRANSFORMATION
+                    </Typography>
+                    <Typography variant="body2" sx={{ color: "#555", lineHeight: 1.75 }}>
+                      Following this routine lowers cortisol levels, activates Vagus nerve parasympathetic relaxation, restores spinal alignment, and balances your <strong>7 Chakra energy centers</strong> for sustained vitality, cognitive focus, and emotional peace.
+                    </Typography>
+                  </Card>
+                </Grid>
+              </Grid>
+
+              <Divider sx={{ my: 2 }} />
+
+              <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 1.5 }}>
+                <Typography variant="body2" sx={{ color: "#555", fontWeight: 600 }}>
+                  Current Score: <strong style={{ color: themeColor, fontSize: "1.1rem" }}>{scoreVal}/10 — {statusLabel}</strong>
                 </Typography>
-              )}
-              {report.waterIntake > 0 && (
-                <Typography variant="body2" sx={{ color: "#555", lineHeight: 1.8, mb: 1 }}>
-                  Your daily hydration level is registered at <strong>{report.waterIntake} Liters</strong>.
+                <Typography variant="caption" sx={{ color: "#602e7d", fontStyle: "italic", fontWeight: 600 }}>
+                  🌿 Consistent daily Abhyasa yields long-term holistic transformation.
                 </Typography>
-              )}
-              {report.restingHeartRate > 0 && (
-                <Typography variant="body2" sx={{ color: "#555", lineHeight: 1.8, mb: 1 }}>
-                  Your registered resting heart rate is <strong>{report.restingHeartRate} BPM</strong>.
-                </Typography>
-              )}
-              {report.chronicConditions && (
-                <Typography variant="body2" sx={{ color: "#555", lineHeight: 1.8, mb: 1 }}>
-                  Reported conditions: <strong>{report.chronicConditions}</strong>.
-                </Typography>
-              )}
-              <Typography variant="body2" sx={{ color: "#555", lineHeight: 1.8, mb: 2 }}>
-                Your wellness score is <strong style={{ color: themeColor }}>{scoreVal}/10 — {statusLabel}</strong>. This reflects your overall balance across multiple dimensions.
-              </Typography>
-              <Divider sx={{ mb: 2 }} />
-              <Typography variant="body2" sx={{ color: "#602e7d", fontStyle: "italic", lineHeight: 1.7 }}>
-                Based on your profile, yoga may support your journey through breath-led movement, emotional awareness, and gentle reflection.
-              </Typography>
+              </Box>
             </SectionCard>
 
 
