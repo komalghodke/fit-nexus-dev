@@ -714,12 +714,22 @@ function ReportsPage() {
 
             {/* ── Wellness Mirror Summary ────────────────────────────── */}
             <SectionCard title="Wellness Mirror Narrative & Self-Reflection" icon="🪞" color="#602e7d" bg="linear-gradient(135deg,#fdf8ff,#f3e5f5)">
-              <Typography variant="body1" sx={{ color: "#4a1f60", lineHeight: 1.9, mb: 2.5, fontWeight: 600 }}>
+              <Typography variant="body1" sx={{ color: "#4a1f60", lineHeight: 1.9, mb: 2, fontWeight: 600 }}>
                 <Box component="span" sx={{ bgcolor: "#f3e5f5", color: "#602e7d", px: 1.5, py: 0.5, borderRadius: 2, fontWeight: 800, border: "1px solid rgba(96,46,125,0.2)", mr: 1 }}>
                   Namaste 🙏
                 </Box>
                 <strong style={{ color: "#0d2c4e", fontSize: "1.1rem" }}>{report.fullName || "Friend"} Ji</strong>, welcome to your personal wellness mirror reflection.
               </Typography>
+
+              {/* Comprehensive Narrative Guide Banner */}
+              <Box sx={{ p: 2.5, bgcolor: "#ffffff", borderRadius: 3, mb: 3, borderLeft: "5px solid #602e7d", border: "1px solid #e1bee7", boxShadow: "0 4px 14px rgba(96,46,125,0.06)" }}>
+                <Typography variant="subtitle2" sx={{ fontWeight: 800, color: "#602e7d", mb: 1, display: "flex", alignItems: "center", gap: 1, textTransform: "uppercase", letterSpacing: 0.5 }}>
+                  🌿 Narrative Self-Reflection Guide (Svadhyaya Mirror)
+                </Typography>
+                <Typography variant="body2" sx={{ color: "#424242", lineHeight: 1.85, fontSize: "0.92rem" }}>
+                  Human health is not a mere collection of numbers, calories, or steps. The FitNexus <strong>Wellness Mirror</strong> acts as an inner observer (<em>Saksi</em>) reflecting your complete physical, mental, emotional, and spiritual balance across 27 health indicators. By linking your daily habits — such as sleep hygiene, stress levels, posture, hydration, and nature exposure — directly to traditional <strong>YCB educational principles</strong>, Patanjali&apos;s <strong>Ashtanga 8 Limbs</strong>, and <strong>7 Chakra energy alignment</strong>, this mirror transforms static metrics into a compassionate self-reflection story that inspires lifelong behavioral harmony.
+                </Typography>
+              </Box>
 
               {/* 4 Narrative Grid Cards: Why, How, What to Do, Impact */}
               <Grid container spacing={2.5} sx={{ mb: 2 }}>
@@ -727,10 +737,10 @@ function ReportsPage() {
                 <Grid item xs={12} sm={6}>
                   <Card sx={{ p: 2.5, borderRadius: 3, bgcolor: "#ffffff", borderLeft: "4px solid #602e7d", boxShadow: "0 4px 14px rgba(0,0,0,0.03)", height: "100%" }}>
                     <Typography variant="subtitle2" sx={{ fontWeight: 800, color: "#602e7d", mb: 1, display: "flex", alignItems: "center", gap: 1 }}>
-                      🔍 WHY (The Foundation)
+                      🔍 WHY (The Philosophy of Self-Study)
                     </Typography>
                     <Typography variant="body2" sx={{ color: "#555", lineHeight: 1.75 }}>
-                      True health is a dynamic harmony between body, mind, and environment. Your wellness mirror acts as an inner observer (<em>Saksi</em>), translating physical signals and emotional stress into conscious self-awareness so you can prevent burnout before it manifests as physical ailment.
+                      True health is a dynamic harmony between body, mind, and environment. Your wellness mirror translates physical signals and emotional stress into conscious self-awareness (<em>Svadhyaya</em>) so you can prevent burnout before it manifests as physical ailment.
                     </Typography>
                   </Card>
                 </Grid>
