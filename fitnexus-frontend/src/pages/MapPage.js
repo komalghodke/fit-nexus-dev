@@ -269,7 +269,7 @@ function MapPage() {
                 </Box>
 
                 {/* Filter Chips */}
-                <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1, mb: 2 }}>
+                <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1, mb: 1.5 }}>
                   <Chip
                     label="Show All"
                     clickable
@@ -278,26 +278,69 @@ function MapPage() {
                     sx={{ fontWeight: 600 }}
                   />
                   <Chip
-                    label="🧘 Yoga"
+                    icon={<SelfImprovement />}
+                    label="Yoga Centers"
                     clickable
                     color={selectedType === "YOGA" ? "secondary" : "default"}
                     onClick={() => setSelectedType("YOGA")}
                     sx={{ fontWeight: 600 }}
                   />
                   <Chip
-                    label="🏋️ Gyms"
+                    icon={<FitnessCenter />}
+                    label="Gyms & Fitness"
                     clickable
                     color={selectedType === "GYM" ? "primary" : "default"}
                     onClick={() => setSelectedType("GYM")}
                     sx={{ fontWeight: 600 }}
                   />
                   <Chip
-                    label="🏥 AYUSH/Wellness"
+                    icon={<LocalHospital />}
+                    label="AYUSH Clinics"
                     clickable
                     color={selectedType === "WELLNESS" ? "success" : "default"}
                     onClick={() => setSelectedType("WELLNESS")}
                     sx={{ fontWeight: 600 }}
                   />
+                </Box>
+
+                {/* Quick City Jumper / PAN India Selector */}
+                <Box sx={{ mb: 2, p: 1.5, bgcolor: "#faf6ff", borderRadius: 3, border: "1px solid rgba(96,46,125,0.15)" }}>
+                  <Typography variant="caption" sx={{ color: "#602e7d", fontWeight: 800, display: "block", mb: 1, letterSpacing: 0.5 }}>
+                    🇮🇳 PAN INDIA QUICK CITY LOCATOR:
+                  </Typography>
+                  <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.8 }}>
+                    {[
+                      { label: "🇮🇳 All India", coords: [20.5937, 78.9629], query: "all" },
+                      { label: "Mumbai", coords: [19.0760, 72.8777], query: "mumbai" },
+                      { label: "Delhi NCR", coords: [28.6139, 77.2090], query: "delhi" },
+                      { label: "Rishikesh", coords: [30.0869, 78.2676], query: "rishikesh" },
+                      { label: "Bengaluru", coords: [12.9716, 77.5946], query: "bengaluru" },
+                      { label: "Chennai", coords: [13.0827, 80.2707], query: "chennai" },
+                      { label: "Kolkata", coords: [22.5726, 88.3639], query: "kolkata" },
+                      { label: "Pune", coords: [18.5204, 73.8567], query: "pune" },
+                      { label: "Hyderabad", coords: [17.3850, 78.4867], query: "hyderabad" }
+                    ].map((city) => (
+                      <Chip
+                        key={city.label}
+                        label={city.label}
+                        size="small"
+                        clickable
+                        onClick={() => {
+                          setSearchQuery(city.query === "all" ? "" : city.label);
+                          setMapCenter(city.coords);
+                          fetchLocations(city.query, city.coords[0], city.coords[1]);
+                        }}
+                        sx={{
+                          fontWeight: 700,
+                          fontSize: "0.72rem",
+                          bgcolor: (searchQuery.toLowerCase() === city.query || (city.query === "all" && !searchQuery)) ? "#602e7d" : "#ffffff",
+                          color: (searchQuery.toLowerCase() === city.query || (city.query === "all" && !searchQuery)) ? "#ffffff" : "#602e7d",
+                          border: "1px solid rgba(96,46,125,0.25)",
+                          "&:hover": { bgcolor: "#602e7d", color: "#ffffff" }
+                        }}
+                      />
+                    ))}
+                  </Box>
                 </Box>
                 <Divider />
               </CardContent>

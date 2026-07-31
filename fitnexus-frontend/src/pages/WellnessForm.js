@@ -708,7 +708,18 @@ const WellnessForm = () => {
       >
         <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 2 }}>
           <Box>
-            <Typography variant="h4" component="h1" sx={{ fontWeight: 900, lineHeight: 1.1 }}>
+            <Typography
+              variant="h4"
+              component="h1"
+              sx={{
+                fontWeight: 900,
+                lineHeight: 1.15,
+                background: "linear-gradient(90deg, #ffe082 0%, #a5d6a7 50%, #ffffff 100%)",
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+                filter: "drop-shadow(0 2px 8px rgba(0,0,0,0.3))"
+              }}
+            >
               🧘 {t("assessmentTitle")}
             </Typography>
             <Typography variant="body1" sx={{ opacity: 0.82, mt: 1 }}>
