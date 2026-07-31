@@ -30,6 +30,19 @@ public class UserController {
 	@Autowired
 	private WellnessInputRepository wellnessInputRepository;
 
+	@Autowired
+	private org.springframework.jdbc.core.JdbcTemplate jdbcTemplate;
+
+	@jakarta.annotation.PostConstruct
+	public void initSchema() {
+		try {
+			jdbcTemplate.execute("ALTER TABLE users MODIFY COLUMN staff_notes TEXT");
+			System.out.println("[FITNEXUS DB MIGRATION] Successfully updated users.staff_notes to TEXT column type.");
+		} catch (Exception e) {
+			System.err.println("[FITNEXUS DB MIGRATION LOG] staff_notes column check: " + e.getMessage());
+		}
+	}
+
 	@GetMapping
 	public List<User> getAllUsers() {
 		return userRepository.findAll();

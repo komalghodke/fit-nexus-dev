@@ -22,6 +22,7 @@ public class User {
 	private String email;
 	private String password;
 	private String role = "USER";
+	@jakarta.persistence.Column(columnDefinition = "TEXT")
 	private String staffNotes;
 
 	@JsonIgnore
