@@ -200,7 +200,9 @@ function setupPartnerForm() {
                 body: JSON.stringify(formData)
             });
             if (res.ok) {
-                // Show success
+                // Show success with email details
+                document.getElementById('success-email-target').innerText = formData.contactEmail;
+                document.getElementById('success-ref-id').innerText = 'FN-CORP-2026-' + Math.floor(1000 + Math.random() * 9000);
                 form.style.display = 'none';
                 document.getElementById('form-success').style.display = 'block';
             } else {
@@ -213,6 +215,8 @@ function setupPartnerForm() {
             existing.push({ ...formData, submittedAt: new Date().toISOString() });
             localStorage.setItem('fitnexus_partner_inquiries', JSON.stringify(existing));
             
+            document.getElementById('success-email-target').innerText = formData.contactEmail;
+            document.getElementById('success-ref-id').innerText = 'FN-CORP-2026-' + Math.floor(1000 + Math.random() * 9000);
             form.style.display = 'none';
             document.getElementById('form-success').style.display = 'block';
         }

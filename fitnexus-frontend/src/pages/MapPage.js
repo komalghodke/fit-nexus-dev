@@ -24,9 +24,13 @@ import {
   Tooltip,
   CircularProgress,
   Button,
-  Alert
+  Alert,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions
 } from "@mui/material";
-import { Search, Map, SelfImprovement, FitnessCenter, LocalHospital, GpsFixed } from "@mui/icons-material";
+import { Search, Map, SelfImprovement, FitnessCenter, LocalHospital, GpsFixed, VerifiedUser, Close } from "@mui/icons-material";
 
 // Fix Leaflet CSS missing import issue (leaflet CSS needs to be loaded)
 import "leaflet/dist/leaflet.css";
@@ -54,6 +58,8 @@ function MapPage() {
   const [loading, setLoading] = useState(false);
   const [userLocation, setUserLocation] = useState(null);
   const [sourceInfo, setSourceInfo] = useState("Local Curated Data");
+  const [verifyModalOpen, setVerifyModalOpen] = useState(false);
+  const [verifyCenter, setVerifyCenter] = useState(null);
 
   const token = localStorage.getItem("token");
 
@@ -164,6 +170,7 @@ function MapPage() {
 
   const filteredCenters = centers.filter((c) => {
     if (selectedType === "ALL") return true;
+    if (selectedType === "AYUSH_CERTIFIED") return c.isAyushCertified === true;
     return c.type === selectedType;
   });
 
@@ -301,6 +308,19 @@ function MapPage() {
                     onClick={() => setSelectedType("WELLNESS")}
                     sx={{ fontWeight: 600 }}
                   />
+                  <Chip
+                    icon={<VerifiedUser />}
+                    label="🛡️ AYUSH Certified Only"
+                    clickable
+                    onClick={() => setSelectedType("AYUSH_CERTIFIED")}
+                    sx={{
+                      fontWeight: 700,
+                      bgcolor: selectedType === "AYUSH_CERTIFIED" ? "#b8860b" : "default",
+                      color: selectedType === "AYUSH_CERTIFIED" ? "#fff" : "#b8860b",
+                      border: "1.5px solid #b8860b",
+                      "&:hover": { bgcolor: "#b8860b", color: "#fff" }
+                    }}
+                  />
                 </Box>
 
                 {/* Quick City Jumper / PAN India Selector */}
@@ -381,9 +401,29 @@ function MapPage() {
                             </ListItemIcon>
                             <ListItemText
                               primary={
-                                <Typography variant="subtitle2" sx={{ fontWeight: 700, color: "#333" }}>
-                                  {center.name}
-                                </Typography>
+                                <Box>
+                                  <Typography variant="subtitle2" sx={{ fontWeight: 700, color: "#333" }}>
+                                    {center.name}
+                                  </Typography>
+                                  {center.isAyushCertified && (
+                                    <Chip
+                                      icon={<VerifiedUser sx={{ fontSize: 12 }} />}
+                                      label={center.isYcbApproved ? "AYUSH + YCB Certified" : "AYUSH Certified"}
+                                      size="small"
+                                      sx={{
+                                        mt: 0.3,
+                                        height: 20,
+                                        fontSize: "0.62rem",
+                                        fontWeight: 800,
+                                        bgcolor: "linear-gradient(135deg, #b8860b, #daa520)",
+                                        background: "linear-gradient(135deg, #b8860b, #daa520)",
+                                        color: "#fff",
+                                        border: "1px solid #b8860b",
+                                        "& .MuiChip-icon": { color: "#fff" }
+                                      }}
+                                    />
+                                  )}
+                                </Box>
                               }
                               secondary={
                                 <Box sx={{ mt: 0.5 }}>
@@ -460,6 +500,34 @@ function MapPage() {
                       </Box>
                     </Box>
                   </Box>
+                  {/* AYUSH Certification Badge in Details */}
+                  {activeCenter.isAyushCertified && (
+                    <Box sx={{
+                      mt: 1, mb: 1, p: 1.2, borderRadius: 2,
+                      background: "linear-gradient(135deg, #fdf6e3, #fff8dc)",
+                      border: "1.5px solid #b8860b"
+                    }}>
+                      <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 0.5 }}>
+                        <VerifiedUser sx={{ color: "#b8860b", fontSize: 18 }} />
+                        <Typography variant="caption" sx={{ fontWeight: 800, color: "#8b6914" }}>
+                          {activeCenter.certificationTitle || "AYUSH Govt. Certified Center"}
+                        </Typography>
+                      </Box>
+                      <Typography variant="caption" display="block" sx={{ color: "#666", fontSize: "0.68rem" }}>
+                        Reg: {activeCenter.ayushRegNo || "N/A"} {activeCenter.isYcbApproved ? " • YCB Approved ✓" : ""}
+                      </Typography>
+                      <Button
+                        size="small"
+                        onClick={() => { setVerifyCenter(activeCenter); setVerifyModalOpen(true); }}
+                        sx={{
+                          mt: 0.5, textTransform: "none", fontWeight: 700, fontSize: "0.7rem",
+                          color: "#b8860b", borderColor: "#b8860b", border: "1px solid", borderRadius: 2, py: 0.2, px: 1
+                        }}
+                      >
+                        🛡️ View Full Certification
+                      </Button>
+                    </Box>
+                  )}
                   <Typography variant="caption" sx={{ color: "#666", display: "block", mb: 1, fontStyle: "italic" }}>
                     "{activeCenter.desc || "A premium space supporting your wellness journey."}"
                   </Typography>
@@ -522,8 +590,22 @@ function MapPage() {
                             label={center.type === "YOGA" ? "Yoga" : center.type === "GYM" ? "Gym" : "AYUSH/Wellness"}
                             size="small"
                             color={center.type === "YOGA" ? "secondary" : center.type === "GYM" ? "primary" : "success"}
-                            sx={{ mb: 1, height: 20, fontSize: "0.7rem", fontWeight: 700 }}
+                            sx={{ mb: 0.5, height: 20, fontSize: "0.7rem", fontWeight: 700 }}
                           />
+                          {center.isAyushCertified && (
+                            <Box sx={{ mb: 0.5 }}>
+                              <Chip
+                                icon={<VerifiedUser sx={{ fontSize: 10 }} />}
+                                label={center.isYcbApproved ? "AYUSH + YCB ✓" : "AYUSH Certified ✓"}
+                                size="small"
+                                sx={{
+                                  height: 18, fontSize: "0.6rem", fontWeight: 800,
+                                  background: "linear-gradient(135deg, #b8860b, #daa520)",
+                                  color: "#fff", "& .MuiChip-icon": { color: "#fff" }
+                                }}
+                              />
+                            </Box>
+                          )}
                           <Typography variant="caption" display="block" color="text.secondary" sx={{ mb: 0.5 }}>
                             📍 {center.address}
                           </Typography>
@@ -546,6 +628,130 @@ function MapPage() {
           </Grid>
         </Grid>
       </Container>
+
+      {/* ── AYUSH Verification Audit Modal ── */}
+      <Dialog
+        open={verifyModalOpen}
+        onClose={() => setVerifyModalOpen(false)}
+        maxWidth="sm"
+        fullWidth
+        PaperProps={{ sx: { borderRadius: 4, overflow: "hidden" } }}
+      >
+        <DialogTitle
+          sx={{
+            background: "linear-gradient(135deg, #b8860b 0%, #daa520 50%, #8b6914 100%)",
+            color: "#fff",
+            fontWeight: 800,
+            display: "flex",
+            alignItems: "center",
+            gap: 1.5
+          }}
+        >
+          <VerifiedUser sx={{ fontSize: 28 }} />
+          AYUSH Certification Verification
+          <IconButton
+            onClick={() => setVerifyModalOpen(false)}
+            sx={{ ml: "auto", color: "#fff" }}
+          >
+            <Close />
+          </IconButton>
+        </DialogTitle>
+        <DialogContent sx={{ p: 3, pt: 3 }}>
+          {verifyCenter && (
+            <Box>
+              <Typography variant="h6" sx={{ fontWeight: 800, color: "#333", mb: 1 }}>
+                {verifyCenter.name}
+              </Typography>
+              <Chip
+                icon={<VerifiedUser />}
+                label={verifyCenter.certificationTitle || "AYUSH Govt. Certified Center"}
+                sx={{
+                  mb: 2,
+                  fontWeight: 700,
+                  background: "linear-gradient(135deg, #b8860b, #daa520)",
+                  color: "#fff",
+                  "& .MuiChip-icon": { color: "#fff" }
+                }}
+              />
+
+              <Box sx={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 2, mb: 2 }}>
+                <Box sx={{ p: 1.5, bgcolor: "#fdf6e3", borderRadius: 2, border: "1px solid #e8d5a3" }}>
+                  <Typography variant="caption" sx={{ color: "#8b6914", fontWeight: 800, display: "block" }}>Registration No.</Typography>
+                  <Typography variant="body2" sx={{ fontWeight: 700, color: "#333" }}>{verifyCenter.ayushRegNo || "N/A"}</Typography>
+                </Box>
+                <Box sx={{ p: 1.5, bgcolor: "#fdf6e3", borderRadius: 2, border: "1px solid #e8d5a3" }}>
+                  <Typography variant="caption" sx={{ color: "#8b6914", fontWeight: 800, display: "block" }}>YCB Status</Typography>
+                  <Typography variant="body2" sx={{ fontWeight: 700, color: verifyCenter.isYcbApproved ? "#2e7d32" : "#999" }}>
+                    {verifyCenter.isYcbApproved ? "✅ YCB Approved" : "Not YCB Registered"}
+                  </Typography>
+                </Box>
+                <Box sx={{ p: 1.5, bgcolor: "#fdf6e3", borderRadius: 2, border: "1px solid #e8d5a3" }}>
+                  <Typography variant="caption" sx={{ color: "#8b6914", fontWeight: 800, display: "block" }}>AYUSH Status</Typography>
+                  <Typography variant="body2" sx={{ fontWeight: 700, color: verifyCenter.isAyushCertified ? "#2e7d32" : "#999" }}>
+                    {verifyCenter.isAyushCertified ? "✅ Ministry of AYUSH Certified" : "Not Certified"}
+                  </Typography>
+                </Box>
+                <Box sx={{ p: 1.5, bgcolor: "#fdf6e3", borderRadius: 2, border: "1px solid #e8d5a3" }}>
+                  <Typography variant="caption" sx={{ color: "#8b6914", fontWeight: 800, display: "block" }}>Facility Type</Typography>
+                  <Typography variant="body2" sx={{ fontWeight: 700, color: "#333" }}>
+                    {verifyCenter.type === "YOGA" ? "🧘 Yoga Institute" : verifyCenter.type === "GYM" ? "🏋️ Gym / Fitness" : "🏥 AYUSH Hospital"}
+                  </Typography>
+                </Box>
+              </Box>
+
+              {verifyCenter.ayushServices && (
+                <Box sx={{ mb: 2 }}>
+                  <Typography variant="subtitle2" sx={{ fontWeight: 800, color: "#8b6914", mb: 1 }}>
+                    🕉️ Accredited Services & Specialties
+                  </Typography>
+                  <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.8 }}>
+                    {verifyCenter.ayushServices.split(", ").map((svc, i) => (
+                      <Chip
+                        key={i}
+                        label={svc}
+                        size="small"
+                        sx={{
+                          fontWeight: 600,
+                          fontSize: "0.72rem",
+                          bgcolor: "#fff8dc",
+                          color: "#8b6914",
+                          border: "1px solid #daa520"
+                        }}
+                      />
+                    ))}
+                  </Box>
+                </Box>
+              )}
+
+              <Divider sx={{ my: 2 }} />
+              <Typography variant="caption" display="block" sx={{ color: "#666", mb: 0.5 }}>
+                📍 {verifyCenter.address}
+              </Typography>
+              <Typography variant="caption" display="block" sx={{ color: "#666", mb: 0.5 }}>
+                📞 {verifyCenter.phone}
+              </Typography>
+              <Typography variant="caption" display="block" sx={{ fontStyle: "italic", color: "#888", mt: 1 }}>
+                ⚠️ Disclaimer: Certification data shown is curated by FitNexus from publicly available AYUSH Ministry & YCB records. Always verify with official sources before enrolling.
+              </Typography>
+            </Box>
+          )}
+        </DialogContent>
+        <DialogActions sx={{ p: 2 }}>
+          <Button
+            onClick={() => setVerifyModalOpen(false)}
+            variant="contained"
+            sx={{
+              textTransform: "none",
+              fontWeight: 700,
+              borderRadius: 2,
+              background: "linear-gradient(135deg, #b8860b, #daa520)",
+              "&:hover": { background: "linear-gradient(135deg, #8b6914, #b8860b)" }
+            }}
+          >
+            Close Verification
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 }

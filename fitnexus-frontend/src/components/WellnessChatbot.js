@@ -47,11 +47,13 @@ const WellnessChatbot = ({ userId, report }) => {
     setLoading(true);
     setMsgCount((prev) => prev + 1);
 
+    const activeUserId = userId || localStorage.getItem("userId") || localStorage.getItem("id") || localStorage.getItem("user_id");
+
     try {
       const res = await fetch('http://localhost:8083/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ userId: userId || null, message: text.trim() }),
+        body: JSON.stringify({ userId: activeUserId ? Number(activeUserId) : null, message: text.trim() }),
       });
       const data = await res.json();
       setMessages((prev) => [...prev, { role: 'ai', text: data.reply || 'I couldn\'t process that. Try asking about yoga, stress, or sleep.' }]);

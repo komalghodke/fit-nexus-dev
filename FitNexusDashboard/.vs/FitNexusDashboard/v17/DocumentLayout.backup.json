@@ -3,6 +3,14 @@
   "WorkspaceRootPath": "C:\\Users\\admin\\Desktop\\TRIAL\\fit-nexus-dev\\FitNexusDashboard\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{5A82B217-3EB8-123F-4B8E-1C761E20847E}|FitNexusDashboard.csproj|c:\\users\\admin\\desktop\\trial\\fit-nexus-dev\\fitnexusdashboard\\appsettings.development.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{5A82B217-3EB8-123F-4B8E-1C761E20847E}|FitNexusDashboard.csproj|solutionrelative:appsettings.development.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5A82B217-3EB8-123F-4B8E-1C761E20847E}|FitNexusDashboard.csproj|c:\\users\\admin\\desktop\\trial\\fit-nexus-dev\\fitnexusdashboard\\fitnexusdashboard.http||{5703B403-55E7-4C63-8C88-A8F52C7A45C5}",
+      "RelativeMoniker": "D:0:0:{5A82B217-3EB8-123F-4B8E-1C761E20847E}|FitNexusDashboard.csproj|solutionrelative:fitnexusdashboard.http||{5703B403-55E7-4C63-8C88-A8F52C7A45C5}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{5A82B217-3EB8-123F-4B8E-1C761E20847E}|FitNexusDashboard.csproj|c:\\users\\admin\\desktop\\trial\\fit-nexus-dev\\fitnexusdashboard\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
       "RelativeMoniker": "D:0:0:{5A82B217-3EB8-123F-4B8E-1C761E20847E}|FitNexusDashboard.csproj|solutionrelative:appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
     },
@@ -27,19 +35,45 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
+              "Title": "appsettings.Development.json",
+              "DocumentMoniker": "C:\\Users\\admin\\Desktop\\TRIAL\\fit-nexus-dev\\FitNexusDashboard\\appsettings.Development.json",
+              "RelativeDocumentMoniker": "appsettings.Development.json",
+              "ToolTip": "C:\\Users\\admin\\Desktop\\TRIAL\\fit-nexus-dev\\FitNexusDashboard\\appsettings.Development.json",
+              "RelativeToolTip": "appsettings.Development.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2026-07-31T18:00:44.168Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "FitNexusDashboard.http",
+              "DocumentMoniker": "C:\\Users\\admin\\Desktop\\TRIAL\\fit-nexus-dev\\FitNexusDashboard\\FitNexusDashboard.http",
+              "RelativeDocumentMoniker": "FitNexusDashboard.http",
+              "ToolTip": "C:\\Users\\admin\\Desktop\\TRIAL\\fit-nexus-dev\\FitNexusDashboard\\FitNexusDashboard.http",
+              "RelativeToolTip": "FitNexusDashboard.http",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003502|",
+              "WhenOpened": "2026-07-31T18:00:29.544Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
               "Title": "appsettings.json",
               "DocumentMoniker": "C:\\Users\\admin\\Desktop\\TRIAL\\fit-nexus-dev\\FitNexusDashboard\\appsettings.json",
               "RelativeDocumentMoniker": "appsettings.json",
               "ToolTip": "C:\\Users\\admin\\Desktop\\TRIAL\\fit-nexus-dev\\FitNexusDashboard\\appsettings.json",
               "RelativeToolTip": "appsettings.json",
-              "ViewState": "AgIAAAMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAAkAAAAAAAAAAAAAABMAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
               "WhenOpened": "2026-07-21T14:38:04.92Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 3,
               "Title": "dashboard.js",
               "DocumentMoniker": "C:\\Users\\admin\\Desktop\\TRIAL\\fit-nexus-dev\\FitNexusDashboard\\wwwroot\\js\\dashboard.js",
               "RelativeDocumentMoniker": "wwwroot\\js\\dashboard.js",
@@ -47,12 +81,11 @@
               "RelativeToolTip": "wwwroot\\js\\dashboard.js",
               "ViewState": "AgIAAPgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001646|",
-              "WhenOpened": "2026-07-18T18:28:51.995Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-07-18T18:28:51.995Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 4,
               "Title": "Program.cs",
               "DocumentMoniker": "C:\\Users\\admin\\Desktop\\TRIAL\\fit-nexus-dev\\FitNexusDashboard\\Program.cs",
               "RelativeDocumentMoniker": "Program.cs",

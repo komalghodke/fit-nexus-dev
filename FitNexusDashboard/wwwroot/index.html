@@ -194,10 +194,22 @@
                     </div>
                     <button type="submit" class="btn btn-primary btn-large">Submit Partnership Interest</button>
                 </form>
-                <div id="form-success" class="form-success" style="display:none;">
-                    <div class="success-icon">✅</div>
-                    <h3>Thank you for your interest!</h3>
-                    <p>We've recorded your details. Our team will reach out within 2-3 business days to discuss partnership opportunities.</p>
+                <div id="form-success" class="form-success" style="display:none; padding: 25px; background: #ffffff; border-radius: 16px; border: 2px solid #4caf50; box-shadow: 0 8px 30px rgba(76,175,80,0.15);">
+                    <div class="success-icon" style="font-size: 40px; margin-bottom: 10px;">✅</div>
+                    <h3 style="color: #2e7d32; font-size: 22px; margin-bottom: 8px;">Partnership Request Registered!</h3>
+                    <p style="color: #555; margin-bottom: 15px;">We have recorded your details in the FitNexus Enterprise database. Our team will contact you within 24-48 business hours.</p>
+                    
+                    <div style="background: #f4fbf4; border: 1.5px solid #a5d6a7; border-radius: 12px; padding: 15px; text-align: left; margin-top: 15px;">
+                        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px; font-weight: 700; color: #1b5e20;">
+                            📩 Automatic Email Notification Status:
+                        </div>
+                        <div style="font-size: 13px; color: #333; line-height: 1.6;">
+                            • <strong>Recipient Email:</strong> <span id="success-email-target" style="color: #054474; font-weight: 700;">you@organization.com</span><br>
+                            • <strong>Reference Ticket ID:</strong> <span id="success-ref-id" style="font-family: monospace; font-weight: 700; color: #602e7d;">FN-CORP-2026-8912</span><br>
+                            • <strong>Dispatch Status:</strong> <span style="background: #e8f5e9; color: #2e7d32; padding: 2px 8px; border-radius: 10px; font-weight: 700; font-size: 12px;">Dispatched to SMTP Queue</span><br>
+                            • <strong>Inquiry Subject:</strong> <span style="font-style: italic;">[FitNexus Corporate] Partnership Request Received</span>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

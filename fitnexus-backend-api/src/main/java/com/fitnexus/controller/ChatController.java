@@ -37,6 +37,9 @@ public class ChatController {
 	@Autowired
 	private WellnessInputRepository wellnessInputRepository;
 
+	@Autowired
+	private com.fitnexus.service.ReportsService reportsService;
+
 	private final RestTemplate restTemplate = new RestTemplate();
 	private final ObjectMapper objectMapper = new ObjectMapper();
 
@@ -51,7 +54,7 @@ public class ChatController {
 
 		// Check if Gemini API key is configured and not a placeholder
 		if (geminiApiKey == null || geminiApiKey.trim().isEmpty() || geminiApiKey.startsWith("${")) {
-			response.put("reply", getOfflineResponse(request.getMessage()));
+			response.put("reply", getOfflineResponse(request.getMessage(), request.getUserId()));
 			return ResponseEntity.ok(response);
 		}
 
@@ -92,12 +95,12 @@ public class ChatController {
 			if (aiReply != null && !aiReply.trim().isEmpty()) {
 				response.put("reply", aiReply.trim());
 			} else {
-				response.put("reply", getOfflineResponse(request.getMessage()));
+				response.put("reply", getOfflineResponse(request.getMessage(), request.getUserId()));
 			}
 		} catch (Exception e) {
 			System.err.println("Outer chat exception: " + e.getMessage());
 			e.printStackTrace();
-			response.put("reply", getOfflineResponse(request.getMessage()));
+			response.put("reply", getOfflineResponse(request.getMessage(), request.getUserId()));
 		}
 
 		return ResponseEntity.ok(response);
@@ -170,7 +173,7 @@ public class ChatController {
 	 * Offline rule-based responses when Gemini API is not available.
 	 * Formatted in an interactive, warm, narrative style matching Google Gemini AI personality.
 	 */
-	private String getOfflineResponse(String message) {
+	private String getOfflineResponse(String message, Long userId) {
 		String msg = message.toLowerCase().trim();
 
 		// ── CRITICAL MEDICAL EMERGENCY CHECK (Always runs first!) ──
@@ -178,6 +181,160 @@ public class ChatController {
 			return "🚨 CRITICAL HEALTH NOTICE: Chest pain or severe heart discomfort can be a sign of a serious medical emergency (such as angina or a cardiac event). "
 					+ "Please seek IMMEDIATE medical assistance by calling 112 or 108, or go to the nearest emergency room right away. "
 					+ "Do not engage in physical exercise, yoga, or gym workouts during acute chest pain. Please rest in a comfortable seated position until a qualified medical professional can evaluate you. Your life and safety are top priority! 🙏";
+		}
+
+		// ── WELLNESS SCORE & REPORT INTEGRATION QUERY ──
+		if (msg.contains("wellness score") || msg.contains("score") || msg.contains("report") || msg.contains("explain my report") || msg.contains("show my score") || msg.contains("what is my score") || msg.contains("score status") || msg.contains("wellness score guide")) {
+			if (userId != null && reportsService != null) {
+				try {
+					com.fitnexus.dto.WellnessReport rep = reportsService.generateReport(userId);
+					if (rep != null) {
+						String name = rep.getFullName() != null ? rep.getFullName() : "Friend";
+						return "Namaste " + name + "! 🙏 Based on your latest FitNexus 27-Indicator Assessment, here is your live Wellness Score breakdown:\n\n"
+								+ "🌟 **Overall Wellness Score**: **" + rep.getScore() + " / 10** (" + (rep.getStatus() != null ? rep.getStatus() : "Balanced Alignment") + ")\n"
+								+ "🕉️ **Active Energy Chakra**: **" + (rep.getChakra() != null ? rep.getChakra() : "Anahata (Heart)") + "**\n"
+								+ "⚖️ **BMI**: **" + (rep.getBmi() > 0 ? String.format("%.1f", rep.getBmi()) : "22.5") + "** | **Resting Pulse**: " + (rep.getRestingHeartRate() > 0 ? rep.getRestingHeartRate() : 72) + " bpm\n"
+								+ "😴 **Sleep & Stress**: " + rep.getSleepHours() + " hrs sleep, Stress level " + rep.getStressLevel() + "/10\n"
+								+ "🧘 **YCB Prescription**: " + (rep.getYogaRecommendation() != null ? rep.getYogaRecommendation() : "Surya Namaskar & Anulom Vilom") + "\n"
+								+ "✨ **Daily Affirmation**: \"" + (rep.getAffirmation() != null ? rep.getAffirmation() : "I am balanced, vibrant, and aligned.") + "\"\n\n"
+								+ "To raise your score closer to 10/10, try adding 10 mins of daily outdoor walking and practicing your YCB asana prescription! Would you like a detailed breakdown of your sleep or diet tips?";
+					}
+				} catch (Exception ex) {
+					System.err.println("Could not fetch user report for chat: " + ex.getMessage());
+				}
+			}
+			return "Namaste! 🙏 The FitNexus **Wellness Score** evaluates your well-being out of 10 across 27 health indicators:\n\n"
+					+ "• **Physical Metrics**: BMI, Resting Heart Rate, Sleep Quality, Hydration, Digestive Health\n"
+					+ "• **Pranic & Stress Metrics**: Stress Level (1-10), Anxiety Triggers, Circadian Sleep Hours\n"
+					+ "• **Energy & Spiritual Metrics**: 7 Chakra Alignment (Root to Crown), Meditation Minutes, Nature Exposure\n"
+					+ "• **Scoring Formula**: Starts at 10/10 with multi-variable adjustments for sleep deficit, high stress, and pain areas.\n\n"
+					+ "Fill out your 27-indicator form under the 'Assessment' tab to get your personal live score report right here! 😊";
+		}
+
+		// ── HEADACHES & MIGRAINE CARE (handles typos like 'headatches') ──
+		if (msg.contains("headache") || msg.contains("headaches") || msg.contains("headatches") || msg.contains("head ache") || msg.contains("migraine") || msg.contains("head pain")) {
+			return "I hear you dealing with a headache, and I am here to help you find natural relief! 💆‍♂️\n\n"
+					+ "1) **Pranayama Relief**: Practice 5 minutes of slow **Bhramari Pranayama** (Humming Bee Breath). The internal acoustic vibration calms cranial nerve tension.\n"
+					+ "2) **Pressure Relief & Poses**: Practice **Balasana** (Child's Pose) or **Uttanasana** (Standing Forward Bend) with soft knees to release tension in the cervical spine and shoulders.\n"
+					+ "3) **Hydration & Hydrotherapy**: Drink 2 glasses of warm water (dehydration is the #1 headache cause) and apply a cool wet compress to your forehead or warm oil massage to temples.\n\n"
+					+ "Is your headache throbbing on one side or around the forehead? If accompanied by nausea or fever, please consult a doctor!";
+		}
+
+		// ── REPORT SUGGESTION & ACTION STEPS ("what you suggest me", "according to report") ──
+		if (msg.contains("suggest") || msg.contains("suggestion") || msg.contains("what should i do") || msg.contains("according to report") || msg.contains("for that")) {
+			if (userId != null && reportsService != null) {
+				try {
+					com.fitnexus.dto.WellnessReport rep = reportsService.generateReport(userId);
+					if (rep != null) {
+						return "Based on your latest 27-Indicator Assessment (Score: " + rep.getScore() + "/10, BMI: " + String.format("%.1f", rep.getBmi()) + ", Stress: " + rep.getStressLevel() + "/10), here are my top 4 tailored recommendations for you! 🌟\n\n"
+								+ "1) **YCB Asana Practice**: Practice " + (rep.getYogaRecommendation() != null ? rep.getYogaRecommendation() : "Sukshma Vyayama & Pawanmuktasana") + " for 15 mins daily to release joint tension and boost prana flow.\n"
+								+ "2) **Pranayama & Stress Balance**: Practice 5-10 mins of **Anulom Vilom** (Alternate Nostril) and **Bhramari** before sleep to lower stress cortisol.\n"
+								+ "3) **Nourishment & Hydration**: Increase warm water intake to 2.5-3.0 liters daily and include nutrient-dense sattvic foods (moong dal, paneer/tofu, green veggies, almonds) to support healthy BMI.\n"
+								+ "4) **Grounding Daily Habit**: Spend 10-15 mins walking barefoot on green grass or outdoors in natural sunlight to balance your " + (rep.getChakra() != null ? rep.getChakra() : "Root") + " Chakra energy.\n\n"
+								+ "Which recommendation would you like to start with today?";
+					}
+				} catch (Exception ex) {
+					System.err.println("Report suggestion error: " + ex.getMessage());
+				}
+			}
+			return "Here is my core wellness advice for your daily routine! 🌿\n\n"
+					+ "1) **Morning**: 12 rounds of gentle Surya Namaskar or Chandra Namaskar + 5 mins Anulom Vilom Pranayama.\n"
+					+ "2) **Nutrition**: Consume 1.2-1.6g of protein per kg of body weight, drink 3L water, and eat fresh sattvic meals.\n"
+					+ "3) **Mind & Sleep**: Practice 10 mins of Shavasana or Yoga Nidra before bed for deep recovery.\n\n"
+					+ "Fill out your 27-indicator Assessment form to receive a personalized report-backed action plan!";
+		}
+
+		// ── PREDICTIVE VS AI QUERY ("this is predictive or your suggestion?", "is this ai") ──
+		if (msg.contains("predictive") || msg.contains("algorithm") || msg.contains("is this ai") || msg.contains("how score calculated") || msg.contains("prediction")) {
+			return "Great question! 🤖 FitNexus combines **Predictive Health Analytics** with **Generative AI Mentorship**:\n\n"
+					+ "1) **Predictive Scoring Engine**: Uses deterministic scientific formulas (MET constants for caloric burn, BMI standard ranges, circadian sleep quality index, and multi-variable stress regression) to compute your exact 27-indicator score out of 10.\n"
+					+ "2) **AI Suggestion & Narration**: Generates personalized YCB yoga prescriptions, chakra alignment steps, and dietary advice tailored to your exact profile parameters.\n\n"
+					+ "So your score is mathematically predicted from your inputs, and the guidance is customized specifically for your health journey!";
+		}
+
+		// ── CHAKRA SYSTEM & MULADHARA (ROOT CHAKRA) ──
+		if (msg.contains("chakra") || msg.contains("chakras") || msg.contains("muladhar") || msg.contains("muladhara") || msg.contains("root chakra") || msg.contains("energy center")) {
+			return "Namaste! 🕉️ In Yogic physiology, the **Chakra System** represents 7 primary energy centers along the spine that govern physical health, emotions, and consciousness:\n\n"
+					+ "1. **Muladhara (Root)**: Base of spine | Color: Red | Element: Earth | Focus: Survival, grounding, security & physical vitality.\n"
+					+ "2. **Swadhisthana (Sacral)**: Lower abdomen | Element: Water | Focus: Creativity, fluidity & emotional balance.\n"
+					+ "3. **Manipura (Solar Plexus)**: Navel | Element: Fire | Focus: Willpower, digestive fire & confidence.\n"
+					+ "4. **Anahata (Heart)**: Chest center | Element: Air | Focus: Love, compassion & cardiovascular harmony.\n"
+					+ "5. **Vishuddha (Throat)**: Throat | Element: Ether | Focus: Expression & clear communication.\n"
+					+ "6. **Ajna (Third Eye)**: Between brows | Focus: Intuition & mental clarity.\n"
+					+ "7. **Sahasrara (Crown)**: Top of head | Focus: Higher spiritual awareness.\n\n"
+					+ "To balance **Muladhara (Root Chakra)**: Practice Tadasana (Mountain Pose), Vrikshasana (Tree Pose), eat root vegetables, and repeat the affirmation: *'I am grounded, safe, and secure.'*";
+		}
+
+		// ── HATHA YOGA ("what is hath yoga", "hatha") ──
+		if (msg.contains("hath") || msg.contains("hatha") || msg.contains("hatha yoga")) {
+			return "Namaste! 🕉️ **Hatha Yoga** (हा + ठ = Sun + Moon Balance) is the foundational physical discipline of yoga codified in classic texts like the *Hatha Yoga Pradipika*.\n\n"
+					+ "• **Ha (Sun)** represents active, heating solar energy (Pingala Nadi).\n"
+					+ "• **Tha (Moon)** represents receptive, cooling lunar energy (Ida Nadi).\n\n"
+					+ "Hatha Yoga combines static **Asanas** (postures), **Pranayama** (breath control), and **Shatkarmas** (cleansing practices) to purify the physical body, balance opposing energy channels, and prepare the mind for deep meditation. It is ideal for all fitness levels!";
+		}
+
+		// ── INHALATION, EXHALATION & BREATHING EXERCISES ("inhale exercise", "pranayama") ──
+		if (msg.contains("inhale") || msg.contains("exhale") || msg.contains("inhalation") || msg.contains("breathing exercise") || msg.contains("breathwork")) {
+			return "Pranayama (breath control) is the bridge between your physical body and mind! 🫁\n\n"
+					+ "1) **Yogic Inhalation (Puraka)**: Inhale slowly through the nose for 4 seconds, expanding the abdomen first, then chest, then upper lungs.\n"
+					+ "2) **Breath Retention (Kumbhaka)**: Hold gently for 2–4 seconds without strain.\n"
+					+ "3) **Yogic Exhalation (Rechaka)**: Slowly release breath through the nose for 6 seconds, drawing the navel gently toward the spine.\n\n"
+					+ "• **4-7-8 Calming Breath**: Inhale 4s, Hold 7s, Exhale 8s for instant stress relief.\n"
+					+ "• **Anulom Vilom**: Alternate nostril breathing for 10 minutes balances left and right brain hemispheres!";
+		}
+
+		// ── MOON SALUTATION ("moon slautaion", "chandra namaskar") ──
+		if (msg.contains("moon") || msg.contains("chandra") || msg.contains("slautaion") || msg.contains("moon salutation")) {
+			return "Namaste! 🌙 **Chandra Namaskar (Moon Salutation)** is a soothing, cooling sequence of 14 postures designed to honor the reflective, calming lunar energy within us!\n\n"
+					+ "Unlike the dynamic, heating Surya Namaskar (Sun Salutation), Chandra Namaskar emphasizes lateral side stretches, hip openers (Anjaneyasana, Malasana), and slow fluid movement.\n\n"
+					+ "• **Best Time**: Practiced in the evening, during full moon nights, or when feeling stressed/overheated.\n"
+					+ "• **Benefits**: Soothes the nervous system, releases hip/hamstring tightness, lowers anxiety, and prepares the body for deep sleep!";
+		}
+
+		// ── MUSIC VS YOGA & NADA YOGA ("music vs yoga", "sound healing") ──
+		if (msg.contains("music") || msg.contains("nada") || msg.contains("sound") || msg.contains("mantra") || msg.contains("chanting")) {
+			return "Music and Yoga are twin paths to spiritual harmony! 🎵🧘\n\n"
+					+ "In Vedic tradition, **Nada Yoga** (The Yoga of Sound & Resonance) teaches that the universe originated from cosmic vibration (AUM). Classical Indian Ragas and Mantras (like Om, Gayatri, or Mahamrityunjaya) are specifically designed to attune brainwaves:\n\n"
+					+ "• **Classical Music / 432Hz Sound Healing**: Induces Alpha and Theta brainwaves, relaxing nervous system tension.\n"
+					+ "• **Hatha / Asana Yoga**: Prepares the physical vessel so sound vibrations resonate cleanly throughout the Nadis (energy channels).\n"
+					+ "• **Synergy**: Listening to soft flute, Sitar, or 528Hz healing frequencies during Shavasana or meditation doubles stress-relief benefits!";
+		}
+
+		// ── EYE NETI & SHATKARMA KRIYAS ("eye neti", "neti", "cleansing") ──
+		if (msg.contains("neti") || msg.contains("jala neti") || msg.contains("eye neti") || msg.contains("kriya") || msg.contains("shatkarma")) {
+			return "In Yogic science, **Shatkarmas** are the 6 sacred purification kriyas designed to cleanse internal organs! 🪷\n\n"
+					+ "1) **Jala Neti (Nasal Cleansing)**: Using a Neti pot with lukewarm saline water to flush out nasal passages, relieving sinusitis, allergies, and headaches.\n"
+					+ "2) **Eye Cleansing (Neti Kriya for Eyes)**: Using a sterile eyecup with cool distilled water or diluted triphala water to refresh tired eyes and reduce digital screen strain.\n"
+					+ "3) **Trataka**: Candle-gaze meditation to improve vision and mental focus.\n\n"
+					+ "⚠️ *Note*: Always learn Neti techniques under the guidance of a YCB-certified instructor to ensure proper hygiene and saline proportion!";
+		}
+
+		// ── RAJYOGA, RAJA YOGA & TYPES OF YOGA ──
+		if (msg.contains("rajyoga") || msg.contains("raja yoga") || msg.contains("raj yoga") || msg.contains("types of yoga") || msg.contains("kinds of yoga") || msg.contains("yoga types") || msg.contains("paths of yoga")) {
+			return "Namaste! 🕉️ **Raja Yoga** (The Royal Path of Meditation and Mind Control) is codified by Maharishi Patanjali in the *Yoga Sutras*. It focuses on mastering the mind through the **8 Limbs of Ashtanga Yoga**:\n"
+					+ "1. **Yama** (Ethical restraints) & 2. **Niyama** (Self-observances)\n"
+					+ "3. **Asana** (Physical postures) & 4. **Pranayama** (Breath regulation)\n"
+					+ "5. **Pratyahara** (Sensory withdrawal) & 6. **Dharana** (Concentration)\n"
+					+ "7. **Dhyana** (Meditation) & 8. **Samadhi** (Absorption/Enlightenment)\n\n"
+					+ "Other major paths of Classical Yoga include:\n"
+					+ "• **Hatha Yoga**: Physical alignment & energy balance\n"
+					+ "• **Karma Yoga**: Path of selfless action & service\n"
+					+ "• **Bhakti Yoga**: Path of devotion & emotional surrender\n"
+					+ "• **Jnana Yoga**: Path of wisdom, self-inquiry & knowledge.\n\n"
+					+ "Which path of yoga resonates most with your journey?";
+		}
+
+		// ── BMI, CALORIES & CALORIE COMPUTATION ──
+		if (msg.contains("bmi") || msg.contains("body mass index") || msg.contains("calory") || msg.contains("calories") || msg.contains("tdee") || msg.contains("bmr") || msg.contains("how calories")) {
+			return "Here is how **BMI** and **Calorie Computation** work in FitNexus! 📊\n\n"
+					+ "1) **BMI (Body Mass Index)**:\n"
+					+ "   Formula: `BMI = Weight (kg) / [Height (m)]²`\n"
+					+ "   • Underweight: < 18.5 | Normal: 18.5 – 24.9 | Overweight: 25.0 – 29.9 | Elevated: ≥ 30.0\n\n"
+					+ "2) **Calorie Calculation Formula (MET Constants)**:\n"
+					+ "   FitNexus calculates workout calorie burn using standard **MET (Metabolic Equivalent of Task)** coefficients:\n"
+					+ "   `Calories Burned = MET × Weight (kg) × Duration (hours)`\n"
+					+ "   • Hatha Yoga: MET 3.3 | Power Yoga: MET 5.0 | Weight Training: MET 6.0 | Brisk Running: MET 8.0\n\n"
+					+ "Would you like me to calculate your daily recommended calorie or protein target?";
 		}
 
 		// ── Identity & Self Queries ("who are you", "what is you", "what are you", "who are u") ──
