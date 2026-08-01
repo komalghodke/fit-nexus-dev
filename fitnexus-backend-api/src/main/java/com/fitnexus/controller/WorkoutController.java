@@ -39,6 +39,17 @@ public class WorkoutController {
 	public Workout addWorkout(@PathVariable("userId") Long userId, @RequestBody Workout workout) {
 		User user = userRepository.findById(userId)
 				.orElseThrow(() -> new RuntimeException("User not found with ID: " + userId));
+		
+		if (workout.getDuration() <= 0) {
+			workout.setDuration(30); // Default to 30 mins
+		}
+		if (workout.getType() == null || workout.getType().trim().isEmpty()) {
+			workout.setType("General Workout");
+		}
+		if (workout.getIntensity() == null || workout.getIntensity().trim().isEmpty()) {
+			workout.setIntensity("Medium");
+		}
+
 		workout.setUser(user);
 		workout.setCreatedAt(LocalDateTime.now());
 		return workoutRepository.save(workout);

@@ -101,7 +101,7 @@ function LoginForm() {
     setError("");
     setLoading(true);
     try {
-      const res = await axios.post(`${API_URL}/auth/login`, { email, password });
+      const res = await axios.post(`${API_URL}/auth/login`, { email, password, portalRole: selectedPortal.key });
 
       // Debug logging
       console.log('Login response:', res.data);

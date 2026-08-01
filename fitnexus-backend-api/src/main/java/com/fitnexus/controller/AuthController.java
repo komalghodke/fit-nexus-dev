@@ -32,6 +32,13 @@ public class AuthController {
 
 	@PostMapping("/login")
 	public ResponseEntity<?> login(@RequestBody AuthRequest req) {
+		if (req.getEmail() == null || req.getEmail().trim().isEmpty()) {
+			return ResponseEntity.badRequest().body("Email is required");
+		}
+		if (req.getPassword() == null || req.getPassword().isEmpty()) {
+			return ResponseEntity.badRequest().body("Password is required");
+		}
+
 		try {
 			String normalizedEmail = req.getEmail().trim().toLowerCase();
 			authManager.authenticate(
@@ -40,23 +47,71 @@ public class AuthController {
 			User user = userRepo.findByEmail(req.getEmail().trim())
 					.orElseGet(() -> userRepo.findByEmail(normalizedEmail)
 					.orElseThrow(() -> new RuntimeException("User not found with email: " + req.getEmail())));
+
+			String userRole = user.getRole() != null ? user.getRole().trim().toUpperCase() : "USER";
+
+			// Portal role validation: if the frontend sends a portalRole, verify it matches
+			String portalRole = req.getPortalRole();
+			if (portalRole != null && !portalRole.trim().isEmpty()) {
+				String requestedPortal = portalRole.trim().toUpperCase();
+				boolean roleMatch = false;
+
+				if ("USER".equals(requestedPortal)) {
+					roleMatch = "USER".equals(userRole);
+				} else if ("YOGA_INSTRUCTOR".equals(requestedPortal)) {
+					roleMatch = "YOGA_INSTRUCTOR".equals(userRole);
+				} else if ("GYM_TRAINER".equals(requestedPortal)) {
+					roleMatch = "GYM_TRAINER".equals(userRole);
+				} else if ("ADMIN".equals(requestedPortal)) {
+					roleMatch = "ADMIN".equals(userRole);
+				}
+
+				if (!roleMatch) {
+					String portalLabel = requestedPortal.replace("_", " ");
+					return ResponseEntity.status(401).body(
+						"Your account is registered as " + userRole.replace("_", " ")
+						+ ". Please use the correct portal to log in."
+					);
+				}
+			}
+
 			String token = jwtUtil.generateToken(user.getEmail().trim().toLowerCase());
 			return ResponseEntity.ok(Map.of(
 				"token", token,
 				"email", user.getEmail(),
 				"userId", user.getId().toString(),
-				"role", user.getRole() != null ? user.getRole() : "USER"
+				"role", userRole
 			));
 		} catch (AuthenticationException e) {
-			return ResponseEntity.status(401).body("Invalid credentials");
+			return ResponseEntity.status(401).body("Invalid email or password");
 		}
 	}
 
 	private static final String ADMIN_SECRET_CODE = "FITNEXUS-ADMIN-2026";
+	private static final String EMAIL_REGEX = "^[A-Za-z0-9+_.-]+@(.+)$";
 
 	@PostMapping("/register")
 	public ResponseEntity<?> register(@RequestBody Map<String, String> body) {
+		String username = body.get("username");
+		String email = body.get("email");
+		String password = body.get("password");
 		String role = body.getOrDefault("role", "USER").trim();
+
+		// 1. Validation checks
+		if (username == null || username.trim().isEmpty()) {
+			return ResponseEntity.badRequest().body("Username is required");
+		}
+		if (email == null || email.trim().isEmpty() || !email.trim().matches(EMAIL_REGEX)) {
+			return ResponseEntity.badRequest().body("Valid email address is required");
+		}
+		if (password == null || password.trim().length() < 6) {
+			return ResponseEntity.badRequest().body("Password must be at least 6 characters");
+		}
+
+		String normalizedEmail = email.trim().toLowerCase();
+		if (userRepo.findByEmail(normalizedEmail).isPresent() || userRepo.findByEmail(email.trim()).isPresent()) {
+			return ResponseEntity.badRequest().body("Email is already registered. Please log in.");
+		}
 
 		// Admin registration requires a valid secret code
 		if ("ADMIN".equalsIgnoreCase(role)) {
@@ -67,9 +122,9 @@ public class AuthController {
 		}
 
 		User user = new User();
-		user.setUsername(body.get("username"));
-		user.setEmail(body.get("email"));
-		user.setPassword(body.get("password"));
+		user.setUsername(username.trim());
+		user.setEmail(normalizedEmail);
+		user.setPassword(password);
 		user.setRole(role.isEmpty() ? "USER" : role);
 
 		userRepo.save(user);

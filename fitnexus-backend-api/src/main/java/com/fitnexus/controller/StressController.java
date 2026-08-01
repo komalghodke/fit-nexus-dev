@@ -42,9 +42,22 @@ public class StressController {
 		Stress stress = new Stress();
 		stress.setUser(user);
 		
+		// Validate and clamp stress level to range 1-10
 		Object levelObj = payload.get("level");
-		stress.setLevel(levelObj != null ? levelObj.toString() : "5");
-		stress.setNotes((String) payload.get("notes"));
+		if (levelObj != null && !levelObj.toString().trim().isEmpty()) {
+			try {
+				int level = Integer.parseInt(levelObj.toString().trim());
+				level = Math.max(1, Math.min(10, level));
+				stress.setLevel(String.valueOf(level));
+			} catch (NumberFormatException e) {
+				stress.setLevel("5"); // Default
+			}
+		} else {
+			stress.setLevel("5");
+		}
+
+		String notes = (String) payload.get("notes");
+		stress.setNotes(notes != null && !notes.trim().isEmpty() ? notes.trim() : "No notes provided");
 		stress.setCreatedAt(LocalDateTime.now());
 		
 		return stressRepository.save(stress);

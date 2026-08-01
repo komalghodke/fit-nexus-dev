@@ -148,7 +148,7 @@ public class ReportsService {
 
 		if (input != null) {
 			// ── BMI Deduction ────────────────────────────────────────────
-			if (input.getHeight() > 0 && input.getWeight() > 0) {
+			if (input.getHeight() != null && input.getHeight() > 0 && input.getWeight() != null && input.getWeight() > 0) {
 				double hm = input.getHeight() / 100.0;
 				double calculatedBmiVal = input.getWeight() / (hm * hm);
 				if (calculatedBmiVal >= 30.0) {
@@ -392,7 +392,7 @@ public class ReportsService {
 
 		// ─── Caloric Burn Prediction ──────────────────────────────────────
 		int predictedCalorieBurn = 0;
-		if (input != null && input.getWeight() > 0 && input.getWorkoutDuration() != null && input.getWorkoutDuration() > 0) {
+		if (input != null && input.getWeight() != null && input.getWeight() > 0 && input.getWorkoutDuration() != null && input.getWorkoutDuration() > 0) {
 			double weightKg = input.getWeight();
 			int durationMins = input.getWorkoutDuration();
 			String wType = input.getWorkoutType();
@@ -417,7 +417,7 @@ public class ReportsService {
 			if (input.getRestingHeartRate() != null && input.getRestingHeartRate() > 85) predictedStressTrend += 1;
 			// Factors that reduce stress
 			if (input.getWithNature() != null && input.getWithNature() > 4) predictedStressTrend -= 1;
-			if (input.getMeditationMinutes() > 15) predictedStressTrend -= 1;
+			if (input.getMeditationMinutes() != null && input.getMeditationMinutes() > 15) predictedStressTrend -= 1;
 			if ("yes".equalsIgnoreCase(input.getInnerPeace())) predictedStressTrend -= 1;
 			// Clamp stress prediction to 1-10
 			if (predictedStressTrend < 1) predictedStressTrend = 1;
@@ -451,7 +451,7 @@ public class ReportsService {
 
 		// Compute BMI helper value
 		double calculatedBmi = 22.0;
-		if (input != null && input.getHeight() > 0 && input.getWeight() > 0) {
+		if (input != null && input.getHeight() != null && input.getHeight() > 0 && input.getWeight() != null && input.getWeight() > 0) {
 			double hm = input.getHeight() / 100.0;
 			calculatedBmi = Math.round((input.getWeight() / (hm * hm)) * 10.0) / 10.0;
 		}

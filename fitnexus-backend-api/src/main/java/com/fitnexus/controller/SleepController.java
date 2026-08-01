@@ -45,7 +45,9 @@ public class SleepController {
 		Object hoursObj = payload.get("hours");
 		if (hoursObj != null && !hoursObj.toString().isEmpty()) {
 			try {
-				sleep.setHours(Integer.parseInt(hoursObj.toString()));
+				int hours = Integer.parseInt(hoursObj.toString());
+				// Clamp hours to valid range 0-24
+				sleep.setHours(Math.max(0, Math.min(24, hours)));
 			} catch (NumberFormatException e) {
 				sleep.setHours(7); // Default
 			}
@@ -53,7 +55,8 @@ public class SleepController {
 			sleep.setHours(7);
 		}
 		
-		sleep.setQuality((String) payload.get("quality"));
+		String quality = (String) payload.get("quality");
+		sleep.setQuality(quality != null && !quality.trim().isEmpty() ? quality.trim() : "Good");
 		sleep.setCreatedAt(LocalDateTime.now());
 		
 		return sleepRepository.save(sleep);
