@@ -1,0 +1,13 @@
+C:\Users\admin\Desktop\TRIAL\fit-nexus-dev\FitNexusDashboard\bin\Release\net9.0\publish\FitNexusDashboard.exe
+C:\Users\admin\Desktop\TRIAL\fit-nexus-dev\FitNexusDashboard\bin\Release\net9.0\publish\appsettings.Development.example.json
+C:\Users\admin\Desktop\TRIAL\fit-nexus-dev\FitNexusDashboard\bin\Release\net9.0\publish\appsettings.Development.json
+C:\Users\admin\Desktop\TRIAL\fit-nexus-dev\FitNexusDashboard\bin\Release\net9.0\publish\appsettings.json
+C:\Users\admin\Desktop\TRIAL\fit-nexus-dev\FitNexusDashboard\bin\Release\net9.0\publish\FitNexusDashboard.dll
+C:\Users\admin\Desktop\TRIAL\fit-nexus-dev\FitNexusDashboard\bin\Release\net9.0\publish\FitNexusDashboard.deps.json
+C:\Users\admin\Desktop\TRIAL\fit-nexus-dev\FitNexusDashboard\bin\Release\net9.0\publish\FitNexusDashboard.runtimeconfig.json
+C:\Users\admin\Desktop\TRIAL\fit-nexus-dev\FitNexusDashboard\bin\Release\net9.0\publish\FitNexusDashboard.pdb
+C:\Users\admin\Desktop\TRIAL\fit-nexus-dev\FitNexusDashboard\bin\Release\net9.0\publish\Microsoft.OpenApi.dll
+C:\Users\admin\Desktop\TRIAL\fit-nexus-dev\FitNexusDashboard\bin\Release\net9.0\publish\MySqlConnector.dll
+C:\Users\admin\Desktop\TRIAL\fit-nexus-dev\FitNexusDashboard\bin\Release\net9.0\publish\Swashbuckle.AspNetCore.Swagger.dll
+C:\Users\admin\Desktop\TRIAL\fit-nexus-dev\FitNexusDashboard\bin\Release\net9.0\publish\Swashbuckle.AspNetCore.SwaggerGen.dll
+C:\Users\admin\Desktop\TRIAL\fit-nexus-dev\FitNexusDashboard\bin\Release\net9.0\publish\Swashbuckle.AspNetCore.SwaggerUI.dll

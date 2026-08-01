@@ -25,6 +25,10 @@ application-secret.properties
 # Keep example file in Git
 !application-secret.example.properties
 
+# Test scripts and output
+src/test_api.ps1
+src/raw_report.json
+
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*

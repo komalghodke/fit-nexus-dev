@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
-import { API_URL } from "../api/apiConfig";
+import { API_URL, CORPORATE_URL } from "../api/apiConfig";
 import {
   Box,
   Container,
@@ -85,7 +85,7 @@ function AdminDashboard() {
 
   const fetchInquiries = async () => {
     try {
-      const res = await axios.get("http://localhost:5294/api/corporate/inquiries");
+      const res = await axios.get(`${CORPORATE_URL}/api/corporate/inquiries`);
       setInquiries(res.data || []);
     } catch (err) {
       console.warn("Failed to load corporate inquiries from .NET dashboard endpoint:", err);
@@ -330,7 +330,7 @@ function AdminDashboard() {
                 <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
                   Open the business-oriented corporate wellness intelligence dashboard served by ASP.NET Core.
                 </Typography>
-                <Button href="http://localhost:5294" target="_blank" rel="noopener noreferrer" variant="outlined" size="small" color="warning" endIcon={<Assessment />}>
+                <Button href={CORPORATE_URL} target="_blank" rel="noopener noreferrer" variant="outlined" size="small" color="warning" endIcon={<Assessment />}>
                   Open Corporate UI
                 </Button>
               </CardContent>
