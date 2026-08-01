@@ -31,7 +31,8 @@ app.UseDefaultFiles();
 app.UseStaticFiles();
 app.UseHttpsRedirection();
 
-string connectionString = app.Configuration.GetConnectionString("DefaultConnection") 
+string connectionString = Environment.GetEnvironmentVariable("DB_CONNECTION_STRING")
+    ?? app.Configuration.GetConnectionString("DefaultConnection") 
     ?? "Server=localhost;Database=fitnexusdb;User=root;Password=root;";
 
 // Initialize Database Table

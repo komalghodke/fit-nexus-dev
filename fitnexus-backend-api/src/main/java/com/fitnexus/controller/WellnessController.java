@@ -58,19 +58,22 @@ public class WellnessController {
 		// Save WellnessInput
 		WellnessInput input = wellnessInputRepository.findByUserId(userId).orElse(new WellnessInput());
 		input.setUserId(userId);
-		input.setFullName(request.getFullName());
-		input.setEmail(request.getEmail());
-		input.setMobileNumber(request.getMobileNumber());
+		input.setFullName(request.getFullName() != null ? request.getFullName().trim() : "");
+		input.setEmail(request.getEmail() != null ? request.getEmail().trim() : "");
+		input.setMobileNumber(request.getMobileNumber() != null ? request.getMobileNumber().trim() : "");
 		input.setGender(request.getGender());
-		input.setCity(request.getCity());
-		input.setAge(request.getAge());
-		input.setHeight(request.getHeight());
-		input.setWeight(request.getWeight());
-		input.setWaterIntake(request.getWaterIntake());
+		input.setCity(request.getCity() != null ? request.getCity().trim() : "");
+
+		// Validate and clamp numeric ranges
+		input.setAge(clamp(request.getAge(), 1, 120));
+		input.setHeight(clamp(request.getHeight(), 50, 250));
+		input.setWeight(clamp(request.getWeight(), 20, 300));
+		input.setWaterIntake(clampDouble(request.getWaterIntake(), 0.0, 15.0));
+
 		input.setDigestiveIssues(request.getDigestiveIssues());
 		input.setPainArea(request.getPainArea());
 		input.setMood(request.getMood());
-		input.setStressLevel(request.getStressLevel());
+		input.setStressLevel(clamp(request.getStressLevel(), 0, 10));
 		input.setSleepHours(request.getSleepHours() != null ? request.getSleepHours().doubleValue() : null);
 		input.setSleepQuality(request.getSleepQuality());
 		input.setSleep(request.getSleep());
@@ -80,10 +83,10 @@ public class WellnessController {
 		input.setWithNature(request.getWithNature());
 		input.setHasDisease(request.getHasDisease());
 		input.setWorkoutType(request.getWorkoutType());
-		input.setWorkoutDuration(request.getWorkoutDuration());
+		input.setWorkoutDuration(request.getWorkoutDuration() != null ? Math.max(0, request.getWorkoutDuration()) : null);
 		input.setWorkoutFrequency(request.getWorkoutFrequency());
-		input.setDailyCalories(request.getDailyCalories());
-		input.setProteinIntake(request.getProteinIntake());
+		input.setDailyCalories(request.getDailyCalories() != null ? Math.max(0, request.getDailyCalories()) : null);
+		input.setProteinIntake(request.getProteinIntake() != null ? Math.max(0, request.getProteinIntake()) : null);
 		input.setFruitServings(request.getFruitServings());
 		input.setVegetableServings(request.getVegetableServings());
 		input.setBedtime(request.getBedtime());
@@ -94,16 +97,16 @@ public class WellnessController {
 		input.setAlcohol(request.getAlcohol());
 		input.setScreenTime(request.getScreenTime());
 		input.setPhysicalActivity(request.getPhysicalActivity());
-		input.setMeditationMinutes(request.getMeditationMinutes());
+		input.setMeditationMinutes(request.getMeditationMinutes() != null ? Math.max(0, request.getMeditationMinutes()) : null);
 		input.setEnergyLevel(request.getEnergyLevel());
 		input.setChronicConditions(request.getChronicConditions());
 		input.setMedications(request.getMedications());
 		input.setBmi(request.getBmi());
 		input.setYogaExperience(request.getYogaExperience());
-		input.setDaysPerWeek(request.getDaysPerWeek());
-		input.setMinutesPerSession(request.getMinutesPerSession());
+		input.setDaysPerWeek(clamp(request.getDaysPerWeek(), 0, 7));
+		input.setMinutesPerSession(request.getMinutesPerSession() != null ? Math.max(0, request.getMinutesPerSession()) : null);
 		input.setJournalEntry(request.getJournalEntry());
-		input.setRestingHeartRate(request.getRestingHeartRate());
+		input.setRestingHeartRate(clamp(request.getRestingHeartRate(), 30, 220));
 
 		wellnessInputRepository.save(input);
 
@@ -159,4 +162,15 @@ public class WellnessController {
 //		WellnessReport report = reportsService.generateReport(userId);
 //		return ResponseEntity.ok(report);
 //	}
+
+	// ── Validation Helper Methods ─────────────────────────────────────────────
+	private Integer clamp(Integer value, int min, int max) {
+		if (value == null) return null;
+		return Math.max(min, Math.min(max, value));
+	}
+
+	private Double clampDouble(Double value, double min, double max) {
+		if (value == null) return null;
+		return Math.max(min, Math.min(max, value));
+	}
 }

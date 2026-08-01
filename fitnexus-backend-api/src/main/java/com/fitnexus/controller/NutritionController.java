@@ -44,18 +44,25 @@ public class NutritionController {
 		
 		String food = (String) payload.get("food");
 		String meal = (String) payload.get("meal");
-		nutrition.setMeal(food != null ? food : (meal != null ? meal : "General Meal"));
+		String mealName = food != null && !food.trim().isEmpty() ? food.trim()
+				: (meal != null && !meal.trim().isEmpty() ? meal.trim() : "General Meal");
+		nutrition.setMeal(mealName);
 		
 		Object caloriesObj = payload.get("calories");
 		if (caloriesObj != null && !caloriesObj.toString().isEmpty()) {
 			try {
-				nutrition.setCalories(Integer.parseInt(caloriesObj.toString()));
+				int calories = Integer.parseInt(caloriesObj.toString());
+				// Ensure calories are non-negative
+				nutrition.setCalories(Math.max(0, calories));
 			} catch (NumberFormatException e) {
 				nutrition.setCalories(0);
 			}
+		} else {
+			nutrition.setCalories(0);
 		}
 		
-		nutrition.setNotes((String) payload.get("notes"));
+		String notes = (String) payload.get("notes");
+		nutrition.setNotes(notes != null ? notes.trim() : "");
 		nutrition.setCreatedAt(LocalDateTime.now());
 		
 		return nutritionRepository.save(nutrition);
