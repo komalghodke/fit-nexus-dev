@@ -4,7 +4,7 @@ import { WellnessProvider } from "./context/WellnessContext";
 
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
-import { PrivateRoute, StaffRoute, AdminRoute } from "./components/PrivateRoute";
+import { PrivateRoute, UserRoute, StaffRoute, AdminRoute } from "./components/PrivateRoute";
 
 import LoginForm from "./components/LoginForm";
 import RegisterForm from "./components/RegisterForm";
@@ -39,17 +39,17 @@ function App() {
           <Route path="/privacy" element={<PrivacyPolicyPage />} />
           <Route path="/feedback" element={<FeedbackPage />} />
 
-          {/* Protected – any authenticated user */}
-          <Route path="/dashboard" element={<PrivateRoute><Dashboard /></PrivateRoute>} />
-          <Route path="/profile"   element={<PrivateRoute><ProfilePage /></PrivateRoute>} />
-          <Route path="/reports"   element={<PrivateRoute><ReportsPage /></PrivateRoute>} />
-          <Route path="/workout"   element={<PrivateRoute><WorkoutForm /></PrivateRoute>} />
-          <Route path="/nutrition" element={<PrivateRoute><NutritionForm /></PrivateRoute>} />
-          <Route path="/sleep"     element={<PrivateRoute><SleepForm /></PrivateRoute>} />
-          <Route path="/stress"    element={<PrivateRoute><StressForm /></PrivateRoute>} />
-          <Route path="/wellness"  element={<PrivateRoute><WellnessForm /></PrivateRoute>} />
-          <Route path="/wellness-form" element={<PrivateRoute><WellnessForm /></PrivateRoute>} />
-          <Route path="/map"       element={<PrivateRoute><MapPage /></PrivateRoute>} />
+          {/* Protected Member routes */}
+          <Route path="/dashboard" element={<UserRoute><Dashboard /></UserRoute>} />
+          <Route path="/profile"   element={<UserRoute><ProfilePage /></UserRoute>} />
+          <Route path="/reports"   element={<UserRoute><ReportsPage /></UserRoute>} />
+          <Route path="/workout"   element={<UserRoute><WorkoutForm /></UserRoute>} />
+          <Route path="/nutrition" element={<UserRoute><NutritionForm /></UserRoute>} />
+          <Route path="/sleep"     element={<UserRoute><SleepForm /></UserRoute>} />
+          <Route path="/stress"    element={<UserRoute><StressForm /></UserRoute>} />
+          <Route path="/wellness"  element={<UserRoute><WellnessForm /></UserRoute>} />
+          <Route path="/wellness-form" element={<UserRoute><WellnessForm /></UserRoute>} />
+          <Route path="/map"       element={<UserRoute><MapPage /></UserRoute>} />
 
           {/* Staff-only route */}
           <Route path="/staff" element={<StaffRoute><StaffDashboard /></StaffRoute>} />

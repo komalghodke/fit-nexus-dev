@@ -106,7 +106,7 @@ export default function FeedbackPage() {
                   label="Full Name (Optional)"
                   value={fullName}
                   onChange={(e) => setFullName(e.target.value)}
-                  placeholder="e.g. Ananya Sharma"
+                  placeholder="e.g. Komal Ghodke"
                 />
               </Grid>
 
