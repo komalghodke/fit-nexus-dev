@@ -50,29 +50,30 @@ public class AuthController {
 
 			String userRole = user.getRole() != null ? user.getRole().trim().toUpperCase() : "USER";
 
-			// Portal role validation: if the frontend sends a portalRole, verify it matches
+			// Mandatory Portal Role Isolation Validation
 			String portalRole = req.getPortalRole();
-			if (portalRole != null && !portalRole.trim().isEmpty()) {
-				String requestedPortal = portalRole.trim().toUpperCase();
-				boolean roleMatch = false;
+			String requestedPortal = (portalRole != null && !portalRole.trim().isEmpty())
+					? portalRole.trim().toUpperCase()
+					: "USER";
 
-				if ("USER".equals(requestedPortal)) {
-					roleMatch = "USER".equals(userRole);
-				} else if ("YOGA_INSTRUCTOR".equals(requestedPortal)) {
-					roleMatch = "YOGA_INSTRUCTOR".equals(userRole);
-				} else if ("GYM_TRAINER".equals(requestedPortal)) {
-					roleMatch = "GYM_TRAINER".equals(userRole);
-				} else if ("ADMIN".equals(requestedPortal)) {
-					roleMatch = "ADMIN".equals(userRole);
-				}
+			boolean roleMatch = false;
+			if ("USER".equals(requestedPortal)) {
+				roleMatch = "USER".equals(userRole);
+			} else if ("YOGA_INSTRUCTOR".equals(requestedPortal)) {
+				roleMatch = "YOGA_INSTRUCTOR".equals(userRole);
+			} else if ("GYM_TRAINER".equals(requestedPortal)) {
+				roleMatch = "GYM_TRAINER".equals(userRole);
+			} else if ("ADMIN".equals(requestedPortal)) {
+				roleMatch = "ADMIN".equals(userRole);
+			}
 
-				if (!roleMatch) {
-					String portalLabel = requestedPortal.replace("_", " ");
-					return ResponseEntity.status(401).body(
-						"Your account is registered as " + userRole.replace("_", " ")
-						+ ". Please use the correct portal to log in."
-					);
-				}
+			if (!roleMatch) {
+				String userRoleDisplay = userRole.replace("_", " ");
+				String requestedPortalDisplay = requestedPortal.replace("_", " ");
+				return ResponseEntity.status(401).body(
+					"Access denied. Your account is registered as " + userRoleDisplay
+					+ ". You cannot log in through the " + requestedPortalDisplay + " portal."
+				);
 			}
 
 			String token = jwtUtil.generateToken(user.getEmail().trim().toLowerCase());
