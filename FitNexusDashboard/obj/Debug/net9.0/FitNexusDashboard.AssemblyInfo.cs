@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("FitNexusDashboard")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+79a77fd597befbd3ffc7c88eb633bb3287c6a1ce")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+c30fe304edaed02fabcc8ce19ebd547c56a729ff")]
 [assembly: System.Reflection.AssemblyProductAttribute("FitNexusDashboard")]
 [assembly: System.Reflection.AssemblyTitleAttribute("FitNexusDashboard")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
