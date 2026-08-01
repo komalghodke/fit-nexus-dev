@@ -1,75 +1,58 @@
-# FitNexus Backend API
+# ☕ FitNexus Primary Backend API (Spring Boot 4 / Java 17)
 
-## Prerequisites
+[![Spring Boot](https://img.shields.io/badge/Spring_Boot-4.0.6-6DB33F?logo=springboot&logoColor=white)](https://fitnexus-backend-api.onrender.com)
+[![Java](https://img.shields.io/badge/Java-17-ED8B00?logo=openjdk&logoColor=white)](https://www.oracle.com/java/)
+[![Render](https://img.shields.io/badge/Render-Production_Live-46E3B7?logo=render&logoColor=white)](https://fitnexus-backend-api.onrender.com)
 
-- Java 17+
-- MySQL
-- Gradle
+> Core RESTful API backend microservice built with **Java 17 & Spring Boot 4**, providing health logging, report generation, JWT authentication, and AI evaluation engines.
 
 ---
 
-## Setup
+## 🗂️ Features & Endpoints
 
-### 1. Clone the repository
+- **`/api/auth`**: Portal-secured authentication (`/login` with `portalRole` validation, `/register` with Admin code verification).
+- **`/api/wellness`**: AYUSH/YCB aligned wellness evaluation across 27 metrics.
+- **`/api/reports`**: Personalised PDF & JSON report generation.
+- **`/api/workout`, `/api/sleep`, `/api/stress`, `/api/nutrition`**: Null-safe, clamped-input daily activity tracking endpoints.
 
-```bash
-git clone <repository-url>
-cd fitnexus-backend-api
-```
+---
 
-### 2. Create your secret configuration
+## 🔐 Security & Validation Standards
 
-Copy:
+- **Portal Role Verification**: Validates that user DB roles match requested portal roles (`USER`, `YOGA_INSTRUCTOR`, `GYM_TRAINER`, `ADMIN`).
+- **Defensive Data Input Guard**: Automatic null checks and metric bounds validation across all incoming payloads.
+- **Stateless JWT Security**: Spring Security filter chain with Bearer token authentication.
 
-```
-application-secret.example.properties
-```
+---
 
-to
+## 🛠️ Environment Configuration
 
-```
-application-secret.properties
-```
-
-### 3. Update `application-secret.properties`
-
-Example:
+Copy `application-secret.example.properties` to `application-secret.properties`:
 
 ```properties
-DB_URL=jdbc:mysql://localhost:3306/APP
-DB_USERNAME=root
-DB_PASSWORD=root
+DB_URL=jdbc:mysql://fitnexus-mysql-fit-nexus.j.aivencloud.com:12606/defaultdb?sslMode=REQUIRED
+DB_USERNAME=avnadmin
+DB_PASSWORD=YOUR_AIVEN_PASSWORD
 
-SERPAPI_KEY=your_serpapi_key
-GEMINI_API_KEY=your_gemini_api_key
+SERPAPI_KEY=YOUR_SERPAPI_KEY
+GEMINI_API_KEY=YOUR_GEMINI_KEY
 ```
-
-### 4. Run the application
-
-```bash
-gradlew bootRun
-```
-
-or run the Spring Boot application from your IDE.
 
 ---
 
-## Security
+## 🚀 Local Execution
 
-The file
-
-```
-application-secret.properties
-```
-
-contains database credentials and API keys.
-
-It is ignored by Git using `.gitignore` and **must not be committed**.
-
-Use
-
-```
-application-secret.example.properties
+```bash
+# Build and run with Gradle
+./gradlew bootRun
+# Service listens on http://localhost:8083
 ```
 
-as a template when setting up the project on a new machine.
+---
+
+## ☁️ Render Production Deployment
+
+Deploy on **Render FREE**:
+- **Build Command**: `./gradlew bootJar`
+- **Start Command**: `java -jar build/libs/fitnexus-backend-api-0.0.1-SNAPSHOT.jar`
+- **Live URL**: `https://fitnexus-backend-api.onrender.com`

@@ -18,13 +18,15 @@ axios.interceptors.response.use(
   (response) => response,
   (error) => {
     const status = error?.response?.status;
-    if (status === 401 || status === 403) {
-      const isLoginPage = window.location.pathname === "/login";
-      if (!isLoginPage) {
-        localStorage.clear();
-        sessionStorage.setItem("sessionExpired", "true");
-        window.location.replace("/login");
-      }
+    const requestUrl = error?.config?.url || "";
+    const isAuthEndpoint = requestUrl.includes("/auth/");
+    const isLoginPage = window.location.pathname === "/login";
+
+    // Only trigger session expiry for non-auth endpoints and non-login pages
+    if ((status === 401 || status === 403) && !isAuthEndpoint && !isLoginPage) {
+      localStorage.clear();
+      sessionStorage.setItem("sessionExpired", "true");
+      window.location.replace("/login");
     }
     return Promise.reject(error);
   }

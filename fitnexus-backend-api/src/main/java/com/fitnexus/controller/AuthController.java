@@ -47,12 +47,40 @@ public class AuthController {
 			User user = userRepo.findByEmail(req.getEmail().trim())
 					.orElseGet(() -> userRepo.findByEmail(normalizedEmail)
 					.orElseThrow(() -> new RuntimeException("User not found with email: " + req.getEmail())));
+
+			String userRole = user.getRole() != null ? user.getRole().trim().toUpperCase() : "USER";
+
+			// Portal role validation: if the frontend sends a portalRole, verify it matches
+			String portalRole = req.getPortalRole();
+			if (portalRole != null && !portalRole.trim().isEmpty()) {
+				String requestedPortal = portalRole.trim().toUpperCase();
+				boolean roleMatch = false;
+
+				if ("USER".equals(requestedPortal)) {
+					roleMatch = "USER".equals(userRole);
+				} else if ("YOGA_INSTRUCTOR".equals(requestedPortal)) {
+					roleMatch = "YOGA_INSTRUCTOR".equals(userRole);
+				} else if ("GYM_TRAINER".equals(requestedPortal)) {
+					roleMatch = "GYM_TRAINER".equals(userRole);
+				} else if ("ADMIN".equals(requestedPortal)) {
+					roleMatch = "ADMIN".equals(userRole);
+				}
+
+				if (!roleMatch) {
+					String portalLabel = requestedPortal.replace("_", " ");
+					return ResponseEntity.status(401).body(
+						"Your account is registered as " + userRole.replace("_", " ")
+						+ ". Please use the correct portal to log in."
+					);
+				}
+			}
+
 			String token = jwtUtil.generateToken(user.getEmail().trim().toLowerCase());
 			return ResponseEntity.ok(Map.of(
 				"token", token,
 				"email", user.getEmail(),
 				"userId", user.getId().toString(),
-				"role", user.getRole() != null ? user.getRole() : "USER"
+				"role", userRole
 			));
 		} catch (AuthenticationException e) {
 			return ResponseEntity.status(401).body("Invalid email or password");
