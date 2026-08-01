@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { API_URL } from '../api/apiConfig';
 
 const QUICK_QUESTIONS = [
   "What yoga poses help with back pain?",
@@ -50,7 +51,7 @@ const WellnessChatbot = ({ userId, report }) => {
     const activeUserId = userId || localStorage.getItem("userId") || localStorage.getItem("id") || localStorage.getItem("user_id");
 
     try {
-      const res = await fetch('http://localhost:8083/api/chat', {
+      const res = await fetch(`${API_URL}/chat`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ userId: activeUserId ? Number(activeUserId) : null, message: text.trim() }),

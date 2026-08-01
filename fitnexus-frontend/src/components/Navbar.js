@@ -1,5 +1,6 @@
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
+import { CORPORATE_URL } from "../api/apiConfig";
 import { useTranslation } from "react-i18next";
 import {
   AppBar, Toolbar, Typography, Button, Box, Container, Chip, IconButton, Tooltip
@@ -116,7 +117,7 @@ function Navbar() {
                     <Button component={Link} to="/staff" sx={navBtn("/staff")}>Staff Console</Button>
                     <Button component={Link} to="/map" sx={navBtn("/map")}>Map</Button>
                     <Button component={Link} to="/feedback" sx={navBtn("/feedback")}>Feedback</Button>
-                    <Button href="http://localhost:5294" target="_blank" rel="noopener noreferrer" sx={navBtn("")}>Corporate</Button>
+                    <Button href={CORPORATE_URL} target="_blank" rel="noopener noreferrer" sx={navBtn("")}>Corporate</Button>
                   </>
                 ) : role === "YOGA_INSTRUCTOR" || role === "GYM_TRAINER" ? (
                   /* Staff navigation */
@@ -127,7 +128,7 @@ function Navbar() {
                     </Button>
                     <Button component={Link} to="/map" sx={navBtn("/map")}>Map</Button>
                     <Button component={Link} to="/feedback" sx={navBtn("/feedback")}>Feedback</Button>
-                    <Button href="http://localhost:5294" target="_blank" rel="noopener noreferrer" sx={navBtn("")}>Corporate</Button>
+                    <Button href={CORPORATE_URL} target="_blank" rel="noopener noreferrer" sx={navBtn("")}>Corporate</Button>
                   </>
                 ) : (
                   /* Member navigation */
@@ -138,7 +139,7 @@ function Navbar() {
                     <Button component={Link} to="/profile"   sx={navBtn("/profile")}>Profile</Button>
                     <Button component={Link} to="/map"       sx={navBtn("/map")}>Map</Button>
                     <Button component={Link} to="/feedback"  sx={navBtn("/feedback")}>Feedback</Button>
-                    <Button href="http://localhost:5294" target="_blank" rel="noopener noreferrer" sx={navBtn("")}>Corporate</Button>
+                    <Button href={CORPORATE_URL} target="_blank" rel="noopener noreferrer" sx={navBtn("")}>Corporate</Button>
                   </>
                 )}
 
@@ -189,7 +190,7 @@ function Navbar() {
             ) : (
               <>
                 <Button component={Link} to="/feedback" sx={navBtn("/feedback")}>Feedback</Button>
-                <Button href="http://localhost:5294" target="_blank" rel="noopener noreferrer" sx={navBtn("")}>Corporate</Button>
+                <Button href={CORPORATE_URL} target="_blank" rel="noopener noreferrer" sx={navBtn("")}>Corporate</Button>
                 <Button
                   component={Link}
                   to="/login"
