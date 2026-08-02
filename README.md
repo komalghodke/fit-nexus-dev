@@ -19,9 +19,9 @@
 | **Project Name** | FitNexus — Holistic Wellness Ecosystem |
 | **Type** | Polyglot Microservices Web Application |
 | **GitHub Repo** | [github.com/komalghodke/fit-nexus-dev](https://github.com/komalghodke/fit-nexus-dev) |
-| **Production App URL** | [https://fitnexus.vercel.app](https://fitnexus.vercel.app) |
+| **Production App URL** | [https://fitnexus-frontend.vercel.app](https://fitnexus-frontend.vercel.app) |
 | **Spring Boot API (Render)** | [https://fitnexus-backend-api.onrender.com](https://fitnexus-backend-api.onrender.com) |
-| **.NET Corporate API (Render)** | [https://fitnexus-corporate.onrender.com](https://fitnexus-corporate.onrender.com) |
+| **.NET Corporate API (Render)** | [https://fitnexusdashboard.onrender.com/](https://fitnexusdashboard.onrender.com/) |
 | **Database** | Aiven MySQL Cloud (SSL Mode Required) |
 | **Technology Stack** | React.js 18, Java 17, Spring Boot 4, C# .NET Core 8, MySQL 8, Google Gemini AI |
 | **Compliance** | Indian DPDP Act 2023, GDPR Principles |
@@ -55,9 +55,9 @@
 
 | Layer | Service Provider | Plan | Live Endpoint / Connection |
 |:---|:---|:---:|:---|
-| **Frontend SPA** | **Vercel** | Free | `https://fitnexus.vercel.app` |
+| **Frontend SPA** | **Vercel** | Free | `https://fitnexus-frontend.vercel.app` |
 | **Spring Boot Java API** | **Render** | Free | `https://fitnexus-backend-api.onrender.com` |
-| **.NET Corporate API** | **Render** | Free | `https://fitnexus-corporate.onrender.com` |
+| **.NET Corporate API** | **Render** | Free | `https://fitnexusdashboard.onrender.com/` |
 | **MySQL Database** | **Aiven Cloud** | Free | `fitnexus-mysql-fit-nexus.j.aivencloud.com:12606` (`sslMode=REQUIRED`) |
 
 ---
@@ -115,14 +115,6 @@ npm install
 npm start
 # Runs on http://localhost:3000
 ```
-
----
-
-## 📖 Deployment & Architecture Guides
-
-For detailed faculty documentation, viva exam prep, and step-by-step production deployment instructions:
-- 📘 [Faculty Architecture & Viva Guide](file:///c:/Users/admin/Desktop/TRIAL/fit-nexus-dev/Database/faculty_architecture_guide.md)
-- 🚀 [Zero-Cost Production Deployment Guide](file:///c:/Users/admin/Desktop/TRIAL/fit-nexus-dev/Database/full_deployment_guide.md)
 
 ---
 
