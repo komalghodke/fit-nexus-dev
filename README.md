@@ -36,14 +36,14 @@
                         ▼
           https://fitnexus.vercel.app
                (React Frontend)
-                  Vercel FREE
+                  Vercel
           SSL ✓ CDN ✓ HTTPS ✓
                         │
         ┌───────────────┴───────────────┐
         │                               │
         ▼                               ▼
    Spring Boot API                 .NET Dashboard API
-        Render FREE                   Render FREE
+        Render                   Render
    HTTPS ✓ SSL ✓                    HTTPS ✓ SSL ✓
         │                               │
         └───────────────┬───────────────┘
@@ -55,10 +55,10 @@
 
 | Layer | Service Provider | Plan | Live Endpoint / Connection |
 |:---|:---|:---:|:---|
-| **Frontend SPA** | **Vercel** | Free | `https://fitnexus-frontend.vercel.app` |
-| **Spring Boot Java API** | **Render** | Free | `https://fitnexus-backend-api.onrender.com` |
-| **.NET Corporate API** | **Render** | Free | `https://fitnexusdashboard.onrender.com/` |
-| **MySQL Database** | **Aiven Cloud** | Free | `fitnexus-mysql-fit-nexus.j.aivencloud.com:12606` (`sslMode=REQUIRED`) |
+| **Frontend SPA** | **Vercel** | `https://fitnexus-frontend.vercel.app` |
+| **Spring Boot Java API** | **Render** | `https://fitnexus-backend-api.onrender.com` |
+| **.NET Corporate API** | **Render** | `https://fitnexusdashboard.onrender.com/` |
+| **MySQL Database** | **Aiven Cloud** | `fitnexus-mysql-fit-nexus.j.aivencloud.com:12606` (`sslMode=REQUIRED`) |
 
 ---
 
